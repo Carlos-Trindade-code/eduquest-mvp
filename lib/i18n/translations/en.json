@@ -1,0 +1,99 @@
+{
+  "app": {
+    "name": "EduQuest",
+    "tagline": "Your AI tutor that truly teaches"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tutor": "Study",
+    "parent": "Parent Area",
+    "settings": "Settings",
+    "logout": "Sign out",
+    "login": "Sign in",
+    "register": "Sign up"
+  },
+  "auth": {
+    "loginTitle": "Welcome back!",
+    "loginSubtitle": "Sign in to continue learning",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Start your learning journey",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "name": "Name",
+    "loginButton": "Sign in",
+    "registerButton": "Sign up",
+    "googleButton": "Continue with Google",
+    "or": "or",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?",
+    "iAmParent": "I'm a parent",
+    "iAmStudent": "I'm a student",
+    "selectType": "Who are you?",
+    "age": "Age",
+    "grade": "Grade"
+  },
+  "tutor": {
+    "whatHomework": "What's your homework?",
+    "pasteQuestion": "Paste the question or describe what you need to solve",
+    "placeholder": "E.g.: What were the causes of the French Revolution?",
+    "startButton": "Start with AI Tutor",
+    "changeHomework": "change",
+    "typeAnswer": "Type your answer...",
+    "errorRetry": "Oops! Try again!",
+    "greeting": "Hi! Let's solve this homework together!\n\nI've read your task: \"{homework}\"\n\nWhere do you think we should start?",
+    "selectSubject": "Choose the subject",
+    "sessionComplete": "Session complete!",
+    "xpEarned": "XP earned"
+  },
+  "timer": {
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "breakMessage": "Break time! You studied for 25 minutes!"
+  },
+  "subjects": {
+    "math": "Math",
+    "portuguese": "Portuguese",
+    "history": "History",
+    "science": "Science",
+    "geography": "Geography",
+    "english": "English",
+    "other": "Other"
+  },
+  "gamification": {
+    "level": "Level",
+    "xp": "XP",
+    "streak": "Streak",
+    "days": "days",
+    "badges": "Badges",
+    "levelUp": "Level up!",
+    "newBadge": "New badge!"
+  },
+  "parent": {
+    "dashboard": "Parent Dashboard",
+    "myKids": "My Kids",
+    "addKid": "Add Child",
+    "sessionHistory": "Session History",
+    "progress": "Progress",
+    "timeStudied": "Time Studied",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "goals": "Goals",
+    "setGoal": "Set Goal",
+    "noSessions": "No sessions yet"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Success!",
+    "language": "Language"
+  }
+}

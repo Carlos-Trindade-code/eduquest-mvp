@@ -1,0 +1,99 @@
+{
+  "app": {
+    "name": "EduQuest",
+    "tagline": "Seu tutor IA que ensina de verdade"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "tutor": "Estudar",
+    "parent": "Área dos Pais",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "login": "Entrar",
+    "register": "Criar conta"
+  },
+  "auth": {
+    "loginTitle": "Bem-vindo de volta!",
+    "loginSubtitle": "Entre na sua conta para continuar estudando",
+    "registerTitle": "Crie sua conta",
+    "registerSubtitle": "Comece sua jornada de aprendizado",
+    "email": "Email",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "name": "Nome",
+    "loginButton": "Entrar",
+    "registerButton": "Criar conta",
+    "googleButton": "Continuar com Google",
+    "or": "ou",
+    "noAccount": "Não tem conta?",
+    "hasAccount": "Já tem conta?",
+    "forgotPassword": "Esqueceu a senha?",
+    "iAmParent": "Sou pai/mãe",
+    "iAmStudent": "Sou estudante",
+    "selectType": "Quem é você?",
+    "age": "Idade",
+    "grade": "Série/Ano"
+  },
+  "tutor": {
+    "whatHomework": "Qual é o seu dever?",
+    "pasteQuestion": "Cole a questão ou descreva o que precisa resolver",
+    "placeholder": "Ex: Quais foram as causas da Revolução Francesa?",
+    "startButton": "Começar com o Tutor IA",
+    "changeHomework": "trocar",
+    "typeAnswer": "Digite sua resposta...",
+    "errorRetry": "Ops! Tenta de novo!",
+    "greeting": "Oi! Vamos resolver esse dever juntos!\n\nLi sua tarefa: \"{homework}\"\n\nPor onde você acha que devemos começar?",
+    "selectSubject": "Escolha a matéria",
+    "sessionComplete": "Sessão concluída!",
+    "xpEarned": "XP ganhos"
+  },
+  "timer": {
+    "start": "Iniciar",
+    "pause": "Pausar",
+    "reset": "Resetar",
+    "breakMessage": "Pausa! Você estudou 25 minutos!"
+  },
+  "subjects": {
+    "math": "Matemática",
+    "portuguese": "Português",
+    "history": "História",
+    "science": "Ciências",
+    "geography": "Geografia",
+    "english": "Inglês",
+    "other": "Outro"
+  },
+  "gamification": {
+    "level": "Nível",
+    "xp": "XP",
+    "streak": "Sequência",
+    "days": "dias",
+    "badges": "Conquistas",
+    "levelUp": "Subiu de nível!",
+    "newBadge": "Nova conquista!"
+  },
+  "parent": {
+    "dashboard": "Painel dos Pais",
+    "myKids": "Meus Filhos",
+    "addKid": "Adicionar Filho",
+    "sessionHistory": "Histórico de Sessões",
+    "progress": "Progresso",
+    "timeStudied": "Tempo Estudado",
+    "thisWeek": "Esta Semana",
+    "thisMonth": "Este Mês",
+    "goals": "Metas",
+    "setGoal": "Definir Meta",
+    "noSessions": "Nenhuma sessão ainda"
+  },
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "loading": "Carregando...",
+    "error": "Algo deu errado",
+    "success": "Sucesso!",
+    "language": "Idioma"
+  }
+}
