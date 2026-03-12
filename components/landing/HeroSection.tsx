@@ -71,10 +71,10 @@ export function HeroSection() {
                 </Link>
               </Button>
               <Button variant="secondary" size="xl" rounded="lg" asChild>
-                <a href="#how-it-works" className="gap-2">
+                <Link href="/tutorial" className="gap-2">
                   <Play className="w-4 h-4" />
                   Veja como funciona
-                </a>
+                </Link>
               </Button>
             </motion.div>
 

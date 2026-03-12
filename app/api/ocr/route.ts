@@ -1,7 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
-
-const client = new Anthropic();
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,40 +10,38 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Nenhuma imagem enviada' }, { status: 400 });
     }
 
+    // Check API key
+    if (!process.env.GEMINI_API_KEY) {
+      return Response.json(
+        { error: 'API key nao configurada. Defina GEMINI_API_KEY no .env.local' },
+        { status: 500 }
+      );
+    }
+
     // Convert to base64
     const bytes = await imageFile.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
 
     // Determine media type
     const mimeType = imageFile.type || 'image/jpeg';
-    const supportedTypes = [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/webp',
-    ] as const;
-    const mediaType = supportedTypes.includes(mimeType as typeof supportedTypes[number])
-      ? (mimeType as typeof supportedTypes[number])
-      : 'image/jpeg';
 
-    // Use Claude Vision to extract text
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
-      messages: [
+    // Initialize Gemini
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+    // Use Gemini Vision to extract text
+    const response = await ai.models.generateContent({
+      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+      contents: [
         {
           role: 'user',
-          content: [
+          parts: [
             {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
+              inlineData: {
+                mimeType,
                 data: base64,
               },
             },
             {
-              type: 'text',
               text: `Extraia o texto deste exercício escolar brasileiro.
 
 REGRAS:
@@ -63,8 +59,7 @@ Retorne APENAS o texto extraído, sem explicações adicionais.`,
       ],
     });
 
-    const textBlock = response.content.find((block) => block.type === 'text');
-    const text = textBlock && 'text' in textBlock ? textBlock.text : '';
+    const text = response.text || '';
 
     return Response.json({ text });
   } catch (error) {

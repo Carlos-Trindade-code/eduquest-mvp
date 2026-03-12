@@ -21,6 +21,7 @@ export function Navbar() {
     { href: '#features', label: 'Recursos' },
     { href: '#ages', label: 'Idades' },
     { href: '#how-it-works', label: 'Como Funciona' },
+    { href: '/tutorial', label: 'Tutorial' },
   ];
 
   return (
