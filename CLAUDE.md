@@ -23,16 +23,16 @@ O sistema tem dois tipos de usuario: **pais** (parent) e **criancas** (kid), con
 
 ### Supabase
 - **Project**: eduquest (org: Carlos-Trindade-Mentoring)
-- **URL**: https://gjckregnfklamhdfavyb.supabase.co
-- **Anon Key**: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqY2tyZWduZmtsYW1oZGZhdnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MzM0NDQsImV4cCI6MjA4ODMwOTQ0NH0.ucihqSkwHQX9onQs90aedt11S8rsGNeDimAJT-4KSIc
+- **Credenciais**: ver `.env.local` (nao commitar!)
 - **Site URL configurado**: https://eduquest-mvp-production.up.railway.app
 - **Redirect URLs**: producao/** e localhost:3000/**
 
-### Variaveis de Ambiente (Railway)
-- `GEMINI_API_KEY` = AIzaSyAiDDrU6QX-OHC9KD8fhRTsrILT9fnDXys
-- `NEXT_PUBLIC_SUPABASE_URL` = https://gjckregnfklamhdfavyb.supabase.co
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` = (valor acima)
+### Variaveis de Ambiente (Railway + .env.local)
+- `GEMINI_API_KEY` — chave da API Google Gemini (ver .env.local)
+- `NEXT_PUBLIC_SUPABASE_URL` — URL do projeto Supabase (ver .env.local)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — chave publica Supabase (ver .env.local)
 - Railway tambem gera automaticamente: PORT, RAILWAY_* vars
+- **NUNCA commitar credenciais reais no repositorio!**
 
 ### Deploy
 - Railway detecta automaticamente pushes na branch `main`

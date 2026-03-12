@@ -44,8 +44,8 @@ Abra http://localhost:3000 no navegador.
 ## O que já está pronto
 
 ### Banco de Dados (Supabase)
-- Projeto: `eduquest` (gjckregnfklamhdfavyb)
-- URL: https://gjckregnfklamhdfavyb.supabase.co
+- Projeto: `eduquest`
+- Credenciais em `.env.local` (nunca commitar!)
 - 7 tabelas criadas: profiles, parent_kid_links, sessions, messages, user_stats, badges, study_goals
 - Row Level Security (RLS) ativo em todas as tabelas
 - Triggers automáticos:
@@ -54,9 +54,9 @@ Abra http://localhost:3000 no navegador.
 - Indexes de performance em sessions, messages, badges
 
 ### Credenciais (.env.local)
-- ANTHROPIC_API_KEY ✅
-- NEXT_PUBLIC_SUPABASE_URL ✅
-- NEXT_PUBLIC_SUPABASE_ANON_KEY ✅
+- GEMINI_API_KEY ✅ (nunca commitar!)
+- NEXT_PUBLIC_SUPABASE_URL ✅ (nunca commitar!)
+- NEXT_PUBLIC_SUPABASE_ANON_KEY ✅ (nunca commitar!)
 
 ### Autenticação
 - Login com email/senha (`/login`)
@@ -90,11 +90,11 @@ Abra http://localhost:3000 no navegador.
 
 ## Passo 4 (Opcional): Habilitar Google OAuth
 
-1. Acesse https://supabase.com/dashboard/project/gjckregnfklamhdfavyb/auth/providers
+1. Acesse o dashboard do seu projeto Supabase > Auth > Providers
 2. Ative o provider **Google**
 3. No Google Cloud Console (https://console.cloud.google.com):
    - Crie um projeto OAuth
-   - Adicione redirect URI: `https://gjckregnfklamhdfavyb.supabase.co/auth/v1/callback`
+   - Adicione redirect URI: `https://<SEU_PROJETO>.supabase.co/auth/v1/callback`
    - Copie Client ID e Client Secret
 4. Cole as credenciais no Supabase
 
