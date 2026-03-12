@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
-import { Camera, Upload, X, Loader2 } from 'lucide-react';
+import { Camera, Upload, FileText, X, Loader2 } from 'lucide-react';
 
 interface PhotoUploadProps {
   onTextExtracted: (text: string) => void;
@@ -8,6 +8,7 @@ interface PhotoUploadProps {
     title: string;
     cameraButton: string;
     uploadButton: string;
+    fileButton: string;
     processing: string;
     error: string;
   };
@@ -15,28 +16,44 @@ interface PhotoUploadProps {
 
 const defaultLabels = {
   title: 'Tire uma foto do dever',
-  cameraButton: 'Usar câmera',
+  cameraButton: 'Tirar foto',
   uploadButton: 'Enviar foto',
+  fileButton: 'Enviar arquivo',
   processing: 'Lendo o exercício...',
   error: 'Não consegui ler. Tenta de novo!',
 };
 
+const IMAGE_ACCEPT = 'image/*';
+const DOC_ACCEPT = '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+function isImageFile(file: File) {
+  return file.type.startsWith('image/');
+}
+
 export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const docInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const l = { ...defaultLabels, ...labels };
 
-  const processImage = async (file: File) => {
+  const processFile = async (file: File) => {
     setError('');
     setLoading(true);
+    setFileName(file.name);
 
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = (e) => setPreview(e.target?.result as string);
-    reader.readAsDataURL(file);
+    // Show preview for images; for docs show file name
+    if (isImageFile(file)) {
+      const reader = new FileReader();
+      reader.onload = (e) => setPreview(e.target?.result as string);
+      reader.readAsDataURL(file);
+    } else {
+      // Non-image: show file icon + name
+      setPreview('doc');
+    }
 
     try {
       const formData = new FormData();
@@ -47,7 +64,10 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
         body: formData,
       });
 
-      if (!res.ok) throw new Error('OCR failed');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Falha ao processar arquivo');
+      }
 
       const data = await res.json();
       if (data.text) {
@@ -55,8 +75,8 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
       } else {
         setError(l.error);
       }
-    } catch {
-      setError(l.error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : l.error);
     } finally {
       setLoading(false);
     }
@@ -64,13 +84,15 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) processImage(file);
+    if (file) processFile(file);
   };
 
   const clearPreview = () => {
     setPreview(null);
+    setFileName(null);
     setError('');
     if (fileInputRef.current) fileInputRef.current.value = '';
+    if (docInputRef.current) docInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
@@ -78,11 +100,20 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
     <div className="space-y-3">
       {preview ? (
         <div className="relative">
-          <img
-            src={preview}
-            alt="Preview do dever"
-            className="w-full max-h-48 object-contain rounded-xl border border-white/20"
-          />
+          {preview === 'doc' ? (
+            /* Document preview (PDF/DOCX) */
+            <div className="w-full py-6 flex flex-col items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5">
+              <FileText size={32} className="text-purple-400" />
+              <span className="text-white/70 text-sm truncate max-w-[80%]">{fileName}</span>
+            </div>
+          ) : (
+            /* Image preview */
+            <img
+              src={preview}
+              alt="Preview do dever"
+              className="w-full max-h-48 object-contain rounded-xl border border-white/20"
+            />
+          )}
           {!loading && (
             <button
               onClick={clearPreview}
@@ -113,13 +144,13 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
           <input
             ref={cameraInputRef}
             type="file"
-            accept="image/*"
+            accept={IMAGE_ACCEPT}
             capture="environment"
             onChange={handleFileChange}
             className="hidden"
           />
 
-          {/* Upload button */}
+          {/* Upload image button */}
           <button
             onClick={() => fileInputRef.current?.click()}
             className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-xl border border-dashed border-white/20 hover:border-purple-400 transition-all text-sm"
@@ -130,7 +161,23 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*,.pdf"
+            accept={`${IMAGE_ACCEPT},.pdf`}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          {/* Upload document button (PDF/DOCX) */}
+          <button
+            onClick={() => docInputRef.current?.click()}
+            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-xl border border-dashed border-white/20 hover:border-purple-400 transition-all text-sm"
+          >
+            <FileText size={18} />
+            {l.fileButton}
+          </button>
+          <input
+            ref={docInputRef}
+            type="file"
+            accept={DOC_ACCEPT}
             onChange={handleFileChange}
             className="hidden"
           />

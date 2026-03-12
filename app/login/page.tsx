@@ -13,7 +13,8 @@ function LoginContent() {
   const handleLogin = async (email: string, password: string) => {
     const { error } = await signIn(email, password);
     if (error) throw new Error(error);
-    router.push(redirect);
+    // Full page reload ensures middleware reads new session cookies
+    window.location.href = redirect;
   };
 
   const handleGoogleLogin = async () => {

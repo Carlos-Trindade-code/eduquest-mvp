@@ -25,7 +25,7 @@ function RegisterContent() {
     // Auto-login after registration (works when email confirmation is disabled)
     const { error: signInError } = await signIn(data.email, data.password);
     if (signInError) {
-      router.push('/login');
+      window.location.href = '/login';
       return;
     }
 
@@ -39,8 +39,8 @@ function RegisterContent() {
       }
     }
 
-    // Redirect to onboarding for new users
-    router.push('/onboarding');
+    // Full page reload ensures middleware reads new session cookies
+    window.location.href = '/onboarding';
   };
 
   const handleGoogleRegister = async () => {

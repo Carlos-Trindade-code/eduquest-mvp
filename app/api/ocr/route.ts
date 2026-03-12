@@ -1,5 +1,11 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
+import mammoth from 'mammoth';
+
+const DOCX_TYPES = [
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/msword',
+];
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,10 +13,28 @@ export async function POST(request: NextRequest) {
     const imageFile = formData.get('image') as File;
 
     if (!imageFile) {
-      return Response.json({ error: 'Nenhuma imagem enviada' }, { status: 400 });
+      return Response.json({ error: 'Nenhum arquivo enviado' }, { status: 400 });
     }
 
-    // Check API key
+    const mimeType = imageFile.type || 'application/octet-stream';
+
+    // ---- DOCX / DOC: extract text with mammoth ----
+    if (DOCX_TYPES.includes(mimeType) || imageFile.name?.endsWith('.docx') || imageFile.name?.endsWith('.doc')) {
+      try {
+        const bytes = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const result = await mammoth.extractRawText({ buffer });
+        const text = result.value?.trim();
+        if (text) {
+          return Response.json({ text });
+        }
+        return Response.json({ error: 'Documento vazio ou ilegivel.' }, { status: 400 });
+      } catch {
+        return Response.json({ error: 'Nao consegui ler o documento Word. Tente outro formato.' }, { status: 500 });
+      }
+    }
+
+    // ---- Images & PDF: use Gemini Vision ----
     if (!process.env.GEMINI_API_KEY) {
       return Response.json(
         { error: 'API key nao configurada. Defina GEMINI_API_KEY no .env.local' },
@@ -21,9 +45,6 @@ export async function POST(request: NextRequest) {
     // Convert to base64
     const bytes = await imageFile.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
-
-    // Determine media type
-    const mimeType = imageFile.type || 'image/jpeg';
 
     // Initialize Gemini
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -65,7 +86,7 @@ Retorne APENAS o texto extraído, sem explicações adicionais.`,
   } catch (error) {
     console.error('OCR error:', error);
     return Response.json(
-      { error: 'Não consegui ler a imagem. Tente novamente.' },
+      { error: 'Nao consegui ler o arquivo. Tente novamente.' },
       { status: 500 }
     );
   }
