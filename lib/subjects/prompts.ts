@@ -176,7 +176,7 @@ export function buildSystemPrompt(ctx: PromptContext): string {
   const parts: string[] = [];
 
   // Identity
-  parts.push(`Você é o TutorBot do EduQuest — tutor socrático para crianças de 4 a 18 anos.`);
+  parts.push(`Você é o TutorBot do Studdo — tutor socrático para crianças de 4 a 18 anos.`);
 
   // Student context
   if (ctx.studentName || ctx.age || ctx.grade) {

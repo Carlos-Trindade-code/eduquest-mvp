@@ -52,7 +52,7 @@ export const alertDefinitions: AlertDefinition[] = [
     description:
       'Seu filho está repetindo o mesmo tipo de erro — isso indica um gap de aprendizado estrutural, onde um conceito anterior não foi consolidado.',
     recommended_action:
-      'Converse com o professor sobre essa dificuldade específica. Em casa, reserve 10 minutos por dia para revisar esse conceito com o EduQuest no modo "Revisão Focada".',
+      'Converse com o professor sobre essa dificuldade específica. Em casa, reserve 10 minutos por dia para revisar esse conceito com o Studdo no modo "Revisão Focada".',
     condition: (s) =>
       s.consecutiveErrorsSameConept >= 3,
   },

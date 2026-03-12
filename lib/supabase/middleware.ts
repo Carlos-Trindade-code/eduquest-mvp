@@ -34,6 +34,16 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Admin route: only accessible by specific email
+  const ADMIN_EMAIL = 'carlostrindade@me.com';
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (!user || user.email !== ADMIN_EMAIL) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      return NextResponse.redirect(url);
+    }
+  }
+
   // Protected routes: redirect to login if not authenticated
   const protectedPaths = ['/tutor', '/dashboard', '/parent', '/onboarding'];
   const isProtected = protectedPaths.some((path) =>

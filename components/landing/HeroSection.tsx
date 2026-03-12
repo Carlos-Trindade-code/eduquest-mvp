@@ -56,7 +56,7 @@ export function HeroSection() {
               variants={fadeInUp('high')}
               className="mt-6 text-lg text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
-              O EduQuest usa inteligencia artificial para guiar criancas de 4 a 18 anos
+              O Studdo usa inteligencia artificial para guiar criancas de 4 a 18 anos
               a pensar, questionar e descobrir as respostas por conta propria.
             </motion.p>
 

@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EduQuest — Tutor IA que ensina de verdade",
+  title: "Studdo — Tutor IA que ensina de verdade",
   description:
     "Tutor socratico com IA para ajudar criancas de 4 a 18 anos a aprender de verdade, sem dar respostas prontas.",
   keywords: ["educacao", "tutor IA", "aprendizado", "socratico", "criancas"],
   openGraph: {
-    title: "EduQuest — Tutor IA que ensina de verdade",
+    title: "Studdo — Tutor IA que ensina de verdade",
     description:
       "Plataforma de tutoria com IA que guia criancas a pensar, nao apenas a copiar respostas.",
     type: "website",

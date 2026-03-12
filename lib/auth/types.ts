@@ -1,4 +1,25 @@
-export type UserType = 'parent' | 'kid';
+export type UserType = 'parent' | 'kid' | 'admin';
+
+export interface Suggestion {
+  id: string;
+  user_id: string | null;
+  user_name: string | null;
+  user_email: string | null;
+  content: string;
+  status: 'pending' | 'read' | 'done';
+  admin_notes: string | null;
+  created_at: string;
+}
+
+export interface AdminMetrics {
+  total_users: number;
+  total_kids: number;
+  total_parents: number;
+  total_sessions: number;
+  active_today: number;
+  total_suggestions: number;
+  pending_suggestions: number;
+}
 
 export type AgeGroup = '4-6' | '7-9' | '10-12' | '13-15' | '16-18';
 

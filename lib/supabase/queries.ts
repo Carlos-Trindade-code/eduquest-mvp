@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Profile, Session, Message, UserStats, Badge } from '@/lib/auth/types';
+import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics } from '@/lib/auth/types';
 
 // ==========================================
 // PROFILE QUERIES
@@ -329,4 +329,81 @@ export async function getKidAnalytics(
     byDay,
     sessions: allSessions,
   };
+}
+
+// ==========================================
+// SUGGESTIONS
+// ==========================================
+
+export async function submitSuggestion(
+  supabase: SupabaseClient,
+  data: { content: string; userName?: string; userEmail?: string }
+) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from('suggestions')
+    .insert({
+      user_id: user?.id || null,
+      user_name: data.userName || null,
+      user_email: data.userEmail || null,
+      content: data.content,
+    });
+
+  return { error };
+}
+
+// ==========================================
+// ADMIN QUERIES
+// ==========================================
+
+export async function getAdminMetrics(
+  supabase: SupabaseClient
+): Promise<AdminMetrics | null> {
+  const { data, error } = await supabase.rpc('get_admin_metrics');
+  if (error) {
+    console.error('Admin metrics error:', error);
+    return null;
+  }
+  return data as AdminMetrics;
+}
+
+export async function getAllSuggestions(
+  supabase: SupabaseClient
+): Promise<Suggestion[]> {
+  const { data, error } = await supabase.rpc('get_all_suggestions');
+  if (error) {
+    console.error('Get suggestions error:', error);
+    return [];
+  }
+  return (data || []) as Suggestion[];
+}
+
+export async function updateSuggestionStatus(
+  supabase: SupabaseClient,
+  suggestionId: string,
+  status: 'pending' | 'read' | 'done',
+  notes?: string
+) {
+  const { error } = await supabase.rpc('update_suggestion_status', {
+    suggestion_id: suggestionId,
+    new_status: status,
+    notes: notes || null,
+  });
+  return { error };
+}
+
+export async function getAllProfiles(
+  supabase: SupabaseClient
+): Promise<Profile[]> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Get all profiles error:', error);
+    return [];
+  }
+  return (data || []) as Profile[];
 }

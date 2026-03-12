@@ -14,7 +14,7 @@ export function Footer() {
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-bold text-white">
-              Edu<span className="text-purple-400">Quest</span>
+              Stud<span className="text-purple-400">do</span>
             </span>
           </Link>
 
@@ -33,7 +33,7 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-sm text-white/30">
-            &copy; {new Date().getFullYear()} EduQuest. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} Studdo. Todos os direitos reservados.
           </p>
         </div>
       </div>

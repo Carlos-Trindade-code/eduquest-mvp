@@ -3,6 +3,7 @@ import { HeroSection } from '@/components/landing/HeroSection';
 import { FeaturesSection } from '@/components/landing/FeaturesSection';
 import { AgeGroupShowcase } from '@/components/landing/AgeGroupShowcase';
 import { HowItWorks } from '@/components/landing/HowItWorks';
+import { FAQSection } from '@/components/landing/FAQSection';
 import { Footer } from '@/components/landing/Footer';
 
 export default function LandingPage() {
@@ -13,6 +14,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <AgeGroupShowcase />
       <HowItWorks />
+      <FAQSection />
       <Footer />
     </main>
   );

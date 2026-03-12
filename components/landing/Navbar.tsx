@@ -44,7 +44,7 @@ export function Navbar() {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold text-white">
-              Edu<span className="text-purple-400">Quest</span>
+              Stud<span className="text-purple-400">do</span>
             </span>
           </Link>
 

@@ -46,7 +46,7 @@ export function InviteCodeCard({ code, hasKids = false }: InviteCodeCardProps) {
           <p className="text-[var(--eq-text-secondary)] text-xs mb-3">
             {hasKids
               ? 'Compartilhe para vincular mais filhos'
-              : 'Seu filho digita este codigo ao criar a conta no EduQuest'}
+              : 'Seu filho digita este codigo ao criar a conta no Studdo'}
           </p>
 
           <div className="flex items-center gap-2">

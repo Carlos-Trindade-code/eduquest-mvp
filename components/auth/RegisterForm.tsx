@@ -125,7 +125,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
               Comece sua jornada!
             </h2>
             <p className="text-white/50 text-sm max-w-xs mx-auto">
-              Milhares de estudantes ja aprendem de verdade com o EduQuest.
+              Milhares de estudantes ja aprendem de verdade com o Studdo.
             </p>
           </motion.div>
 
@@ -166,9 +166,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
           <motion.div className="text-center mb-6" variants={fadeInUp('medium')} initial="hidden" animate="visible">
             <Link href="/" className="inline-flex items-center gap-2 mb-5">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                <span className="text-white text-lg font-black">E</span>
+                <span className="text-white text-lg font-black">S</span>
               </div>
-              <span className="text-white font-bold text-2xl">EduQuest</span>
+              <span className="text-white font-bold text-2xl">Studdo</span>
             </Link>
             <h1 className="text-white text-xl font-bold">Crie sua conta</h1>
             <p className="text-[var(--eq-text-secondary)] text-sm mt-1">

@@ -83,7 +83,7 @@ export default function ParentDashboard() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
               <Sparkles className="text-white" size={16} />
             </div>
-            <span className="text-white font-bold text-lg">EduQuest</span>
+            <span className="text-white font-bold text-lg">Studdo</span>
             <span className="text-[var(--eq-text-secondary)] text-sm ml-2">Dashboard</span>
           </div>
           <div className="flex items-center gap-2">

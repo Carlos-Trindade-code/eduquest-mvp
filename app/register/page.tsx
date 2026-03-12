@@ -14,7 +14,7 @@ function RegisterContent() {
     email: string;
     password: string;
     name: string;
-    userType: 'parent' | 'kid';
+    userType: 'parent' | 'kid' | 'admin';
     age?: number;
     grade?: string;
     inviteCode?: string;

@@ -223,7 +223,7 @@ export function TutorialPage() {
           >
             Como usar o{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-              EduQuest
+              Studdo
             </span>
           </motion.h1>
 

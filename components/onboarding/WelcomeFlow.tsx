@@ -24,7 +24,7 @@ interface Step {
 const kidSteps: Step[] = [
   {
     mascotExpression: 'celebrating',
-    title: 'Bem-vindo ao EduQuest!',
+    title: 'Bem-vindo ao Studdo!',
     subtitle: 'Sua jornada de aprendizado comeca agora',
     features: [
       { icon: Brain, text: 'Tutor IA que te guia sem dar respostas prontas', color: '#8B5CF6' },
@@ -58,7 +58,7 @@ function buildParentSteps(inviteCode?: string | null): Step[] {
   return [
     {
       mascotExpression: 'celebrating',
-      title: 'Bem-vindo ao EduQuest!',
+      title: 'Bem-vindo ao Studdo!',
       subtitle: 'Acompanhe o aprendizado do seu filho de perto',
       features: [
         { icon: BarChart3, text: 'Dashboard com graficos de progresso e sessoes', color: '#3B82F6' },

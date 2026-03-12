@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 export function Header({
-  appName = 'EduQuest',
+  appName = 'Studdo',
   timerLabels,
   onTimerComplete,
 }: HeaderProps) {

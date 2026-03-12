@@ -54,7 +54,7 @@ export function MascotOwl({
       xmlns="http://www.w3.org/2000/svg"
       className={cn('select-none', className)}
       role="img"
-      aria-label="Edu, a coruja mascote do EduQuest"
+      aria-label="Edu, a coruja mascote do Studdo"
       animate={
         isAnimated
           ? {

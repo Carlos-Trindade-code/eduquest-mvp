@@ -1,7 +1,7 @@
-# EduQuest MVP — Guia Completo do Projeto
+# Studdo (ex-EduQuest) MVP — Guia Completo do Projeto
 
 ## Visao Geral
-EduQuest e uma plataforma educacional para criancas de 4-18 anos com tutor IA usando metodo socratico.
+Studdo e uma plataforma educacional para criancas de 4-18 anos com tutor IA usando metodo socratico.
 O sistema tem dois tipos de usuario: **pais** (parent) e **criancas** (kid), conectados por codigos de convite.
 
 ## Stack Tecnica
