@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight, Play, Brain, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HeroIllustration } from '@/components/illustrations/HeroIllustration';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
@@ -56,8 +56,9 @@ export function HeroSection() {
               variants={fadeInUp('high')}
               className="mt-6 text-lg text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
-              O Studdo usa inteligencia artificial para guiar criancas de 4 a 18 anos
-              a pensar, questionar e descobrir as respostas por conta propria.
+              O Studdo usa inteligencia artificial de ultima geracao para guiar criancas
+              de 4 a 18 anos a pensar, questionar e descobrir as respostas por conta propria.
+              Metodo socratico + IA = aprendizado real.
             </motion.p>
 
             <motion.div
@@ -71,21 +72,38 @@ export function HeroSection() {
                 </Link>
               </Button>
               <Button variant="secondary" size="xl" rounded="lg" asChild>
-                <Link href="/tutorial" className="gap-2">
+                <a href="#demo" className="gap-2">
                   <Play className="w-4 h-4" />
                   Veja como funciona
-                </Link>
+                </a>
               </Button>
+            </motion.div>
+
+            {/* Trust badges */}
+            <motion.div
+              variants={fadeInUp('high')}
+              className="mt-10 flex flex-wrap items-center gap-4 justify-center lg:justify-start"
+            >
+              {[
+                { icon: Brain, text: 'Metodo cientificamente validado' },
+                { icon: Zap, text: 'IA com raciocinio avancado' },
+                { icon: Shield, text: 'Dados 100% protegidos' },
+              ].map((item) => (
+                <div key={item.text} className="flex items-center gap-2 text-white/40 text-xs">
+                  <item.icon className="w-3.5 h-3.5 text-purple-400" />
+                  <span>{item.text}</span>
+                </div>
+              ))}
             </motion.div>
 
             {/* Stats */}
             <motion.div
               variants={fadeInUp('high')}
-              className="mt-12 flex items-center gap-8 justify-center lg:justify-start"
+              className="mt-8 flex items-center gap-8 justify-center lg:justify-start"
             >
               {[
                 { value: '5', label: 'Faixas etarias' },
-                { value: '7', label: 'Materias' },
+                { value: '7+', label: 'Materias' },
                 { value: '100%', label: 'Adaptativo' },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">

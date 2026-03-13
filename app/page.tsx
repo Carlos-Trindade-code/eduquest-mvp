@@ -1,5 +1,7 @@
 import { Navbar } from '@/components/landing/Navbar';
 import { HeroSection } from '@/components/landing/HeroSection';
+import { SocialProof } from '@/components/landing/SocialProof';
+import { DemoShowcase } from '@/components/landing/DemoShowcase';
 import { FeaturesSection } from '@/components/landing/FeaturesSection';
 import { AgeGroupShowcase } from '@/components/landing/AgeGroupShowcase';
 import { HowItWorks } from '@/components/landing/HowItWorks';
@@ -11,6 +13,8 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[#0A0A1A]">
       <Navbar />
       <HeroSection />
+      <SocialProof />
+      <DemoShowcase />
       <FeaturesSection />
       <AgeGroupShowcase />
       <HowItWorks />
