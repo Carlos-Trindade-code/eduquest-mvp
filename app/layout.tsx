@@ -12,16 +12,58 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.studdo.com.br";
+
 export const metadata: Metadata = {
-  title: "Studdo — Tutor IA que ensina de verdade",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Studdo — Tutor IA que ensina de verdade",
+    template: "%s | Studdo",
+  },
   description:
-    "Tutor socratico com IA para ajudar criancas de 4 a 18 anos a aprender de verdade, sem dar respostas prontas.",
-  keywords: ["educacao", "tutor IA", "aprendizado", "socratico", "criancas"],
+    "Tutor socrático com IA para ajudar crianças de 4 a 18 anos a aprender de verdade, sem dar respostas prontas.",
+  keywords: [
+    "educação",
+    "tutor IA",
+    "aprendizado",
+    "socrático",
+    "crianças",
+    "estudo",
+    "reforço escolar",
+    "inteligência artificial",
+    "Studdo",
+  ],
+  authors: [{ name: "Studdo", url: SITE_URL }],
+  creator: "Studdo",
+  publisher: "Studdo",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Studdo — Tutor IA que ensina de verdade",
     description:
-      "Plataforma de tutoria com IA que guia criancas a pensar, nao apenas a copiar respostas.",
+      "Plataforma de tutoria com IA que guia crianças a pensar, não apenas a copiar respostas.",
+    url: SITE_URL,
+    siteName: "Studdo",
+    locale: "pt_BR",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Studdo — Tutor IA que ensina de verdade",
+    description:
+      "Plataforma de tutoria com IA que guia crianças a pensar, não apenas a copiar respostas.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
