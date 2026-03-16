@@ -22,6 +22,7 @@ export function Navbar() {
     { href: '/#ages', label: 'Idades' },
     { href: '/#how-it-works', label: 'Como Funciona' },
     { href: '/#demo', label: 'Demo' },
+    { href: '/exam', label: 'Gerar Prova' },
   ];
 
   return (

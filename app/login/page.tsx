@@ -9,6 +9,7 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/tutor';
+  const authError = searchParams.get('error');
 
   const handleLogin = async (email: string, password: string) => {
     const { error } = await signIn(email, password);
@@ -31,6 +32,7 @@ function LoginContent() {
       onLogin={handleLogin}
       onGoogleLogin={handleGoogleLogin}
       onForgotPassword={handleForgotPassword}
+      initialError={authError === 'auth_callback_failed' ? 'Erro ao autenticar com Google. Tente novamente.' : undefined}
     />
   );
 }

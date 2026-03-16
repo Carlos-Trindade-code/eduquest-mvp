@@ -10,15 +10,16 @@ interface LoginFormProps {
   onLogin?: (email: string, password: string) => Promise<void>;
   onGoogleLogin?: () => Promise<void>;
   onForgotPassword?: (email: string) => Promise<void>;
+  initialError?: string;
 }
 
-export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword }: LoginFormProps) {
+export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialError }: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(initialError || '');
   const [resetSent, setResetSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
