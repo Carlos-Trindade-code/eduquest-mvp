@@ -50,11 +50,28 @@ const kidSteps: Step[] = [
       { icon: Sparkles, text: 'Voce descobre a resposta por conta propria!', color: '#F59E0B' },
     ],
     customContent: (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }} className="mt-4">
-        <span className="text-blue-400 font-bold">Mini-jogo: Qual dessas imagens é um mapa?</span>
-        <div className="flex gap-4 mt-2">
-          <img src="/images/mapa.png" alt="Imagem de um mapa, representando geografia" className="w-16 h-16 rounded-lg border border-blue-300 cursor-pointer" onClick={() => alert('Muito bem! Você acertou 🎉')} />
-          <img src="/images/bola.png" alt="Imagem de uma bola, representando objeto esportivo" className="w-16 h-16 rounded-lg border border-blue-300 cursor-pointer" onClick={() => alert('Tente de novo!')} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="mt-4"
+      >
+        <span className="text-blue-400 font-bold text-sm">Mini-desafio: O que é um mapa?</span>
+        <div className="flex gap-3 mt-3 justify-center">
+          <button
+            className="flex flex-col items-center gap-1 p-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 transition-colors"
+            onClick={() => alert('Correto! Um mapa é uma representação geográfica 🗺️')}
+          >
+            <span className="text-3xl">🗺️</span>
+            <span className="text-blue-200 text-xs">Mapa</span>
+          </button>
+          <button
+            className="flex flex-col items-center gap-1 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+            onClick={() => alert('Tente de novo! Uma bola não é um mapa 😄')}
+          >
+            <span className="text-3xl">⚽</span>
+            <span className="text-white/40 text-xs">Bola</span>
+          </button>
         </div>
       </motion.div>
     ),
