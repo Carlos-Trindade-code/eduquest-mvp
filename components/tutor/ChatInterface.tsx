@@ -9,6 +9,7 @@ import { MessageInput } from './MessageInput';
 import { SessionSummary } from './SessionSummary';
 import { AgeThemeProvider } from '@/components/providers/AgeThemeProvider';
 import { XPBar } from '@/components/gamification/XPBar';
+import { BadgeUnlockModal } from '@/components/gamification/BadgeUnlockModal';
 import { useChatSession } from '@/hooks/useChatSession';
 import { useAuth } from '@/hooks/useAuth';
 import { getSubjectById } from '@/lib/subjects/config';
@@ -42,6 +43,7 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
   const [xpGained, setXpGained] = useState<number | null>(null);
   const [showSummary, setShowSummary] = useState(false);
   const [sessionMessageCount, setSessionMessageCount] = useState(0);
+  const [newBadgeIds, setNewBadgeIds] = useState<string[]>([]);
   const l = { ...defaultLabels, ...labels };
   const { profile } = useAuth();
 
@@ -66,11 +68,8 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
       await addXP(supabase, profile.id, xp);
 
       // Verifica e concede novos badges automaticamente
-      const newBadgeIds = await checkAndAwardBadges(supabase, profile.id);
-      if (newBadgeIds.length > 0) {
-        // Apenas loga por ora — a animação de badge pode ser adicionada futuramente
-        console.log('Novos badges desbloqueados:', newBadgeIds);
-      }
+      const earnedBadgeIds = await checkAndAwardBadges(supabase, profile.id);
+      if (earnedBadgeIds.length > 0) setNewBadgeIds(earnedBadgeIds);
     }
   }, [profile]);
 
@@ -189,6 +188,12 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
             )}
           </div>
         </>
+      )}
+      {newBadgeIds.length > 0 && (
+        <BadgeUnlockModal
+          badgeIds={newBadgeIds}
+          onClose={() => setNewBadgeIds([])}
+        />
       )}
     </AgeThemeProvider>
   );
