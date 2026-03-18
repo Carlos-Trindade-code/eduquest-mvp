@@ -16,6 +16,7 @@ import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3 } from 'lucide-reac
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
 import type { Profile, UserStats, Badge } from '@/lib/auth/types';
+import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function ParentDashboard() {
   const { profile, loading: authLoading } = useAuth();
@@ -91,57 +92,8 @@ export default function ParentDashboard() {
             <span className="text-[var(--eq-text-secondary)] text-sm">{profile?.name}</span>
           </div>
         </div>
-      return (
-        <main className="min-h-screen bg-gradient-app">
-          <motion.div
-            className="max-w-5xl mx-auto py-10 px-4"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            {/* ...existing code... */}
-            {selectedKid && (
-              <div className="mt-8">
-                <XPBar totalXp={kidStats?.total_xp || 0} />
-                <StreakDisplay streakDays={kidStats?.streak_days || 0} />
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <SessionsChart analytics={analytics} />
-                  <SubjectsChart analytics={analytics} />
-                </div>
-                <div className="mt-6 flex flex-wrap gap-4">
-                  {kidBadges.map((badge) => (
-                    <BadgeCard key={badge.id} badge={badge} />
-                  ))}
-                </div>
-
-                {/* Painel de feedback dos testes */}
-                <div className="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-xl px-6 py-5 text-blue-200">
-                  <div className="font-bold text-lg mb-2">Feedback dos Testes</div>
-                  <div className="mb-1">Última nota: <span className="font-semibold text-white">{kidStats?.last_exam_score || 'N/A'}</span></div>
-                  <div className="mb-1">Domínio: <span className="font-semibold text-white">{kidStats?.last_exam_mastery || 'N/A'}</span></div>
-                  <div className="mb-2">Principais dificuldades: <span className="text-white">{kidStats?.main_mistakes || 'N/A'}</span></div>
-                  <div className="mt-2 text-purple-300 italic">{kidStats?.comfort_message || 'Continue incentivando seu filho! O aprendizado é uma jornada.'}</div>
-                  <div className="mt-4 text-sm text-blue-300">Sugestão: acompanhe as matérias com maior dificuldade e celebre as conquistas!</div>
-                </div>
-
-                {/* Alertas proativos e sugestões de materiais */}
-                <div className="mt-8">
-                  <div className="font-bold text-lg mb-2 text-orange-300">Alertas e Recomendações</div>
-                  {/* Exemplo de alerta visual */}
-                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl px-5 py-4 mb-4 flex flex-col gap-2">
-                    <span className="font-semibold text-orange-200">Seu filho está repetindo o mesmo erro em matemática.</span>
-                    <span className="text-orange-100 text-sm">Recomendação: Reserve 10 minutos para revisar frações juntos usando o Studdo no modo "Revisão Focada".</span>
-                    <span className="text-orange-100 text-sm">Sugestão de material: <a href="https://www.youtube.com/watch?v=video-matematica" target="_blank" className="underline text-blue-200">Vídeo: Frações para crianças</a> | <a href="/materiais/frações-jogo.pdf" target="_blank" className="underline text-blue-200">Jogo PDF: Frações Divertidas</a></span>
-                  </div>
-                  {/* Outros alertas podem ser renderizados dinamicamente conforme analytics */}
-                </div>
-              </div>
-            )}
-            {/* ...existing code... */}
-          </motion.div>
-        </main>
-      );
-
+      </header>
+      <main className="max-w-6xl mx-auto px-4 py-6">
         {selectedKid && (
           <motion.div
             className="space-y-6"
@@ -234,6 +186,7 @@ export default function ParentDashboard() {
           </div>
         )}
       </main>
+      <FeedbackButton />
     </div>
   );
 }

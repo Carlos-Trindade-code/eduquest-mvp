@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Coffee, X } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { ChatInterface } from '@/components/tutor/ChatInterface';
+import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function TutorPage() {
   const [showBreak, setShowBreak] = useState(false);
@@ -41,6 +42,7 @@ export default function TutorPage() {
       <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 py-5 overflow-hidden">
         <ChatInterface />
       </main>
+      <FeedbackButton />
     </div>
   );
 }
