@@ -10,6 +10,7 @@ import { DemoShowcase } from '@/components/landing/DemoShowcase';
 import { FeaturesSection } from '@/components/landing/FeaturesSection';
 import { AgeGroupShowcase } from '@/components/landing/AgeGroupShowcase';
 import { HowItWorks } from '@/components/landing/HowItWorks';
+import { ParentDashboardPreview } from '@/components/landing/ParentDashboardPreview';
 import { FAQSection } from '@/components/landing/FAQSection';
 import { Footer } from '@/components/landing/Footer';
 
@@ -25,6 +26,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <AgeGroupShowcase />
       <HowItWorks />
+      <ParentDashboardPreview />
       <FAQSection />
       <Footer />
       <MusicPlayer />
