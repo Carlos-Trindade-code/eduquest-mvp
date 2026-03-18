@@ -17,9 +17,6 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[#0A0A1A]">
       <Navbar />
-        <div className="flex flex-col items-center mt-4">
-          <MusicPlayer />
-        </div>
       <HeroSection />
       <SocialProof />
       <DemoShowcase />
@@ -28,6 +25,7 @@ export default function LandingPage() {
       <HowItWorks />
       <FAQSection />
       <Footer />
+      <MusicPlayer />
     </main>
   );
 }
