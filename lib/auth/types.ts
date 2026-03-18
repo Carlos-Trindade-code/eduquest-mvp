@@ -150,3 +150,24 @@ export interface RecommendedActivity {
   age_groups: AgeGroup[];
   difficulty_trigger?: string;
 }
+
+export interface UserFeedback {
+  id: string;
+  user_id: string | null;
+  user_name: string | null;
+  user_email: string | null;
+  rating: number;
+  comment: string | null;
+  source: 'floating_button' | 'post_session';
+  created_at: string;
+}
+
+export interface FeedbackStats {
+  total: number;
+  avg_rating: number;
+  new_today: number;
+  by_source: {
+    floating_button: number;
+    post_session: number;
+  };
+}
