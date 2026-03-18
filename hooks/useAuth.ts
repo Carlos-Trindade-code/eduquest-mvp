@@ -58,6 +58,7 @@ export function useAuth(): UseAuthReturn {
     if (msg.includes('Password should be at least')) return 'A senha deve ter pelo menos 6 caracteres';
     if (msg.includes('Unable to validate email')) return 'Email invalido';
     if (msg.includes('Email rate limit exceeded')) return 'Muitas tentativas. Aguarde alguns minutos.';
+    if (msg.includes('Signups not allowed')) return 'Cadastro desativado temporariamente.';
     return msg;
   };
 

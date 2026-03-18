@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback } from 'react';
+import { XP_REWARDS } from '@/lib/gamification/xp';
 import type { ChatMessage, AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
 interface UseChatSessionReturn {
@@ -16,7 +17,8 @@ export function useChatSession(
   homework: string,
   subject: string,
   ageGroup: AgeGroup = '10-12',
-  behavioralProfile: BehavioralProfile = 'default'
+  behavioralProfile: BehavioralProfile = 'default',
+  onXPEarned?: (xp: number) => void
 ): UseChatSessionReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -57,6 +59,8 @@ export function useChatSession(
         ...prev,
         { role: 'assistant', content: data.message },
       ]);
+      // Award XP for each interaction
+      onXPEarned?.(XP_REWARDS.MESSAGE_SENT);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -65,7 +69,7 @@ export function useChatSession(
     } finally {
       setLoading(false);
     }
-  }, [input, loading, messages, homework, subject, ageGroup, behavioralProfile]);
+  }, [input, loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
 
   return {
     messages,
