@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { useAgeTheme } from '@/components/providers/AgeThemeProvider';
 import { chatMessageVariants } from '@/lib/design/animations';
@@ -47,7 +48,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Bubble */}
       <div
-        className="px-4 py-3 whitespace-pre-wrap leading-relaxed"
+        className="px-4 py-3 leading-relaxed"
         style={{
           maxWidth: tokens.bubbleMaxWidth,
           fontSize: tokens.bubbleFontSize,
@@ -59,7 +60,26 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : { borderBottomLeftRadius: '0.25rem' }),
         }}
       >
-        {message.content}
+        {isUser ? (
+          <span className="whitespace-pre-wrap">{message.content}</span>
+        ) : (
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+              strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
+              ul: ({ children }) => <ul className="list-disc list-inside space-y-1 mb-2">{children}</ul>,
+              ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 mb-2">{children}</ol>,
+              li: ({ children }) => <li className="text-sm">{children}</li>,
+              code: ({ children }) => (
+                <code className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                  {children}
+                </code>
+              ),
+            }}
+          >
+            {message.content}
+          </ReactMarkdown>
+        )}
       </div>
     </motion.div>
   );
