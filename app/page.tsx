@@ -1,4 +1,6 @@
 import { Navbar } from '@/components/landing/Navbar';
+import dynamic from 'next/dynamic';
+const MusicPlayer = dynamic(() => import('@/components/landing/MusicPlayer').then(m => m.MusicPlayer), { ssr: false });
 import { HeroSection } from '@/components/landing/HeroSection';
 import { SocialProof } from '@/components/landing/SocialProof';
 import { DemoShowcase } from '@/components/landing/DemoShowcase';
@@ -13,9 +15,9 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[#0A0A1A]">
       <Navbar />
-      {/* <div className="flex flex-col items-center mt-4">
-        <MusicPlayer />
-      </div> */}
+        <div className="flex flex-col items-center mt-4">
+          <MusicPlayer />
+        </div>
       <HeroSection />
       <SocialProof />
       <DemoShowcase />
