@@ -1,36 +1,35 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Camera, MessageCircleQuestion, Lightbulb, BarChart3 } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 
 const steps = [
   {
-    icon: Camera,
     number: '01',
+    emoji: '📸',
     title: 'Envie a tarefa',
-    description: 'Tire uma foto ou digite o exercicio. A IA extrai o texto automaticamente.',
-    color: '#06B6D4',
+    description: 'Foto, texto ou digitado. A IA extrai o conteúdo automaticamente.',
+    color: '#00B4D8',
   },
   {
-    icon: MessageCircleQuestion,
     number: '02',
-    title: 'Perguntas guiadas',
-    description: 'Em vez de dar a resposta, o tutor faz perguntas que guiam o raciocinio.',
+    emoji: '🤔',
+    title: 'Edu faz perguntas',
+    description: 'Em vez de dar a resposta, o tutor guia o raciocínio com perguntas certeiras.',
     color: '#8B5CF6',
   },
   {
-    icon: Lightbulb,
     number: '03',
-    title: 'Descoberta ativa',
-    description: 'A crianca descobre a resposta sozinha, construindo entendimento real.',
-    color: '#F59E0B',
+    emoji: '💡',
+    title: 'A criança descobre',
+    description: 'Ela chega à resposta sozinha — e isso fica gravado na memória de verdade.',
+    color: '#F5A623',
   },
   {
-    icon: BarChart3,
     number: '04',
-    title: 'Pais acompanham',
-    description: 'Dashboard com graficos, alertas inteligentes e recomendacoes de atividades.',
+    emoji: '📊',
+    title: 'Você acompanha',
+    description: 'Dashboard com sessões, XP, streak e matérias. Tudo em tempo real.',
     color: '#10B981',
   },
 ];
@@ -38,35 +37,59 @@ const steps = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="relative py-24 md:py-32">
-      {/* Subtle bg */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.05),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,180,216,0.04),transparent_70%)]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+
+        {/* Problem/Solution header */}
         <motion.div
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="grid lg:grid-cols-2 gap-8 mb-20 items-center"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: true, margin: '-80px' }}
         >
-          <motion.span
+          {/* Problem */}
+          <motion.div
             variants={fadeInUp('medium')}
-            className="text-sm font-medium text-purple-400"
+            className="rounded-2xl p-8"
+            style={{ background: 'rgba(255,100,100,0.05)', border: '1px solid rgba(255,100,100,0.1)' }}
           >
-            Como funciona
-          </motion.span>
-          <motion.h2
+            <div className="text-3xl mb-4">😓</div>
+            <h3 className="text-xl font-bold text-white mb-3">O problema que você conhece</h3>
+            <p className="text-base leading-relaxed" style={{ color: 'rgba(240,244,248,0.6)' }}>
+              Seu filho chega da escola com dúvida. Você não sabe explicar — ou explica e ele não entende do seu jeito. Ele vai dormir sem entender. E amanhã é a mesma coisa.
+            </p>
+          </motion.div>
+
+          {/* Solution */}
+          <motion.div
             variants={fadeInUp('medium')}
-            className="mt-3 text-3xl sm:text-4xl font-bold text-white"
+            className="rounded-2xl p-8"
+            style={{ background: 'rgba(0,180,216,0.06)', border: '1px solid rgba(0,180,216,0.15)' }}
           >
-            Simples como 1, 2, 3, 4
-          </motion.h2>
+            <div className="text-3xl mb-4">✨</div>
+            <h3 className="text-xl font-bold text-white mb-3">A solução que funciona</h3>
+            <p className="text-base leading-relaxed" style={{ color: 'rgba(240,244,248,0.6)' }}>
+              Em 12 minutos, seu filho explica a matéria pra você. Não porque decorou — porque o Edu fez as perguntas certas até ele entender sozinho.
+            </p>
+          </motion.div>
+        </motion.div>
+
+        {/* Section title */}
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Como funciona</h2>
+          <p className="mt-3 text-base" style={{ color: 'rgba(240,244,248,0.45)' }}>4 passos, resultado em minutos</p>
         </motion.div>
 
         {/* Steps */}
         <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -76,33 +99,24 @@ export function HowItWorks() {
             <motion.div
               key={step.number}
               variants={fadeInUp('medium')}
-              className="relative"
+              className="relative rounded-2xl p-6 text-center"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
-              {/* Connector line */}
+              {/* Connector */}
               {i < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 left-[calc(50%+32px)] w-[calc(100%-64px)] h-px bg-gradient-to-r from-white/10 to-white/5" />
+                <div className="hidden lg:block absolute top-10 left-[calc(100%+12px)] w-6 h-px"
+                  style={{ background: 'rgba(255,255,255,0.1)' }} />
               )}
 
-              <div className="text-center">
-                {/* Icon */}
-                <div className="relative inline-flex mb-6">
-                  <div
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                    style={{ background: `${step.color}15` }}
-                  >
-                    <step.icon className="w-8 h-8" style={{ color: step.color }} />
-                  </div>
-                  <span
-                    className="absolute -top-2 -right-2 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-                    style={{ background: step.color }}
-                  >
-                    {step.number}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed">{step.description}</p>
+              <div className="text-4xl mb-4">{step.emoji}</div>
+              <div className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white mb-3"
+                style={{ background: step.color }}>
+                {i + 1}
               </div>
+              <h3 className="font-bold text-white mb-2">{step.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(240,244,248,0.5)' }}>
+                {step.description}
+              </p>
             </motion.div>
           ))}
         </motion.div>
