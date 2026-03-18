@@ -58,7 +58,7 @@ export function ExamPreview({ exam, onBack }: ExamPreviewProps) {
           className="gap-1.5"
         >
           <Printer size={16} />
-          Imprimir Prova
+          Imprimir
         </Button>
         <Button
           variant="primary"
@@ -111,64 +111,94 @@ export function ExamPreview({ exam, onBack }: ExamPreviewProps) {
           </div>
         </div>
 
-        {/* Questions */}
-        <div className="space-y-6">
-          {exam.questions.map((q, i) => (
-            <motion.div
-              key={i}
-              className="pb-5 border-b border-[var(--eq-surface-border)] last:border-0"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-            >
-              <p className="text-[var(--eq-text)] text-sm font-medium mb-3 whitespace-pre-wrap">
-                <span className="text-[var(--eq-primary)] font-bold mr-1">
-                  {q.number}.
-                </span>
-                {q.text}
-              </p>
+        {/* Feedback final */}
+        <div className="mb-8 bg-blue-500/10 border border-blue-500/20 rounded-xl px-6 py-5 text-blue-200">
+          <div className="font-bold text-lg mb-2">Feedback Final</div>
+          {/* Nota e domínio */}
+          <div className="mb-1">Nota: <span className="font-semibold text-white">{calculateScore(exam)} / {exam.questions.length}</span></div>
+          <div className="mb-1">Domínio: <span className="font-semibold text-white">{getMasteryLevel(exam)}</span></div>
+          {/* Principais erros */}
+          <div className="mb-2">Principais erros: <span className="text-white">{getMainMistakes(exam)}</span></div>
+          {/* Palavras de conforto */}
+          <div className="mt-2 text-purple-300 italic">{getComfortMessage(exam)}</div>
+        </div>
+// Funções utilitárias para feedback
+function calculateScore(exam: ExamData): number {
+  // Exemplo: contar respostas corretas (mock)
+  return exam.questions.filter(q => q.correctAnswer === 'A').length;
+}
 
-              {/* Options for multiple choice */}
-              {q.type === 'multiple_choice' && q.options && (
-                <div className="space-y-1.5 ml-4">
-                  {q.options.map((opt, j) => (
-                    <p
-                      key={j}
-                      className={`text-sm py-1 px-2 rounded ${
-                        showAnswers && opt.startsWith(q.correctAnswer)
-                          ? 'text-green-300 bg-green-500/10 font-medium'
-                          : 'text-[var(--eq-text-secondary)]'
-                      }`}
-                    >
-                      {opt}
-                    </p>
+function getMasteryLevel(exam: ExamData): string {
+  const score = calculateScore(exam);
+  if (score === exam.questions.length) return 'Excelente! Você domina o tema.';
+  if (score >= exam.questions.length * 0.7) return 'Muito bom! Você está preparado.';
+  if (score >= exam.questions.length * 0.5) return 'Bom, mas pode aprofundar.';
+  return 'Precisa revisar mais o tema.';
+}
+
+function getMainMistakes(exam: ExamData): string {
+  // Exemplo: mock, pode ser adaptado para analisar explicações
+  return 'Frações, verbos, gráficos.';
+}
+
+function getComfortMessage(exam: ExamData): string {
+  const score = calculateScore(exam);
+  if (score === exam.questions.length) return 'Parabéns! Você está pronto para qualquer desafio. Fique tranquilo para a prova!';
+  if (score >= exam.questions.length * 0.7) return 'Ótimo trabalho! Confie em você, vai dar tudo certo.';
+  if (score >= exam.questions.length * 0.5) return 'Continue praticando, você está no caminho certo!';
+  return 'Não desanime! Aprender é um processo, você vai conseguir.';
+}
+
+        {/* Questions */}
+        <div className="mt-8">
+          {exam.questions.map((q) => (
+            <motion.div
+              key={q.number}
+              className="mb-8 p-6 rounded-xl bg-white/5 border border-white/10 shadow-lg"
+              variants={fadeInUp('medium')}
+              initial="hidden"
+              animate="visible"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-purple-300 font-bold text-lg">Questão {q.number}</span>
+                {q.type === 'multiple_choice' && <span className="text-xs text-blue-200">(Múltipla escolha)</span>}
+                {q.type === 'essay' && <span className="text-xs text-pink-200">(Dissertativa)</span>}
+              </div>
+              <div className="text-white/90 text-base mb-4">{q.text}</div>
+              {/* Visuals */}
+              {q.visuals && q.visuals.length > 0 && (
+                <div className="mb-4 flex flex-wrap gap-4">
+                  {q.visuals.map((v, idx) => (
+                    <div key={idx} className="rounded-lg overflow-hidden border border-white/10 bg-black/20">
+                      <img src={v.url} alt={v.alt || `Imagem ilustrativa da questão`} className="max-w-xs max-h-48 object-contain" />
+                    </div>
                   ))}
                 </div>
               )}
-
-              {/* Essay answer space */}
-              {q.type === 'essay' && !showAnswers && (
-                <div className="ml-4 mt-2 border border-dashed border-[var(--eq-surface-border)] rounded-[var(--eq-radius-sm)] p-4 min-h-20">
-                  <p className="text-[var(--eq-text-muted)] text-xs italic">
-                    Espaço para resposta
-                  </p>
+              {/* Options */}
+              {q.options && (
+                <ul className="mb-4">
+                  {q.options.map((opt, idx) => (
+                    <li key={idx} className="text-white/80 text-sm mb-1">
+                      {String.fromCharCode(65 + idx)}. {opt}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {/* Answer/Explanation */}
+              {showAnswers && (
+                <div className="mt-2 bg-green-500/10 border border-green-500/20 text-green-300 text-sm rounded-xl px-4 py-3">
+                  <div>
+                    <span className="font-bold">Resposta:</span> {q.correctAnswer}
+                  </div>
+                  <div className="mt-1">
+                    <span className="font-bold">Explicação:</span> {q.explanation}
+                  </div>
                 </div>
               )}
-
-              {/* Answer key */}
-              {showAnswers && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="mt-3 ml-4 bg-green-500/10 border border-green-500/20 rounded-[var(--eq-radius-sm)] p-3"
-                >
-                  <p className="text-green-300 text-xs font-bold mb-1">
-                    Resposta: {q.correctAnswer}
-                  </p>
-                  <p className="text-green-200/80 text-xs leading-relaxed">
-                    {q.explanation}
-                  </p>
-                </motion.div>
+            </motion.div>
+          ))}
+        </div>
               )}
             </motion.div>
           ))}

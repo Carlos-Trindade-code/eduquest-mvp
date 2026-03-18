@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, Play, Brain, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HeroIllustration } from '@/components/illustrations/HeroIllustration';
+import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 
 export function HeroSection() {
@@ -27,7 +28,12 @@ export function HeroSection() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* Text content */}
+          {/* Mascote animado e frases motivacionais */}
+          <motion.div className="flex flex-col items-center mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+            <MascotOwl expression="encouraging" size="xl" animated className="mb-2" />
+            <span className="text-lg text-purple-300 font-semibold">"Aprender é divertido! Você consegue!"</span>
+            <span className="text-md text-blue-200 mt-1">Pais: acompanhem o progresso do seu filho em tempo real.</span>
+          </motion.div>
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -76,6 +82,12 @@ export function HeroSection() {
                   <Play className="w-4 h-4" />
                   Veja como funciona
                 </a>
+              </Button>
+              <Button variant="outline" size="xl" rounded="lg" asChild>
+                <Link href="/parent/dashboard" className="gap-2">
+                  Pais: Veja o progresso
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </Button>
             </motion.div>
 

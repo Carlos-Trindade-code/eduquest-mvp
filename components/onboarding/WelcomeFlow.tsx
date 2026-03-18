@@ -31,6 +31,12 @@ const kidSteps: Step[] = [
       { icon: BookOpen, text: '7 materias cobrindo todo o curriculo escolar', color: '#3B82F6' },
       { icon: Trophy, text: 'Ganhe XP e conquistas enquanto aprende', color: '#F59E0B' },
     ],
+    customContent: (
+      <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1.1 }} transition={{ duration: 0.5 }} className="mt-4">
+        <span className="text-purple-400 font-bold">Mini-desafio: Clique na coruja para ganhar seu primeiro badge!</span>
+        <MascotOwl expression="waving" size="lg" animated className="cursor-pointer mt-2" onClick={() => alert('Parabéns! Você ganhou seu primeiro badge 🎉')} />
+      </motion.div>
+    ),
   },
   {
     mascotExpression: 'thinking',
@@ -41,6 +47,15 @@ const kidSteps: Step[] = [
       { icon: Brain, text: 'O Edu faz perguntas para guiar seu raciocinio', color: '#8B5CF6' },
       { icon: Sparkles, text: 'Voce descobre a resposta por conta propria!', color: '#F59E0B' },
     ],
+    customContent: (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }} className="mt-4">
+        <span className="text-blue-400 font-bold">Mini-jogo: Qual dessas imagens é um mapa?</span>
+        <div className="flex gap-4 mt-2">
+          <img src="/images/mapa.png" alt="Imagem de um mapa, representando geografia" className="w-16 h-16 rounded-lg border border-blue-300 cursor-pointer" onClick={() => alert('Muito bem! Você acertou 🎉')} />
+          <img src="/images/bola.png" alt="Imagem de uma bola, representando objeto esportivo" className="w-16 h-16 rounded-lg border border-blue-300 cursor-pointer" onClick={() => alert('Tente de novo!')} />
+        </div>
+      </motion.div>
+    ),
   },
   {
     mascotExpression: 'encouraging',
@@ -51,6 +66,16 @@ const kidSteps: Step[] = [
       { icon: BarChart3, text: 'Acompanhe seu progresso e mantenha o streak', color: '#3B82F6' },
       { icon: Sparkles, text: 'Desbloqueie badges e mostre suas conquistas', color: '#8B5CF6' },
     ],
+    customContent: (
+      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }} className="mt-4">
+        <span className="text-green-400 font-bold">Trilha de estudo sugerida: Geografia → Matemática → Inglês</span>
+        <div className="flex gap-2 mt-2">
+          <span className="bg-purple-500/20 px-3 py-1 rounded-full text-purple-300">Geografia</span>
+          <span className="bg-blue-500/20 px-3 py-1 rounded-full text-blue-300">Matemática</span>
+          <span className="bg-pink-500/20 px-3 py-1 rounded-full text-pink-300">Inglês</span>
+        </div>
+      </motion.div>
+    ),
   },
 ];
 

@@ -113,11 +113,13 @@ MÉTODO FEYNMAN:
 // ============================================================
 const subjectInstructions: Record<string, string> = {
   math: `MATÉRIA: MATEMÁTICA
-- Para cálculos, peça ao aluno para mostrar os passos.
-- Use exemplos visuais: "imagine que você tem 5 maçãs..."
-- Para equações, guie passo a passo.
-- Para geometria, peça ao aluno para descrever as formas.
-- Ensine a PENSAR, não a decorar fórmulas.`,
+  - Para cálculos, peça ao aluno para mostrar os passos.
+  - Use exemplos visuais: "imagine que você tem 5 maçãs..." e mostre imagens ou gráficos sempre que possível.
+  - Para equações, guie passo a passo.
+  - Para geometria, peça ao aluno para descrever as formas e mostre figuras.
+  - Ensine a PENSAR, não a decorar fórmulas.
+  - Ao final, sugira uma atividade prática: "Monte um gráfico com objetos de casa" ou "Resolva um problema usando desenhos".
+  - Dê feedback personalizado e incentive o aluno a aplicar o conceito fora do sistema.`,
 
   portuguese: `MATÉRIA: PORTUGUÊS
 - Para interpretação, pergunte o que o aluno entendeu.
@@ -138,16 +140,21 @@ const subjectInstructions: Record<string, string> = {
 - Para fórmulas, entender o significado antes de decorar.`,
 
   geography: `MATÉRIA: GEOGRAFIA
-- Relacione ao lugar onde o aluno vive.
-- Para mapas, peça para descrever o que vê.
-- Conecte geografia física com questões ambientais.
-- "Por que essa cidade cresceu nesse lugar?"`,
+  - Relacione ao lugar onde o aluno vive.
+  - Para mapas, peça para descrever o que vê e mostre imagens de mapas, paisagens e gráficos.
+  - Conecte geografia física com questões ambientais.
+  - Use figuras e fotos para ilustrar conceitos.
+  - Ao final, sugira uma atividade prática: "Desenhe um mapa da sua cidade" ou "Observe o ambiente ao seu redor e tire uma foto".
+  - Dê feedback personalizado e incentive o aluno a explorar o mundo real.`,
 
   english: `MATÉRIA: INGLÊS
-- Encoraje tentativas mesmo com erros.
-- Use contexto em vez de tradução direta.
-- Compare estruturas com o português.
-- Celebre o esforço de se comunicar em outro idioma.`,
+  - Encoraje tentativas mesmo com erros.
+  - Use contexto em vez de tradução direta.
+  - Compare estruturas com o português.
+  - Mostre figuras, imagens e exemplos visuais para facilitar o entendimento.
+  - Celebre o esforço de se comunicar em outro idioma.
+  - Ao final, sugira uma atividade prática: "Monte frases usando objetos da sua casa" ou "Grave um áudio falando sobre seu dia em inglês".
+  - Dê feedback personalizado e incentive o aluno a praticar fora do sistema.`,
 
   other: `MATÉRIA: GERAL
 - Adapte a abordagem ao conteúdo apresentado.
@@ -191,16 +198,18 @@ export function buildSystemPrompt(ctx: PromptContext): string {
   }
 
   // Core rules
-  parts.push(`
-REGRAS ABSOLUTAS:
-1. NUNCA dê a resposta direta. Sempre guie com perguntas socráticas.
-2. Faça UMA pergunta por vez — simples e clara.
-3. Se a criança errou: use linguagem de tentativa (nunca "errado").
-4. Se errar ${config.attemptsBeforeHint} vezes: ofereça uma dica maior.
-5. Se errar ${config.attemptsBeforeReveal} vezes no mesmo conceito: revele o RACIOCÍNIO passo a passo.
-6. Se errar ${config.attemptsBeforeReveal + 2} vezes: revele a resposta + faça pergunta de fixação.
-7. Celebre conquistas com entusiasmo genuíno!
-8. Adapte ao nível do aluno — nunca acima, nunca muito abaixo.`);
+    parts.push(`
+  REGRAS ABSOLUTAS:
+  1. NUNCA dê a resposta direta. Sempre guie com perguntas socráticas.
+  2. Estruture as perguntas em etapas: comece pelo básico, avance para intermediário e depois para avançado conforme o aluno responde corretamente.
+  3. Faça UMA pergunta por vez — simples e clara.
+  4. Se a criança errou: use linguagem de tentativa (nunca "errado").
+  5. Celebre cada acerto com entusiasmo genuíno, incentive em cada tentativa.
+  6. Se errar ${config.attemptsBeforeHint} vezes: ofereça uma dica maior.
+  7. Se errar ${config.attemptsBeforeReveal} vezes no mesmo conceito: revele o RACIOCÍNIO passo a passo.
+  8. Se errar ${config.attemptsBeforeReveal + 2} vezes: revele a resposta + faça pergunta de fixação.
+  9. Adapte ao nível do aluno — nunca acima, nunca muito abaixo.
+  10. Use linguagem motivacional e frases de conforto ao final de cada etapa.`);
 
   // Language for age
   parts.push(`\n${languageByAge[ctx.ageGroup]}`);

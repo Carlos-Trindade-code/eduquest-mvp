@@ -23,6 +23,7 @@ export interface ExamData {
     options: string[] | null;
     correctAnswer: string;
     explanation: string;
+    visuals?: Array<{ type: 'image' | 'figure' | 'chart'; url: string; alt?: string }>;
   }[];
 }
 
