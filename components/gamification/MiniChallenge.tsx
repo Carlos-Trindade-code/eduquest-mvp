@@ -31,7 +31,7 @@ export function MiniChallenge({ challenge, onSuccess }: MiniChallengeProps) {
         <div className="flex flex-col items-center">
           <Sparkles className="text-yellow-400 mb-2" size={32} />
           <span className="text-green-400 font-bold">Parabéns! Você ganhou XP extra 🎉</span>
-          <ConfettiEffect />
+          <ConfettiEffect active={true} />
         </div>
       )}
     </motion.div>

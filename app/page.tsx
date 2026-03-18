@@ -1,3 +1,5 @@
+'use client';
+
 import { Navbar } from '@/components/landing/Navbar';
 import dynamic from 'next/dynamic';
 const MusicPlayer = dynamic(() => import('@/components/landing/MusicPlayer').then(m => m.MusicPlayer), { ssr: false });

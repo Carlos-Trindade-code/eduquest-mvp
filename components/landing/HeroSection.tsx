@@ -83,7 +83,7 @@ export function HeroSection() {
                   Veja como funciona
                 </a>
               </Button>
-              <Button variant="outline" size="xl" rounded="lg" asChild>
+              <Button variant="secondary" size="xl" rounded="lg" asChild>
                 <Link href="/parent/dashboard" className="gap-2">
                   Pais: Veja o progresso
                   <ArrowRight className="w-5 h-5" />

@@ -34,7 +34,9 @@ const kidSteps: Step[] = [
     customContent: (
       <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1.1 }} transition={{ duration: 0.5 }} className="mt-4">
         <span className="text-purple-400 font-bold">Mini-desafio: Clique na coruja para ganhar seu primeiro badge!</span>
-        <MascotOwl expression="waving" size="lg" animated className="cursor-pointer mt-2" onClick={() => alert('Parabéns! Você ganhou seu primeiro badge 🎉')} />
+        <button className="cursor-pointer mt-2" onClick={() => alert('Parabéns! Você ganhou seu primeiro badge 🎉')}>
+          <MascotOwl expression="waving" size="lg" animated />
+        </button>
       </motion.div>
     ),
   },

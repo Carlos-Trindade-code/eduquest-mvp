@@ -122,32 +122,6 @@ export function ExamPreview({ exam, onBack }: ExamPreviewProps) {
           {/* Palavras de conforto */}
           <div className="mt-2 text-purple-300 italic">{getComfortMessage(exam)}</div>
         </div>
-// Funções utilitárias para feedback
-function calculateScore(exam: ExamData): number {
-  // Exemplo: contar respostas corretas (mock)
-  return exam.questions.filter(q => q.correctAnswer === 'A').length;
-}
-
-function getMasteryLevel(exam: ExamData): string {
-  const score = calculateScore(exam);
-  if (score === exam.questions.length) return 'Excelente! Você domina o tema.';
-  if (score >= exam.questions.length * 0.7) return 'Muito bom! Você está preparado.';
-  if (score >= exam.questions.length * 0.5) return 'Bom, mas pode aprofundar.';
-  return 'Precisa revisar mais o tema.';
-}
-
-function getMainMistakes(exam: ExamData): string {
-  // Exemplo: mock, pode ser adaptado para analisar explicações
-  return 'Frações, verbos, gráficos.';
-}
-
-function getComfortMessage(exam: ExamData): string {
-  const score = calculateScore(exam);
-  if (score === exam.questions.length) return 'Parabéns! Você está pronto para qualquer desafio. Fique tranquilo para a prova!';
-  if (score >= exam.questions.length * 0.7) return 'Ótimo trabalho! Confie em você, vai dar tudo certo.';
-  if (score >= exam.questions.length * 0.5) return 'Continue praticando, você está no caminho certo!';
-  return 'Não desanime! Aprender é um processo, você vai conseguir.';
-}
 
         {/* Questions */}
         <div className="mt-8">
@@ -199,13 +173,33 @@ function getComfortMessage(exam: ExamData): string {
             </motion.div>
           ))}
         </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
       </motion.div>
     </div>
   );
+}
+
+function calculateScore(exam: ExamData): number {
+  return exam.questions.filter(q => q.correctAnswer === 'A').length;
+}
+
+function getMasteryLevel(exam: ExamData): string {
+  const score = calculateScore(exam);
+  if (score === exam.questions.length) return 'Excelente! Você domina o tema.';
+  if (score >= exam.questions.length * 0.7) return 'Muito bom! Você está preparado.';
+  if (score >= exam.questions.length * 0.5) return 'Bom, mas pode aprofundar.';
+  return 'Precisa revisar mais o tema.';
+}
+
+function getMainMistakes(_exam: ExamData): string {
+  return 'Frações, verbos, gráficos.';
+}
+
+function getComfortMessage(exam: ExamData): string {
+  const score = calculateScore(exam);
+  if (score === exam.questions.length) return 'Parabéns! Você está pronto para qualquer desafio. Fique tranquilo para a prova!';
+  if (score >= exam.questions.length * 0.7) return 'Ótimo trabalho! Confie em você, vai dar tudo certo.';
+  if (score >= exam.questions.length * 0.5) return 'Continue praticando, você está no caminho certo!';
+  return 'Não desanime! Aprender é um processo, você vai conseguir.';
 }
 
 function buildPrintHTML(exam: ExamData, withAnswers: boolean): string {
