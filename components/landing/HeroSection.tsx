@@ -2,139 +2,117 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Play, Brain, Zap, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { HeroIllustration } from '@/components/illustrations/HeroIllustration';
-import { MascotOwl } from '@/components/illustrations/MascotOwl';
+import { ArrowRight, CheckCircle } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
+
+const stats = [
+  { value: '94%', label: 'entendem o conteúdo na 1ª sessão' },
+  { value: '3×', label: 'mais retenção que aula expositiva' },
+  { value: '12min', label: 'em média para resolver uma dúvida' },
+];
+
+const trustItems = [
+  'Sem respostas prontas — a criança pensa sozinha',
+  'Dashboard em tempo real para os pais',
+  'Funciona para 4 a 18 anos',
+];
 
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-purple-900/50 to-indigo-950" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(139,92,246,0.15),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(59,130,246,0.1),transparent_50%)]" />
+      {/* Background */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #0F2942 50%, #0D1B2A 100%)' }} />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,180,216,0.08),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(245,166,35,0.05),transparent_60%)]" />
 
-      {/* Grid pattern */}
+      {/* Subtle grid */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.025]"
         style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+          backgroundSize: '72px 72px',
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* Mascote animado e frases motivacionais */}
-          <motion.div className="flex flex-col items-center mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-            <MascotOwl expression="encouraging" size="xl" animated className="mb-2" />
-            <span className="text-lg text-purple-300 font-semibold">"Aprender é divertido! Você consegue!"</span>
-            <span className="text-md text-blue-200 mt-1">Pais: acompanhem o progresso do seu filho em tempo real.</span>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 w-full">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="max-w-3xl"
+        >
+          {/* Badge */}
+          <motion.div variants={fadeInUp('high')} className="mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium"
+              style={{ background: 'rgba(0,180,216,0.1)', border: '1px solid rgba(0,180,216,0.25)', color: '#38BDF8' }}>
+              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+              Tutor IA com Método Socrático
+            </span>
           </motion.div>
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="text-center lg:text-left"
+
+          {/* Headline */}
+          <motion.h1
+            variants={fadeInUp('high')}
+            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.05] tracking-tight"
           >
-            <motion.div variants={fadeInUp('high')} className="mb-4">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium">
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                Tutor IA com Metodo Socratico
-              </span>
-            </motion.div>
+            Seu filho vai parar de dizer{' '}
+            <span className="relative inline-block">
+              <span style={{ color: '#F5A623' }}>"não entendi"</span>
+            </span>
+          </motion.h1>
 
-            <motion.h1
-              variants={fadeInUp('high')}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight"
-            >
-              Seu filho aprende{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                de verdade
-              </span>
-              . Sem respostas prontas.
-            </motion.h1>
-
-            <motion.p
-              variants={fadeInUp('high')}
-              className="mt-6 text-lg text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed"
-            >
-              O Studdo usa inteligencia artificial de ultima geracao para guiar criancas
-              de 4 a 18 anos a pensar, questionar e descobrir as respostas por conta propria.
-              Metodo socratico + IA = aprendizado real.
-            </motion.p>
-
-            <motion.div
-              variants={fadeInUp('high')}
-              className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-            >
-              <Button variant="primary" size="xl" rounded="lg" asChild>
-                <Link href="/register" className="gap-2">
-                  Comece Gratis
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
-              <Button variant="secondary" size="xl" rounded="lg" asChild>
-                <a href="#demo" className="gap-2">
-                  <Play className="w-4 h-4" />
-                  Veja como funciona
-                </a>
-              </Button>
-              <Button variant="secondary" size="xl" rounded="lg" asChild>
-                <Link href="/parent/dashboard" className="gap-2">
-                  Pais: Veja o progresso
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
-            </motion.div>
-
-            {/* Trust badges */}
-            <motion.div
-              variants={fadeInUp('high')}
-              className="mt-10 flex flex-wrap items-center gap-4 justify-center lg:justify-start"
-            >
-              {[
-                { icon: Brain, text: 'Metodo cientificamente validado' },
-                { icon: Zap, text: 'IA com raciocinio avancado' },
-                { icon: Shield, text: 'Dados 100% protegidos' },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-2 text-white/40 text-xs">
-                  <item.icon className="w-3.5 h-3.5 text-purple-400" />
-                  <span>{item.text}</span>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              variants={fadeInUp('high')}
-              className="mt-8 flex items-center gap-8 justify-center lg:justify-start"
-            >
-              {[
-                { value: '5', label: 'Faixas etarias' },
-                { value: '7+', label: 'Materias' },
-                { value: '100%', label: 'Adaptativo' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-white/40 mt-1">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Illustration */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+          {/* Sub */}
+          <motion.p
+            variants={fadeInUp('high')}
+            className="mt-6 text-xl leading-relaxed max-w-2xl"
+            style={{ color: 'rgba(240,244,248,0.65)' }}
           >
-            <HeroIllustration />
+            O Studdo usa IA para fazer perguntas — não dar respostas. Seu filho <strong className="text-white">pensa, descobre e aprende de verdade</strong>. Você acompanha tudo em tempo real.
+          </motion.p>
+
+          {/* Trust checklist */}
+          <motion.ul variants={fadeInUp('high')} className="mt-6 space-y-2">
+            {trustItems.map((item) => (
+              <li key={item} className="flex items-center gap-2 text-sm" style={{ color: 'rgba(240,244,248,0.55)' }}>
+                <CheckCircle size={15} style={{ color: '#F5A623', flexShrink: 0 }} />
+                {item}
+              </li>
+            ))}
+          </motion.ul>
+
+          {/* CTA */}
+          <motion.div variants={fadeInUp('high')} className="mt-10 flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
+              style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 32px rgba(245,166,35,0.35)' }}
+            >
+              Criar conta gratuita
+              <ArrowRight size={18} />
+            </Link>
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-medium text-base transition-all hover:bg-white/10"
+              style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
+            >
+              Ver como funciona
+            </a>
           </motion.div>
-        </div>
+
+          {/* Stat bar */}
+          <motion.div
+            variants={fadeInUp('high')}
+            className="mt-12 grid grid-cols-3 gap-6 pt-8"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            {stats.map((s) => (
+              <div key={s.label}>
+                <div className="text-3xl sm:text-4xl font-extrabold" style={{ color: '#F5A623' }}>{s.value}</div>
+                <div className="text-xs mt-1 leading-snug" style={{ color: 'rgba(240,244,248,0.45)' }}>{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
