@@ -12,13 +12,15 @@ import {
   Clock,
   BarChart3,
   Shield,
+  MessageSquare,
 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
-import { getAdminMetrics, getAllSuggestions, getAllProfiles, updateSuggestionStatus } from '@/lib/supabase/queries';
+import { getAdminMetrics, getAllSuggestions, getAllProfiles, updateSuggestionStatus, getAllFeedback, getFeedbackStats } from '@/lib/supabase/queries';
 import { SuggestionsList } from './SuggestionsList';
 import { UsersTable } from './UsersTable';
 import { MetricsCards } from './MetricsCards';
-import type { AdminMetrics, Suggestion, Profile } from '@/lib/auth/types';
+import { FeedbackList } from './FeedbackList';
+import type { AdminMetrics, Suggestion, Profile, UserFeedback, FeedbackStats } from '@/lib/auth/types';
 
 function createSupabase() {
   return createBrowserClient(
@@ -31,6 +33,8 @@ export function AdminDashboard() {
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [feedbacks, setFeedbacks] = useState<UserFeedback[]>([]);
+  const [feedbackStats, setFeedbackStats] = useState<FeedbackStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -39,14 +43,18 @@ export function AdminDashboard() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const [metricsData, suggestionsData, profilesData] = await Promise.all([
+      const [metricsData, suggestionsData, profilesData, feedbacksData, feedbackStatsData] = await Promise.all([
         getAdminMetrics(supabase),
         getAllSuggestions(supabase),
         getAllProfiles(supabase),
+        getAllFeedback(supabase),
+        getFeedbackStats(supabase),
       ]);
       setMetrics(metricsData);
       setSuggestions(suggestionsData);
       setProfiles(profilesData);
+      setFeedbacks(feedbacksData);
+      setFeedbackStats(feedbackStatsData);
       setLoading(false);
     }
     loadData();
@@ -129,6 +137,17 @@ export function AdminDashboard() {
                 Usuarios
               </span>
             </Tabs.Trigger>
+            <Tabs.Trigger value="feedback" className={tabTriggerClass('feedback')}>
+              <span className="flex items-center gap-2">
+                <MessageSquare size={16} />
+                Feedback
+                {(feedbackStats?.new_today ?? 0) > 0 && (
+                  <span className="bg-green-500 text-white text-xs rounded-full px-1.5 py-0.5 leading-none">
+                    {feedbackStats!.new_today}
+                  </span>
+                )}
+              </span>
+            </Tabs.Trigger>
           </Tabs.List>
 
           {/* Overview tab */}
@@ -147,6 +166,11 @@ export function AdminDashboard() {
           {/* Users tab */}
           <Tabs.Content value="users">
             <UsersTable profiles={profiles} />
+          </Tabs.Content>
+
+          {/* Feedback tab */}
+          <Tabs.Content value="feedback">
+            <FeedbackList feedbacks={feedbacks} stats={feedbackStats} />
           </Tabs.Content>
         </Tabs.Root>
       </div>
