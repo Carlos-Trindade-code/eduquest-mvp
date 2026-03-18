@@ -1,16 +1,20 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { XP_REWARDS } from '@/lib/gamification/xp';
+import { createClient } from '@/lib/supabase/client';
+import { createSession, endSession, saveMessage } from '@/lib/supabase/queries';
 import type { ChatMessage, AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
 interface UseChatSessionReturn {
   messages: ChatMessage[];
   input: string;
   loading: boolean;
+  sessionXp: number;
   setInput: (value: string) => void;
   sendMessage: () => Promise<void>;
   initSession: (homework: string, greeting: string) => void;
   resetSession: () => void;
+  finishSession: () => Promise<void>;
 }
 
 export function useChatSession(
@@ -18,20 +22,52 @@ export function useChatSession(
   subject: string,
   ageGroup: AgeGroup = '10-12',
   behavioralProfile: BehavioralProfile = 'default',
-  onXPEarned?: (xp: number) => void
+  onXPEarned?: (xp: number) => void,
+  userId?: string | null
 ): UseChatSessionReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sessionXp, setSessionXp] = useState(0);
+  const sessionIdRef = useRef<string | null>(null);
+  const sessionStartRef = useRef<Date | null>(null);
 
-  const initSession = useCallback((hw: string, greeting: string) => {
+  const initSession = useCallback(async (hw: string, greeting: string) => {
     setMessages([{ role: 'assistant', content: greeting }]);
-  }, []);
+    setSessionXp(0);
+    sessionStartRef.current = new Date();
+
+    if (userId) {
+      try {
+        const supabase = createClient();
+        const { data } = await createSession(supabase, userId, subject, hw);
+        if (data?.id) sessionIdRef.current = data.id;
+      } catch {
+        // sessão não crítica — continua sem persistir
+      }
+    }
+  }, [userId, subject]);
 
   const resetSession = useCallback(() => {
     setMessages([]);
     setInput('');
+    setSessionXp(0);
+    sessionIdRef.current = null;
+    sessionStartRef.current = null;
   }, []);
+
+  const finishSession = useCallback(async () => {
+    if (!sessionIdRef.current || !sessionStartRef.current) return;
+    const durationMinutes = Math.round(
+      (Date.now() - sessionStartRef.current.getTime()) / 60000
+    );
+    try {
+      const supabase = createClient();
+      await endSession(supabase, sessionIdRef.current, durationMinutes, sessionXp);
+    } catch {
+      // silencioso
+    }
+  }, [sessionXp]);
 
   const sendMessage = useCallback(async () => {
     if (!input.trim() || loading) return;
@@ -41,6 +77,12 @@ export function useChatSession(
     setMessages(newMessages);
     setInput('');
     setLoading(true);
+
+    // Salva mensagem do usuário
+    if (sessionIdRef.current) {
+      const supabase = createClient();
+      saveMessage(supabase, sessionIdRef.current, 'user', input).catch(() => {});
+    }
 
     try {
       const res = await fetch('/api/tutor', {
@@ -55,12 +97,18 @@ export function useChatSession(
         }),
       });
       const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: data.message },
-      ]);
-      // Award XP for each interaction
-      onXPEarned?.(XP_REWARDS.MESSAGE_SENT);
+      const assistantMsg = data.message;
+      setMessages((prev) => [...prev, { role: 'assistant', content: assistantMsg }]);
+
+      // Salva resposta do assistente
+      if (sessionIdRef.current) {
+        const supabase = createClient();
+        saveMessage(supabase, sessionIdRef.current, 'assistant', assistantMsg).catch(() => {});
+      }
+
+      const xp = XP_REWARDS.MESSAGE_SENT;
+      setSessionXp((prev) => prev + xp);
+      onXPEarned?.(xp);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -75,9 +123,11 @@ export function useChatSession(
     messages,
     input,
     loading,
+    sessionXp,
     setInput,
     sendMessage,
     initSession,
     resetSession,
+    finishSession,
   };
 }
