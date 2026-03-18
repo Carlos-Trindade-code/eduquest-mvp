@@ -94,6 +94,25 @@ export default function ParentDashboard() {
           </div>
         </div>
       </header>
+      {kids.length > 1 && (
+        <div className="border-b border-white/5 bg-black/10">
+          <div className="max-w-6xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto">
+            {kids.map((kid) => (
+              <button
+                key={kid.id}
+                onClick={() => setSelectedKid(kid)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors shrink-0 ${
+                  selectedKid?.id === kid.id
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-white/5 text-white/50 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {kid.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <main className="max-w-6xl mx-auto px-4 py-6">
         {selectedKid && (
           <motion.div
