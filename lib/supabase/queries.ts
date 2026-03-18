@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics } from '@/lib/auth/types';
+import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats } from '@/lib/auth/types';
 
 // ==========================================
 // PROFILE QUERIES
@@ -406,4 +406,40 @@ export async function getAllProfiles(
     return [];
   }
   return (data || []) as Profile[];
+}
+
+// ==========================================
+// FEEDBACK QUERIES
+// ==========================================
+
+export async function submitFeedback(
+  supabase: SupabaseClient,
+  rating: number,
+  comment: string | null,
+  source: 'floating_button' | 'post_session'
+): Promise<{ error: Error | null }> {
+  const { error } = await supabase.rpc('submit_feedback', {
+    p_rating: rating,
+    p_comment: comment,
+    p_source: source,
+  });
+  return { error };
+}
+
+export async function getAllFeedback(supabase: SupabaseClient): Promise<UserFeedback[]> {
+  const { data, error } = await supabase.rpc('get_all_feedback');
+  if (error) {
+    console.error('getAllFeedback error:', error);
+    return [];
+  }
+  return (data as UserFeedback[]) || [];
+}
+
+export async function getFeedbackStats(supabase: SupabaseClient): Promise<FeedbackStats | null> {
+  const { data, error } = await supabase.rpc('get_feedback_stats');
+  if (error) {
+    console.error('getFeedbackStats error:', error);
+    return null;
+  }
+  return data as FeedbackStats;
 }
