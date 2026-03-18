@@ -29,6 +29,7 @@ export default function ParentDashboard() {
     totalMinutes: number;
     totalXP: number;
     bySubject: Record<string, number>;
+    byDay: Record<string, number>;
   } | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -111,7 +112,16 @@ export default function ParentDashboard() {
             <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
               <div className="glass rounded-[var(--eq-radius)] p-5">
                 <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes (30 dias)</h3>
-                <SessionsChart data={[]} />
+                <SessionsChart
+                  data={
+                    analytics?.byDay
+                      ? Object.entries(analytics.byDay).map(([date, sessions]) => ({
+                          date: date.slice(5), // "MM-DD" apenas
+                          sessions,
+                        }))
+                      : []
+                  }
+                />
               </div>
               <div className="glass rounded-[var(--eq-radius)] p-5">
                 <h3 className="text-[var(--eq-text)] font-semibold mb-4">Materias Estudadas</h3>
