@@ -14,7 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { getSubjectById } from '@/lib/subjects/config';
 import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
-import { getUserStats, addXP } from '@/lib/supabase/queries';
+import { getUserStats, addXP, checkAndAwardBadges } from '@/lib/supabase/queries';
 import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
 interface ChatInterfaceProps {
@@ -64,6 +64,13 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
     if (profile?.id) {
       const supabase = createClient();
       await addXP(supabase, profile.id, xp);
+
+      // Verifica e concede novos badges automaticamente
+      const newBadgeIds = await checkAndAwardBadges(supabase, profile.id);
+      if (newBadgeIds.length > 0) {
+        // Apenas loga por ora — a animação de badge pode ser adicionada futuramente
+        console.log('Novos badges desbloqueados:', newBadgeIds);
+      }
     }
   }, [profile]);
 

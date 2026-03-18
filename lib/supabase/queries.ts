@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats } from '@/lib/auth/types';
+import { checkNewBadges } from '@/lib/gamification/badges';
 
 // ==========================================
 // PROFILE QUERIES
@@ -406,6 +407,58 @@ export async function getAllProfiles(
     return [];
   }
   return (data || []) as Profile[];
+}
+
+// ==========================================
+// BADGE AUTO-AWARD
+// ==========================================
+
+export async function checkAndAwardBadges(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<string[]> {
+  // Busca stats e badges atuais em paralelo
+  const [statsResult, badgesResult] = await Promise.all([
+    getUserStats(supabase, userId),
+    getUserBadges(supabase, userId),
+  ]);
+
+  if (!statsResult.data) return [];
+
+  const stats = statsResult.data;
+  const existingBadgeIds = (badgesResult.data || []).map((b) => b.badge_type);
+
+  // Busca sessões para contagem de mensagens e matérias
+  const { data: sessionRows } = await supabase
+    .from('sessions')
+    .select('id, subject')
+    .eq('kid_id', userId);
+
+  const sessionIds = (sessionRows || []).map((s: { id: string; subject: string }) => s.id);
+
+  const { data: messages } = sessionIds.length > 0
+    ? await supabase.from('messages').select('session_id').in('session_id', sessionIds)
+    : { data: [] };
+
+  const subjectsStudied = [
+    ...new Set((sessionRows || []).map((s: { id: string; subject: string }) => s.subject)),
+  ];
+
+  const badgeStats = {
+    sessionsCompleted: stats.sessions_completed,
+    totalXp: stats.total_xp,
+    currentStreak: stats.current_streak,
+    longestStreak: stats.longest_streak,
+    totalMessages: (messages || []).length,
+    subjectsStudied,
+  };
+
+  const newBadges = checkNewBadges(badgeStats, existingBadgeIds);
+
+  // Concede novos badges
+  await Promise.all(newBadges.map((b) => awardBadge(supabase, userId, b.id)));
+
+  return newBadges.map((b) => b.id);
 }
 
 // ==========================================
