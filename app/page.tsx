@@ -4,6 +4,7 @@ import { Navbar } from '@/components/landing/Navbar';
 import dynamic from 'next/dynamic';
 const MusicPlayer = dynamic(() => import('@/components/landing/MusicPlayer').then(m => m.MusicPlayer), { ssr: false });
 import { HeroSection } from '@/components/landing/HeroSection';
+import { ParentTestimonials } from '@/components/landing/ParentTestimonials';
 import { SocialProof } from '@/components/landing/SocialProof';
 import { DemoShowcase } from '@/components/landing/DemoShowcase';
 import { FeaturesSection } from '@/components/landing/FeaturesSection';
@@ -18,6 +19,7 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[#0A0A1A]">
       <Navbar />
       <HeroSection />
+      <ParentTestimonials />
       <SocialProof />
       <DemoShowcase />
       <FeaturesSection />
