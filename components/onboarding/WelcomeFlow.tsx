@@ -23,76 +23,79 @@ interface Step {
 
 const kidSteps: Step[] = [
   {
-    mascotExpression: 'celebrating',
-    title: 'Bem-vindo ao Studdo!',
-    subtitle: 'Sua jornada de aprendizado comeca agora',
+    mascotExpression: 'waving',
+    title: 'Oi! Eu sou o Edu 👋',
+    subtitle: 'Vou te ajudar a entender qualquer coisa — sem te dar as respostas prontas!',
     features: [
-      { icon: Brain, text: 'Tutor IA que te guia sem dar respostas prontas', color: '#8B5CF6' },
-      { icon: BookOpen, text: '7 materias cobrindo todo o curriculo escolar', color: '#3B82F6' },
-      { icon: Trophy, text: 'Ganhe XP e conquistas enquanto aprende', color: '#F59E0B' },
+      { icon: Brain, text: 'Faço perguntas que te ajudam a pensar', color: '#8B5CF6' },
+      { icon: BookOpen, text: '7 matérias: matemática, português e muito mais', color: '#00B4D8' },
+      { icon: Trophy, text: 'Ganhe XP e conquistas a cada sessão', color: '#F5A623' },
     ],
-    customContent: (
-      <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1.1 }} transition={{ duration: 0.5 }} className="mt-4">
-        <span className="text-purple-400 font-bold">Mini-desafio: Clique na coruja para ganhar seu primeiro badge!</span>
-        <button className="cursor-pointer mt-2" onClick={() => alert('Parabéns! Você ganhou seu primeiro badge 🎉')}>
-          <MascotOwl expression="waving" size="lg" animated />
-        </button>
-      </motion.div>
-    ),
   },
   {
     mascotExpression: 'thinking',
-    title: 'Como funciona?',
-    subtitle: 'O Edu te ajuda a pensar, nao a copiar',
+    title: 'Veja como funciona',
+    subtitle: 'É assim que a gente estuda junto',
     features: [
-      { icon: BookOpen, text: 'Envie sua tarefa por texto ou foto', color: '#10B981' },
-      { icon: Brain, text: 'O Edu faz perguntas para guiar seu raciocinio', color: '#8B5CF6' },
-      { icon: Sparkles, text: 'Voce descobre a resposta por conta propria!', color: '#F59E0B' },
+      { icon: BookOpen, text: 'Você me manda a tarefa (foto ou texto)', color: '#10B981' },
+      { icon: Brain, text: 'Eu faço perguntas para guiar seu raciocínio', color: '#8B5CF6' },
+      { icon: Sparkles, text: 'Você descobre a resposta sozinho!', color: '#F5A623' },
     ],
     customContent: (
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.7 }}
-        className="mt-4"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mt-4 rounded-2xl p-4 text-left"
+        style={{ background: 'rgba(0,180,216,0.08)', border: '1px solid rgba(0,180,216,0.15)' }}
       >
-        <span className="text-blue-400 font-bold text-sm">Mini-desafio: O que é um mapa?</span>
-        <div className="flex gap-3 mt-3 justify-center">
-          <button
-            className="flex flex-col items-center gap-1 p-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 transition-colors"
-            onClick={() => alert('Correto! Um mapa é uma representação geográfica 🗺️')}
+        <p className="text-xs font-medium mb-3" style={{ color: 'rgba(240,244,248,0.5)' }}>Prévia de uma conversa real:</p>
+        {[
+          { role: 'user', text: 'Quanto é 2 + 2?' },
+          { role: 'assistant', text: 'Boa pergunta! 🤔 Se você tiver 2 maçãs e ganhar mais 2, com quantas fica?' },
+          { role: 'user', text: 'Com 4?' },
+          { role: 'assistant', text: '🎉 Exatamente! Você acabou de descobrir que 2 + 2 = 4!' },
+        ].map((msg, i) => (
+          <motion.div
+            key={i}
+            className={`flex mb-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            initial={{ opacity: 0, x: msg.role === 'user' ? 10 : -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 + i * 0.2 }}
           >
-            <span className="text-3xl">🗺️</span>
-            <span className="text-blue-200 text-xs">Mapa</span>
-          </button>
-          <button
-            className="flex flex-col items-center gap-1 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-            onClick={() => alert('Tente de novo! Uma bola não é um mapa 😄')}
-          >
-            <span className="text-3xl">⚽</span>
-            <span className="text-white/40 text-xs">Bola</span>
-          </button>
-        </div>
+            <span
+              className="text-xs px-3 py-1.5 rounded-xl max-w-[85%]"
+              style={{
+                background: msg.role === 'user' ? '#8B5CF6' : 'rgba(255,255,255,0.08)',
+                color: 'rgba(240,244,248,0.9)',
+              }}
+            >
+              {msg.text}
+            </span>
+          </motion.div>
+        ))}
       </motion.div>
     ),
   },
   {
-    mascotExpression: 'encouraging',
-    title: 'Pronto para comecar?',
-    subtitle: 'Cada sessao te deixa mais perto da proxima conquista',
+    mascotExpression: 'celebrating',
+    title: 'Pronto para começar? 🚀',
+    subtitle: 'Sua primeira conquista está esperando por você!',
     features: [
-      { icon: Trophy, text: 'Ganhe XP a cada resposta e suba de nivel', color: '#F59E0B' },
-      { icon: BarChart3, text: 'Acompanhe seu progresso e mantenha o streak', color: '#3B82F6' },
+      { icon: Trophy, text: 'Ganhe XP a cada resposta e suba de nível', color: '#F5A623' },
+      { icon: BarChart3, text: 'Mantenha sua sequência de estudo', color: '#3B82F6' },
       { icon: Sparkles, text: 'Desbloqueie badges e mostre suas conquistas', color: '#8B5CF6' },
     ],
     customContent: (
-      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }} className="mt-4">
-        <span className="text-green-400 font-bold">Trilha de estudo sugerida: Geografia → Matemática → Inglês</span>
-        <div className="flex gap-2 mt-2">
-          <span className="bg-purple-500/20 px-3 py-1 rounded-full text-purple-300">Geografia</span>
-          <span className="bg-blue-500/20 px-3 py-1 rounded-full text-blue-300">Matemática</span>
-          <span className="bg-pink-500/20 px-3 py-1 rounded-full text-pink-300">Inglês</span>
-        </div>
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
+        className="mt-4 flex flex-col items-center gap-2"
+      >
+        <div className="text-5xl">🌟</div>
+        <p className="text-sm font-bold" style={{ color: '#F5A623' }}>Badge "Primeiro Passo" te espera!</p>
+        <p className="text-xs" style={{ color: 'rgba(240,244,248,0.4)' }}>Desbloqueado ao iniciar sua primeira sessão</p>
       </motion.div>
     ),
   },
