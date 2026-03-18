@@ -30,11 +30,11 @@ interface HomeworkSetupProps {
 }
 
 const defaultLabels = {
-  title: 'Qual e o seu dever?',
-  subtitle: 'Cole a questao, descreva ou tire uma foto!',
-  placeholder: 'Ex: Quais foram as causas da Revolucao Francesa?',
-  button: 'Comecar com o Tutor IA',
-  selectSubject: 'Escolha a materia',
+  title: 'Qual é o desafio de hoje?',
+  subtitle: 'Me conta o que está estudando — eu te ajudo a entender de verdade 🎯',
+  placeholder: 'Ex: Quais foram as causas da Revolução Francesa?',
+  button: 'Começar com o Edu ✨',
+  selectSubject: 'Qual matéria?',
   selectAge: 'Qual sua idade?',
   orUploadPhoto: 'Ou tire uma foto do dever:',
 };
@@ -60,9 +60,9 @@ export function HomeworkSetup({ onStart, labels }: HomeworkSetupProps) {
       {/* Header with mascot */}
       <motion.div variants={fadeInUp('high')} className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <MascotOwl expression="waving" size="lg" />
+          <MascotOwl expression="waving" size="lg" animated />
         </div>
-        <h1 className="text-[var(--eq-text)] text-xl sm:text-2xl font-bold mb-2">
+        <h1 className="text-[var(--eq-text)] text-2xl sm:text-3xl font-extrabold mb-2">
           {l.title}
         </h1>
         <p className="text-[var(--eq-text-secondary)] text-sm">{l.subtitle}</p>
