@@ -12,7 +12,8 @@ import { SessionsChart } from '@/components/parent/charts/SessionsChart';
 import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut, Home, Shield } from 'lucide-react';
+import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
 import type { Profile, UserStats, Badge } from '@/lib/auth/types';
@@ -87,23 +88,41 @@ export default function ParentDashboard() {
       <header className="glass border-b border-white/5 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-              <Sparkles className="text-white" size={16} />
-            </div>
-            <span className="text-white font-bold text-lg">Studdo</span>
-            <span className="text-[var(--eq-text-secondary)] text-sm ml-2">Dashboard</span>
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                <Sparkles className="text-white" size={16} />
+              </div>
+              <span className="text-white font-bold text-lg">Studdo</span>
+            </Link>
+            <span className="text-[var(--eq-text-secondary)] text-sm ml-1">/ Dashboard</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Users size={16} className="text-[var(--eq-text-secondary)]" />
-              <span className="text-[var(--eq-text-secondary)] text-sm">{profile?.name}</span>
+          <div className="flex items-center gap-1">
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <Home size={14} />
+              <span className="hidden sm:inline">Início</span>
+            </Link>
+            {profile?.email === 'carlostrindade@me.com' && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors"
+              >
+                <Shield size={14} />
+                <span className="hidden sm:inline">Admin</span>
+              </Link>
+            )}
+            <div className="flex items-center gap-2 px-3 py-1.5">
+              <Users size={14} className="text-[var(--eq-text-secondary)]" />
+              <span className="text-[var(--eq-text-secondary)] text-sm hidden md:inline">{profile?.name}</span>
             </div>
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-colors"
             >
               <LogOut size={14} />
-              Sair
+              <span className="hidden sm:inline">Sair</span>
             </button>
           </div>
         </div>
@@ -223,14 +242,23 @@ export default function ParentDashboard() {
         )}
 
         {kids.length === 0 && (
-          <div className="glass rounded-[var(--eq-radius)] p-8 text-center">
-            <div className="text-5xl mb-3">📚</div>
-            <h3 className="text-[var(--eq-text)] font-semibold mb-2">Nenhum filho vinculado ainda</h3>
-            <p className="text-[var(--eq-text-secondary)] text-sm">
-              Use o codigo de convite acima para que seu filho crie a conta dele.
-              <br />
-              As estatisticas aparecerao aqui apos o vinculo.
+          <div className="glass rounded-[var(--eq-radius)] p-10 text-center max-w-md mx-auto mt-8">
+            <div className="text-5xl mb-4">👋</div>
+            <h3 className="text-[var(--eq-text)] font-semibold text-lg mb-2">Bem-vindo ao Studdo!</h3>
+            <p className="text-[var(--eq-text-secondary)] text-sm mb-6">
+              Para começar, seu filho precisa criar uma conta usando o código de convite acima.
+              As sessões e estatísticas aparecerão aqui após o vínculo.
             </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/tutorial"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-white/10"
+                style={{ border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(240,244,248,0.7)' }}
+              >
+                <BookOpen size={15} />
+                Ver como funciona
+              </Link>
+            </div>
           </div>
         )}
       </main>
