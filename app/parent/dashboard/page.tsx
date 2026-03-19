@@ -12,14 +12,19 @@ import { SessionsChart } from '@/components/parent/charts/SessionsChart';
 import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3 } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
 import type { Profile, UserStats, Badge } from '@/lib/auth/types';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function ParentDashboard() {
-  const { profile, loading: authLoading } = useAuth();
+  const { profile, loading: authLoading, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = '/login';
+  };
   const [kids, setKids] = useState<Profile[]>([]);
   const [selectedKid, setSelectedKid] = useState<Profile | null>(null);
   const [kidStats, setKidStats] = useState<UserStats | null>(null);
@@ -88,9 +93,18 @@ export default function ParentDashboard() {
             <span className="text-white font-bold text-lg">Studdo</span>
             <span className="text-[var(--eq-text-secondary)] text-sm ml-2">Dashboard</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Users size={16} className="text-[var(--eq-text-secondary)]" />
-            <span className="text-[var(--eq-text-secondary)] text-sm">{profile?.name}</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Users size={16} className="text-[var(--eq-text-secondary)]" />
+              <span className="text-[var(--eq-text-secondary)] text-sm">{profile?.name}</span>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <LogOut size={14} />
+              Sair
+            </button>
           </div>
         </div>
       </header>
@@ -114,6 +128,11 @@ export default function ParentDashboard() {
         </div>
       )}
       <main className="max-w-6xl mx-auto px-4 py-6">
+        {inviteCode && (
+          <div className="mb-6">
+            <InviteCodeCard code={inviteCode} />
+          </div>
+        )}
         {selectedKid && (
           <motion.div
             className="space-y-6"
@@ -208,7 +227,7 @@ export default function ParentDashboard() {
             <div className="text-5xl mb-3">📚</div>
             <h3 className="text-[var(--eq-text)] font-semibold mb-2">Nenhum filho vinculado ainda</h3>
             <p className="text-[var(--eq-text-secondary)] text-sm">
-              Use o codigo de convite acima para vincular o perfil do seu filho.
+              Use o codigo de convite acima para que seu filho crie a conta dele.
               <br />
               As estatisticas aparecerao aqui apos o vinculo.
             </p>
