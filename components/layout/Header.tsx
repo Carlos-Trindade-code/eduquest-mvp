@@ -38,7 +38,7 @@ export function Header({
   const handleSignOut = async () => {
     setMenuOpen(false);
     await signOut();
-    router.push('/login');
+    window.location.href = '/login';
   };
 
   const navigate = (path: string) => {
