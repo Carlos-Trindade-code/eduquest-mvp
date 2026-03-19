@@ -47,6 +47,13 @@ export default function ParentDashboard() {
     loadKids();
   }, [profile]);
 
+  // Auto-refresh every 10s while no kids linked
+  useEffect(() => {
+    if (!profile || kids.length > 0) return;
+    const interval = setInterval(loadKids, 10000);
+    return () => clearInterval(interval);
+  }, [profile, kids.length]);
+
   useEffect(() => {
     if (!selectedKid) return;
     loadKidData(selectedKid.id);
@@ -147,9 +154,9 @@ export default function ParentDashboard() {
         </div>
       )}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        {inviteCode && (
+        {inviteCode && kids.length > 0 && (
           <div className="mb-6">
-            <InviteCodeCard code={inviteCode} />
+            <InviteCodeCard code={inviteCode} hasKids />
           </div>
         )}
         {selectedKid && (
@@ -241,24 +248,33 @@ export default function ParentDashboard() {
           </motion.div>
         )}
 
-        {kids.length === 0 && (
-          <div className="glass rounded-[var(--eq-radius)] p-10 text-center max-w-md mx-auto mt-8">
-            <div className="text-5xl mb-4">👋</div>
-            <h3 className="text-[var(--eq-text)] font-semibold text-lg mb-2">Bem-vindo ao Studdo!</h3>
-            <p className="text-[var(--eq-text-secondary)] text-sm mb-6">
-              Para começar, seu filho precisa criar uma conta usando o código de convite acima.
-              As sessões e estatísticas aparecerão aqui após o vínculo.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/tutorial"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-white/10"
-                style={{ border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(240,244,248,0.7)' }}
-              >
-                <BookOpen size={15} />
-                Ver como funciona
-              </Link>
+        {kids.length === 0 && inviteCode && (
+          <div className="max-w-lg mx-auto mt-4 space-y-4">
+            {/* Step 1: invite code with share */}
+            <InviteCodeCard code={inviteCode} />
+
+            {/* Steps 2 & 3 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl p-4" style={{ background: 'rgba(0,180,216,0.06)', border: '1px solid rgba(0,180,216,0.12)' }}>
+                <div className="text-2xl mb-2">📱</div>
+                <p className="text-white text-sm font-semibold mb-1">Passo 2</p>
+                <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
+                  Seu filho acessa <strong className="text-white/70">studdo.com.br</strong>, cria a conta e digita o código
+                </p>
+              </div>
+              <div className="rounded-2xl p-4" style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.12)' }}>
+                <div className="text-2xl mb-2">🎉</div>
+                <p className="text-white text-sm font-semibold mb-1">Passo 3</p>
+                <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
+                  Ele aparece aqui automaticamente e você acompanha tudo em tempo real
+                </p>
+              </div>
             </div>
+
+            {/* Auto-refresh hint */}
+            <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
+              Esta página atualiza automaticamente quando seu filho criar a conta
+            </p>
           </div>
         )}
       </main>

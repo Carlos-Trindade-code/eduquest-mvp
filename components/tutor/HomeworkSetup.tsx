@@ -68,15 +68,6 @@ export function HomeworkSetup({ onStart, labels }: HomeworkSetupProps) {
         <p className="text-[var(--eq-text-secondary)] text-sm">{l.subtitle}</p>
       </motion.div>
 
-      {/* Age Group */}
-      <motion.div variants={fadeInUp('medium')}>
-        <AgeGroupSelector
-          selected={ageGroup}
-          onSelect={setAgeGroup}
-          label={l.selectAge}
-        />
-      </motion.div>
-
       {/* Subject */}
       <motion.div variants={fadeInUp('medium')}>
         <SubjectSelector
@@ -86,21 +77,30 @@ export function HomeworkSetup({ onStart, labels }: HomeworkSetupProps) {
         />
       </motion.div>
 
-      {/* Photo Upload */}
-      <motion.div variants={fadeInUp('medium')} className="mb-5">
-        <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">
-          {l.orUploadPhoto}
-        </p>
-        <PhotoUpload onTextExtracted={handlePhotoExtracted} />
-      </motion.div>
-
-      {/* Text Area */}
+      {/* Text Area — primary input */}
       <motion.div variants={fadeInUp('medium')}>
         <textarea
           value={homework}
           onChange={(e) => setHomework(e.target.value)}
           placeholder={l.placeholder}
           className="w-full bg-[var(--eq-surface)] text-[var(--eq-text)] placeholder:text-[var(--eq-text-muted)] rounded-[var(--eq-radius-sm)] p-4 min-h-28 sm:min-h-36 resize-none border border-[var(--eq-surface-border)] focus:outline-none focus:ring-2 focus:ring-[var(--eq-primary)]/40 focus:border-[var(--eq-primary)] text-sm transition-all backdrop-blur-md"
+        />
+      </motion.div>
+
+      {/* Photo Upload — secondary option */}
+      <motion.div variants={fadeInUp('medium')} className="mb-1">
+        <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">
+          {l.orUploadPhoto}
+        </p>
+        <PhotoUpload onTextExtracted={handlePhotoExtracted} />
+      </motion.div>
+
+      {/* Age Group — last, least likely to change per session */}
+      <motion.div variants={fadeInUp('medium')}>
+        <AgeGroupSelector
+          selected={ageGroup}
+          onSelect={setAgeGroup}
+          label={l.selectAge}
         />
       </motion.div>
 
