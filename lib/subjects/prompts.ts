@@ -239,9 +239,11 @@ export function buildSystemPrompt(ctx: PromptContext): string {
     );
   }
 
-  // Current homework
+  // Current homework / proactive mode
   if (ctx.homework) {
-    parts.push(`\nDEVER DE CASA ATUAL: "${ctx.homework}"`);
+    parts.push(`\nDEVER DE CASA / TEMA: "${ctx.homework}"`);
+  } else {
+    parts.push(`\nMODO PROATIVO: O aluno ainda não escolheu um tema específico. Quando ele indicar o tema na primeira mensagem, comece imediatamente a explorar com perguntas socráticas. Não confirme nem repita — já faça a primeira pergunta de exploração.`);
   }
 
   // Session limits
