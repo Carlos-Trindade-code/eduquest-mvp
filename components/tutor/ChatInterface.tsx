@@ -1,3 +1,4 @@
+// components/tutor/ChatInterface.tsx
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -9,42 +10,32 @@ import { MessageInput } from './MessageInput';
 import { SessionSummary } from './SessionSummary';
 import { AgeThemeProvider } from '@/components/providers/AgeThemeProvider';
 import { XPBar } from '@/components/gamification/XPBar';
-import { BadgeUnlockModal } from '@/components/gamification/BadgeUnlockModal';
+import { BadgeToast } from '@/components/gamification/BadgeToast';
+import { BuildProgress } from '@/components/gamification/BuildProgress';
 import { useChatSession } from '@/hooks/useChatSession';
 import { useAuth } from '@/hooks/useAuth';
 import { getSubjectById } from '@/lib/subjects/config';
+import { getSuggestions } from '@/lib/subjects/suggestions';
+import { getBuildForSubject, TOTAL_PIECES } from '@/lib/gamification/builds';
 import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
 import { getUserStats, addXP, checkAndAwardBadges } from '@/lib/supabase/queries';
 import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
-interface ChatInterfaceProps {
-  labels?: {
-    changeHomework: string;
-    typeAnswer: string;
-    greeting: string;
-  };
-}
-
-const defaultLabels = {
-  changeHomework: 'trocar',
-  typeAnswer: 'Digite sua resposta...',
-  greeting:
-    'Oi! Vamos resolver esse dever juntos!\n\nLi sua tarefa: "{homework}"\n\nPor onde voce acha que devemos comecar?',
-};
-
-export function ChatInterface({ labels }: ChatInterfaceProps) {
+export function ChatInterface() {
   const [homework, setHomework] = useState('');
-  const [subject, setSubject] = useState('other');
+  const [subject, setSubject] = useState('math');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
-  const [behavioralProfile, setBehavioralProfile] = useState<BehavioralProfile>('default');
+  const [behavioralProfile] = useState<BehavioralProfile>('default');
   const [homeworkSet, setHomeworkSet] = useState(false);
   const [totalXp, setTotalXp] = useState(0);
   const [xpGained, setXpGained] = useState<number | null>(null);
   const [showSummary, setShowSummary] = useState(false);
   const [sessionMessageCount, setSessionMessageCount] = useState(0);
   const [newBadgeIds, setNewBadgeIds] = useState<string[]>([]);
-  const l = { ...defaultLabels, ...labels };
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [sessionPieces, setSessionPieces] = useState(0);
+  const [milestoneMessage, setMilestoneMessage] = useState<string | null>(null);
   const { profile } = useAuth();
 
   // Load XP from user_stats table
@@ -60,23 +51,59 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
   const handleCloseBadgeModal = useCallback(() => setNewBadgeIds([]), []);
 
   const handleXPEarned = useCallback(async (xp: number) => {
-    setTotalXp(prev => prev + xp);
+    setTotalXp((prev) => prev + xp);
     setXpGained(xp);
     setTimeout(() => setXpGained(null), 2000);
 
-    // Persist XP to user_stats table
+    // Increment build pieces
+    setSessionPieces((prev) => {
+      const next = Math.min(prev + 1, TOTAL_PIECES);
+      // Show milestone message if defined for this piece count
+      setSubject((currentSubject) => {
+        const build = getBuildForSubject(currentSubject);
+        const msg = build.milestoneMessages[next] ?? null;
+        if (msg) {
+          setMilestoneMessage(msg);
+          setTimeout(() => setMilestoneMessage(null), 3000);
+        }
+        return currentSubject; // no change to subject
+      });
+      return next;
+    });
+
+    // Persist XP
     if (profile?.id) {
       const supabase = createClient();
       await addXP(supabase, profile.id, xp);
-
-      // Verifica e concede novos badges automaticamente
       const earnedBadgeIds = await checkAndAwardBadges(supabase, profile.id);
       if (earnedBadgeIds.length > 0) setNewBadgeIds(earnedBadgeIds);
     }
   }, [profile]);
 
-  const { messages, input, loading, sessionXp, setInput, sendMessage, initSession, resetSession, finishSession } =
-    useChatSession(homework, subject, ageGroup, behavioralProfile, handleXPEarned, profile?.id);
+  const {
+    messages,
+    input,
+    loading,
+    sessionXp,
+    setInput,
+    sendMessage,
+    sendMessageText,
+    initSession,
+    resetSession,
+    finishSession,
+  } = useChatSession(homework, subject, ageGroup, behavioralProfile, handleXPEarned, profile?.id);
+
+  // Auto-finish when build is complete
+  useEffect(() => {
+    if (sessionPieces >= TOTAL_PIECES && homeworkSet && !showSummary) {
+      const timer = setTimeout(async () => {
+        await finishSession();
+        setSessionMessageCount(messages.filter((m) => m.role === 'user').length);
+        setShowSummary(true);
+      }, 3500); // wait for milestone animation
+      return () => clearTimeout(timer);
+    }
+  }, [sessionPieces, homeworkSet, showSummary, finishSession, messages]);
 
   const handleStart = (config: {
     homework: string;
@@ -84,28 +111,59 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
   }) => {
+    const subjectInfo = getSubjectById(config.subject);
+    const subjectName = subjectInfo?.name ?? 'esta matéria';
+
     setHomework(config.homework);
     setSubject(config.subject);
     setAgeGroup(config.ageGroup);
-    setBehavioralProfile(config.behavioralProfile);
     setHomeworkSet(true);
-    const greeting = l.greeting.replace('{homework}', config.homework);
-    initSession(config.homework, greeting);
+    setSessionPieces(0);
+    setSuggestions([]);
+
+    if (config.homework) {
+      // Photo was uploaded — start with photo content
+      initSession(
+        config.homework,
+        `Oi! 👋 Li o que está na foto. Vamos explorar esse conteúdo?\n\nPor onde você quer começar?`,
+      );
+    } else {
+      // No photo — proactive: show topic suggestions
+      const tips = getSuggestions(config.subject, config.ageGroup);
+      setSuggestions(tips);
+      initSession(
+        '',
+        `Oi! 👋 Sobre **${subjectName}**, o que quer estudar hoje?\n\nAqui vão algumas ideias:`,
+      );
+    }
   };
 
   const handleReset = () => {
     setHomeworkSet(false);
     setHomework('');
-    setSubject('other');
+    setSubject('math');
     setShowSummary(false);
     setSessionMessageCount(0);
+    setSessionPieces(0);
+    setSuggestions([]);
+    setMilestoneMessage(null);
     resetSession();
   };
 
   const handleFinishSession = async () => {
     await finishSession();
-    setSessionMessageCount(messages.filter(m => m.role === 'user').length);
+    setSessionMessageCount(messages.filter((m) => m.role === 'user').length);
     setShowSummary(true);
+  };
+
+  const handleSuggestionClick = async (suggestion: string) => {
+    setSuggestions([]);
+    await sendMessageText(suggestion);
+  };
+
+  const handleSend = () => {
+    setSuggestions([]);
+    sendMessage();
   };
 
   if (!homeworkSet) {
@@ -130,7 +188,7 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
       ) : (
         <>
           {/* XP Bar */}
-          <div className="mb-3 relative">
+          <div className="mb-2 relative">
             <XPBar totalXp={totalXp} compact />
             <AnimatePresence>
               {xpGained && (
@@ -147,7 +205,14 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
             </AnimatePresence>
           </div>
 
-          {/* Homework banner */}
+          {/* Build Progress */}
+          <BuildProgress
+            subject={subject}
+            pieces={sessionPieces}
+            milestoneMessage={milestoneMessage}
+          />
+
+          {/* Subject banner */}
           <motion.div
             className="flex items-center gap-3 glass rounded-[var(--eq-radius-sm)] p-3 mb-3 shrink-0"
             initial={{ opacity: 0, y: -10 }}
@@ -159,26 +224,53 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
               <BookOpen size={16} className="text-[var(--eq-accent)] shrink-0" />
             )}
             <p className="text-[var(--eq-text-secondary)] text-xs flex-1 line-clamp-2">
-              {homework}
+              {subjectInfo?.name ?? subject}
             </p>
             <button
               onClick={handleReset}
               className="text-[var(--eq-text-muted)] hover:text-[var(--eq-text)] text-xs shrink-0 transition-colors flex items-center gap-1"
             >
               <RotateCcw size={12} />
-              {l.changeHomework}
+              trocar
             </button>
           </motion.div>
 
           <MessageList messages={messages} loading={loading} />
 
+          {/* Topic suggestion chips — cleared on first send */}
+          <AnimatePresence>
+            {suggestions.length > 0 && !loading && (
+              <motion.div
+                className="flex flex-wrap gap-2 my-2"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+              >
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleSuggestionClick(s)}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 active:scale-95"
+                    style={{
+                      background: 'rgba(139,92,246,0.12)',
+                      border: '1px solid rgba(139,92,246,0.3)',
+                      color: 'rgba(240,244,248,0.8)',
+                    }}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="flex flex-col gap-2 mt-2">
             <MessageInput
               value={input}
               onChange={setInput}
-              onSend={sendMessage}
+              onSend={handleSend}
               disabled={loading}
-              placeholder={l.typeAnswer}
+              placeholder="Digite sua resposta..."
             />
             {messages.length > 2 && (
               <button
@@ -191,11 +283,9 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
           </div>
         </>
       )}
+
       {newBadgeIds.length > 0 && (
-        <BadgeUnlockModal
-          badgeIds={newBadgeIds}
-          onClose={handleCloseBadgeModal}
-        />
+        <BadgeToast badgeIds={newBadgeIds} onClose={handleCloseBadgeModal} />
       )}
     </AgeThemeProvider>
   );
