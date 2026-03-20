@@ -12,6 +12,7 @@ interface UseChatSessionReturn {
   sessionXp: number;
   setInput: (value: string) => void;
   sendMessage: () => Promise<void>;
+  sendMessageText: (text: string) => Promise<void>;
   initSession: (homework: string, greeting: string) => void;
   resetSession: () => void;
   finishSession: () => Promise<void>;
@@ -97,7 +98,7 @@ export function useChatSession(
         }),
       });
       const data = await res.json();
-      const assistantMsg = data.message;
+      const assistantMsg = data.message || data.error || 'Ops! Tenta de novo!';
       setMessages((prev) => [...prev, { role: 'assistant', content: assistantMsg }]);
 
       // Salva resposta do assistente
@@ -119,6 +120,53 @@ export function useChatSession(
     }
   }, [input, loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
 
+  const sendMessageText = useCallback(async (text: string) => {
+    if (!text.trim() || loading) return;
+
+    const userMessage: ChatMessage = { role: 'user', content: text };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setLoading(true);
+
+    if (sessionIdRef.current) {
+      const supabase = createClient();
+      saveMessage(supabase, sessionIdRef.current, 'user', text).catch(() => {});
+    }
+
+    try {
+      const res = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages,
+          homework,
+          subject,
+          ageGroup,
+          behavioralProfile,
+        }),
+      });
+      const data = await res.json();
+      const assistantMsg = data.message || data.error || 'Ops! Tenta de novo!';
+      setMessages((prev) => [...prev, { role: 'assistant', content: assistantMsg }]);
+
+      if (sessionIdRef.current) {
+        const supabase = createClient();
+        saveMessage(supabase, sessionIdRef.current, 'assistant', assistantMsg).catch(() => {});
+      }
+
+      const xp = XP_REWARDS.MESSAGE_SENT;
+      setSessionXp((prev) => prev + xp);
+      onXPEarned?.(xp);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: 'Ops! Tenta de novo!' },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
+
   return {
     messages,
     input,
@@ -126,6 +174,7 @@ export function useChatSession(
     sessionXp,
     setInput,
     sendMessage,
+    sendMessageText,
     initSession,
     resetSession,
     finishSession,
