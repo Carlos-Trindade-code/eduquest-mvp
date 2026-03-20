@@ -13,7 +13,7 @@ interface UseChatSessionReturn {
   setInput: (value: string) => void;
   sendMessage: () => Promise<void>;
   sendMessageText: (text: string) => Promise<void>;
-  initSession: (homework: string, greeting: string) => void;
+  initSession: (homework: string, greeting: string, subjectOverride?: string) => void;
   resetSession: () => void;
   finishSession: () => Promise<void>;
 }
@@ -33,7 +33,7 @@ export function useChatSession(
   const sessionIdRef = useRef<string | null>(null);
   const sessionStartRef = useRef<Date | null>(null);
 
-  const initSession = useCallback(async (hw: string, greeting: string) => {
+  const initSession = useCallback(async (hw: string, greeting: string, subjectOverride?: string) => {
     setMessages([{ role: 'assistant', content: greeting }]);
     setSessionXp(0);
     sessionStartRef.current = new Date();
@@ -41,7 +41,7 @@ export function useChatSession(
     if (userId) {
       try {
         const supabase = createClient();
-        const { data } = await createSession(supabase, userId, subject, hw);
+        const { data } = await createSession(supabase, userId, subjectOverride ?? subject, hw);
         if (data?.id) sessionIdRef.current = data.id;
       } catch {
         // sessão não crítica — continua sem persistir

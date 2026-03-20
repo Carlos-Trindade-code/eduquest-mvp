@@ -110,6 +110,7 @@ export function ChatInterface() {
       initSession(
         config.homework,
         `Oi! 👋 Li o que está na foto. Vamos explorar esse conteúdo?\n\nPor onde você quer começar?`,
+        config.subject,
       );
     } else {
       // No photo — proactive: show topic suggestions
@@ -118,6 +119,7 @@ export function ChatInterface() {
       initSession(
         '',
         `Oi! 👋 Sobre **${subjectName}**, o que quer estudar hoje?\n\nAqui vão algumas ideias:`,
+        config.subject,
       );
     }
   };
