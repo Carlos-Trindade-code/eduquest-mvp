@@ -1,3 +1,4 @@
+// components/tutor/HomeworkSetup.tsx
 'use client';
 
 import { useState } from 'react';
@@ -18,37 +19,13 @@ interface HomeworkSetupProps {
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
   }) => void;
-  labels?: {
-    title: string;
-    subtitle: string;
-    placeholder: string;
-    button: string;
-    selectSubject: string;
-    selectAge: string;
-    orUploadPhoto: string;
-  };
 }
 
-const defaultLabels = {
-  title: 'Qual é o desafio de hoje?',
-  subtitle: 'Me conta o que está estudando — eu te ajudo a entender de verdade 🎯',
-  placeholder: 'Ex: Quais foram as causas da Revolução Francesa?',
-  button: 'Começar com o Edu ✨',
-  selectSubject: 'Qual matéria?',
-  selectAge: 'Qual sua idade?',
-  orUploadPhoto: 'Ou tire uma foto do dever:',
-};
-
-export function HomeworkSetup({ onStart, labels }: HomeworkSetupProps) {
-  const [homework, setHomework] = useState('');
-  const [subject, setSubject] = useState('other');
+export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
+  const [subject, setSubject] = useState('math');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
+  const [photoText, setPhotoText] = useState('');
   const [behavioralProfile] = useState<BehavioralProfile>('default');
-  const l = { ...defaultLabels, ...labels };
-
-  const handlePhotoExtracted = (text: string) => {
-    setHomework(text);
-  };
 
   return (
     <motion.div
@@ -57,65 +34,53 @@ export function HomeworkSetup({ onStart, labels }: HomeworkSetupProps) {
       initial="hidden"
       animate="visible"
     >
-      {/* Header with mascot */}
+      {/* Header */}
       <motion.div variants={fadeInUp('high')} className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <MascotOwl expression="waving" size="lg" animated />
         </div>
         <h1 className="text-[var(--eq-text)] text-2xl sm:text-3xl font-extrabold mb-2">
-          {l.title}
+          O que vamos estudar?
         </h1>
-        <p className="text-[var(--eq-text-secondary)] text-sm">{l.subtitle}</p>
+        <p className="text-[var(--eq-text-secondary)] text-sm">
+          Escolha a matéria e sua idade — o Edu faz o resto ✨
+        </p>
       </motion.div>
 
       {/* Subject */}
       <motion.div variants={fadeInUp('medium')}>
-        <SubjectSelector
-          selected={subject}
-          onSelect={setSubject}
-          label={l.selectSubject}
-        />
+        <SubjectSelector selected={subject} onSelect={setSubject} label="Qual matéria?" />
       </motion.div>
 
-      {/* Text Area — primary input */}
+      {/* Age Group */}
       <motion.div variants={fadeInUp('medium')}>
-        <textarea
-          value={homework}
-          onChange={(e) => setHomework(e.target.value)}
-          placeholder={l.placeholder}
-          className="w-full bg-[var(--eq-surface)] text-[var(--eq-text)] placeholder:text-[var(--eq-text-muted)] rounded-[var(--eq-radius-sm)] p-4 min-h-28 sm:min-h-36 resize-none border border-[var(--eq-surface-border)] focus:outline-none focus:ring-2 focus:ring-[var(--eq-primary)]/40 focus:border-[var(--eq-primary)] text-sm transition-all backdrop-blur-md"
-        />
+        <AgeGroupSelector selected={ageGroup} onSelect={setAgeGroup} label="Qual sua idade?" />
       </motion.div>
 
-      {/* Photo Upload — secondary option */}
+      {/* Photo Upload — optional */}
       <motion.div variants={fadeInUp('medium')} className="mb-1">
         <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">
-          {l.orUploadPhoto}
+          Tem foto da tarefa? (opcional)
         </p>
-        <PhotoUpload onTextExtracted={handlePhotoExtracted} />
+        <PhotoUpload onTextExtracted={setPhotoText} />
+        {photoText && (
+          <p className="text-xs mt-1.5" style={{ color: 'rgba(240,244,248,0.4)' }}>
+            ✓ Foto lida — o Edu vai perguntar sobre ela
+          </p>
+        )}
       </motion.div>
 
-      {/* Age Group — last, least likely to change per session */}
-      <motion.div variants={fadeInUp('medium')}>
-        <AgeGroupSelector
-          selected={ageGroup}
-          onSelect={setAgeGroup}
-          label={l.selectAge}
-        />
-      </motion.div>
-
-      {/* Submit */}
+      {/* Submit — always enabled (no homework text required) */}
       <motion.div variants={fadeInUp('medium')}>
         <Button
-          onClick={() => onStart({ homework, subject, ageGroup, behavioralProfile })}
-          disabled={!homework.trim()}
+          onClick={() => onStart({ homework: photoText, subject, ageGroup, behavioralProfile })}
           variant="primary"
           size="lg"
           rounded="lg"
           className="w-full mt-4 gap-2"
         >
           <Sparkles className="w-4 h-4" />
-          {l.button}
+          Começar com o Edu ✨
         </Button>
       </motion.div>
     </motion.div>
