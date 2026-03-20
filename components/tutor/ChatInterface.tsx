@@ -57,6 +57,8 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
     }
   }, [profile]);
 
+  const handleCloseBadgeModal = useCallback(() => setNewBadgeIds([]), []);
+
   const handleXPEarned = useCallback(async (xp: number) => {
     setTotalXp(prev => prev + xp);
     setXpGained(xp);
@@ -192,7 +194,7 @@ export function ChatInterface({ labels }: ChatInterfaceProps) {
       {newBadgeIds.length > 0 && (
         <BadgeUnlockModal
           badgeIds={newBadgeIds}
-          onClose={() => setNewBadgeIds([])}
+          onClose={handleCloseBadgeModal}
         />
       )}
     </AgeThemeProvider>
