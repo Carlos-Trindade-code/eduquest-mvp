@@ -1,7 +1,7 @@
 // components/tutor/ChatInterface.tsx
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, RotateCcw, Sparkles } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
@@ -58,16 +58,12 @@ export function ChatInterface() {
     // Increment build pieces
     setSessionPieces((prev) => {
       const next = Math.min(prev + 1, TOTAL_PIECES);
-      // Show milestone message if defined for this piece count
-      setSubject((currentSubject) => {
-        const build = getBuildForSubject(currentSubject);
-        const msg = build.milestoneMessages[next] ?? null;
-        if (msg) {
-          setMilestoneMessage(msg);
-          setTimeout(() => setMilestoneMessage(null), 3000);
-        }
-        return currentSubject; // no change to subject
-      });
+      const build = getBuildForSubject(subject);
+      const msg = build.milestoneMessages[next] ?? null;
+      if (msg) {
+        setMilestoneMessage(msg);
+        setTimeout(() => setMilestoneMessage(null), 3000);
+      }
       return next;
     });
 
@@ -78,7 +74,7 @@ export function ChatInterface() {
       const earnedBadgeIds = await checkAndAwardBadges(supabase, profile.id);
       if (earnedBadgeIds.length > 0) setNewBadgeIds(earnedBadgeIds);
     }
-  }, [profile]);
+  }, [profile, subject]);
 
   const {
     messages,
@@ -93,17 +89,22 @@ export function ChatInterface() {
     finishSession,
   } = useChatSession(homework, subject, ageGroup, behavioralProfile, handleXPEarned, profile?.id);
 
+  const finishSessionRef = useRef(finishSession);
+  finishSessionRef.current = finishSession;
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
   // Auto-finish when build is complete
   useEffect(() => {
     if (sessionPieces >= TOTAL_PIECES && homeworkSet && !showSummary) {
       const timer = setTimeout(async () => {
-        await finishSession();
-        setSessionMessageCount(messages.filter((m) => m.role === 'user').length);
+        await finishSessionRef.current();
+        setSessionMessageCount(messagesRef.current.filter((m) => m.role === 'user').length);
         setShowSummary(true);
       }, 3500); // wait for milestone animation
       return () => clearTimeout(timer);
     }
-  }, [sessionPieces, homeworkSet, showSummary, finishSession, messages]);
+  }, [sessionPieces, homeworkSet, showSummary]); // finishSession and messages via refs
 
   const handleStart = (config: {
     homework: string;
