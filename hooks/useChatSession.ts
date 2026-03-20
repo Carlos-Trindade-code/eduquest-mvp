@@ -98,18 +98,20 @@ export function useChatSession(
         }),
       });
       const data = await res.json();
-      const assistantMsg = data.message || data.error || 'Ops! Tenta de novo!';
-      setMessages((prev) => [...prev, { role: 'assistant', content: assistantMsg }]);
 
-      // Salva resposta do assistente
-      if (sessionIdRef.current) {
-        const supabase = createClient();
-        saveMessage(supabase, sessionIdRef.current, 'assistant', assistantMsg).catch(() => {});
+      if (res.ok && data.message) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
+        if (sessionIdRef.current) {
+          const supabase = createClient();
+          saveMessage(supabase, sessionIdRef.current, 'assistant', data.message).catch(() => {});
+        }
+        const xp = XP_REWARDS.MESSAGE_SENT;
+        setSessionXp((prev) => prev + xp);
+        onXPEarned?.(xp);
+      } else {
+        const errMsg = data.error || 'Ops! Tenta de novo!';
+        setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
       }
-
-      const xp = XP_REWARDS.MESSAGE_SENT;
-      setSessionXp((prev) => prev + xp);
-      onXPEarned?.(xp);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -146,17 +148,20 @@ export function useChatSession(
         }),
       });
       const data = await res.json();
-      const assistantMsg = data.message || data.error || 'Ops! Tenta de novo!';
-      setMessages((prev) => [...prev, { role: 'assistant', content: assistantMsg }]);
 
-      if (sessionIdRef.current) {
-        const supabase = createClient();
-        saveMessage(supabase, sessionIdRef.current, 'assistant', assistantMsg).catch(() => {});
+      if (res.ok && data.message) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
+        if (sessionIdRef.current) {
+          const supabase = createClient();
+          saveMessage(supabase, sessionIdRef.current, 'assistant', data.message).catch(() => {});
+        }
+        const xp = XP_REWARDS.MESSAGE_SENT;
+        setSessionXp((prev) => prev + xp);
+        onXPEarned?.(xp);
+      } else {
+        const errMsg = data.error || 'Ops! Tenta de novo!';
+        setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
       }
-
-      const xp = XP_REWARDS.MESSAGE_SENT;
-      setSessionXp((prev) => prev + xp);
-      onXPEarned?.(xp);
     } catch {
       setMessages((prev) => [
         ...prev,

@@ -256,9 +256,13 @@ export function ChatInterface() {
               disabled={loading}
               placeholder="Digite sua resposta..."
             />
-            {messages.length > 2 && (
+            {messages.length > 6 && (
               <button
-                onClick={handleFinishSession}
+                onClick={() => {
+                  if (window.confirm('Encerrar a sessão de estudo?')) {
+                    handleFinishSession();
+                  }
+                }}
                 className="text-white/20 hover:text-white/50 text-xs transition-colors text-center py-1"
               >
                 Encerrar sessão
