@@ -2,20 +2,24 @@
 import { Suspense } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginForm } from '@/components/auth/LoginForm';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 function LoginContent() {
   const { signIn, signInWithGoogle, resetPassword } = useAuth();
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/tutor';
+  const redirect = searchParams.get('redirect');
   const authError = searchParams.get('error');
 
   const handleLogin = async (email: string, password: string) => {
     const { error } = await signIn(email, password);
     if (error) throw new Error(error);
-    // Full page reload ensures middleware reads new session cookies
-    window.location.href = redirect;
+    // Read user type to route correctly
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const userType = user?.user_metadata?.user_type;
+    const destination = redirect || (userType === 'parent' ? '/parent/dashboard' : '/tutor');
+    window.location.href = destination;
   };
 
   const handleGoogleLogin = async () => {
