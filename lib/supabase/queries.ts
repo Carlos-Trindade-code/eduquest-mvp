@@ -397,11 +397,7 @@ export async function updateSuggestionStatus(
 export async function getAllProfiles(
   supabase: SupabaseClient
 ): Promise<Profile[]> {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .order('created_at', { ascending: false });
-
+  const { data, error } = await supabase.rpc('get_all_profiles');
   if (error) {
     console.error('Get all profiles error:', error);
     return [];
