@@ -397,7 +397,17 @@ export async function updateSuggestionStatus(
 export async function getAllProfiles(
   supabase: SupabaseClient
 ): Promise<Profile[]> {
-  const { data, error } = await supabase.rpc('get_all_profiles');
+  // Try RPC first (SECURITY DEFINER bypasses RLS — returns all profiles)
+  const { data: rpcData, error: rpcError } = await supabase.rpc('get_all_profiles');
+  if (!rpcError && rpcData) {
+    return rpcData as Profile[];
+  }
+  // Fallback: direct query (RLS applies — returns only own profile if RPC missing)
+  console.warn('get_all_profiles RPC unavailable, falling back to direct query:', rpcError?.message);
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
   if (error) {
     console.error('Get all profiles error:', error);
     return [];
