@@ -20,9 +20,8 @@ export function Navbar() {
   const navLinks = [
     { href: '/#features', label: 'Recursos' },
     { href: '/#ages', label: 'Idades' },
-    { href: '/#how-it-works', label: 'Como Funciona' },
-    { href: '/#demo', label: 'Demo' },
-    { href: '/exam', label: 'Gerar Prova' },
+    { href: '/quiz', label: 'Quiz' },
+    { href: '/escolas', label: 'Para Escolas' },
   ];
 
   return (

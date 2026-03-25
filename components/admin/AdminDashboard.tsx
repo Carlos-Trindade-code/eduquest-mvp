@@ -13,6 +13,7 @@ import {
   BarChart3,
   Shield,
   MessageSquare,
+  School,
 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { getAdminMetrics, getAllSuggestions, getAllProfiles, updateSuggestionStatus, getAllFeedback, getFeedbackStats } from '@/lib/supabase/queries';
@@ -36,6 +37,8 @@ export function AdminDashboard() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [feedbacks, setFeedbacks] = useState<UserFeedback[]>([]);
   const [feedbackStats, setFeedbackStats] = useState<FeedbackStats | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [schoolLeads, setSchoolLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -56,6 +59,8 @@ export function AdminDashboard() {
       setProfiles(profilesData);
       setFeedbacks(feedbacksData);
       setFeedbackStats(feedbackStatsData);
+      // Load school leads
+      supabase.rpc('get_school_leads').then(({ data }) => setSchoolLeads(data || []));
       setLoading(false);
     }
     loadData();
@@ -155,6 +160,17 @@ export function AdminDashboard() {
                 Analytics
               </span>
             </Tabs.Trigger>
+            <Tabs.Trigger value="schools" className={tabTriggerClass('schools')}>
+              <span className="flex items-center gap-2">
+                <School size={16} />
+                Escolas
+                {schoolLeads.length > 0 && (
+                  <span className="bg-purple-500 text-white text-xs rounded-full px-1.5 py-0.5 leading-none">
+                    {schoolLeads.length}
+                  </span>
+                )}
+              </span>
+            </Tabs.Trigger>
           </Tabs.List>
 
           {/* Overview tab */}
@@ -183,6 +199,55 @@ export function AdminDashboard() {
           {/* Analytics tab */}
           <Tabs.Content value="analytics">
             <AnalyticsPanel />
+          </Tabs.Content>
+
+          {/* School leads tab */}
+          <Tabs.Content value="schools">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.15)' }}>
+                  <School size={20} style={{ color: '#8B5CF6' }} />
+                </div>
+                <div>
+                  <h2 className="text-white font-bold text-lg">Leads de Escolas</h2>
+                  <p className="text-white/40 text-xs">{schoolLeads.length} contato{schoolLeads.length !== 1 ? 's' : ''}</p>
+                </div>
+              </div>
+              {schoolLeads.length === 0 ? (
+                <p className="text-white/30 text-sm text-center py-10">Nenhum contato de escola ainda</p>
+              ) : (
+                <div className="space-y-3">
+                  {schoolLeads.map((lead) => (
+                    <div key={lead.id} className="glass rounded-xl p-4" style={{ border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="text-white font-bold text-sm">{lead.school_name}</h3>
+                          <p className="text-white/50 text-xs">{lead.contact_name} · {lead.role}</p>
+                        </div>
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{
+                          background: lead.status === 'new' ? 'rgba(245,166,35,0.1)' : 'rgba(16,185,129,0.1)',
+                          color: lead.status === 'new' ? '#F5A623' : '#10B981',
+                          border: `1px solid ${lead.status === 'new' ? 'rgba(245,166,35,0.2)' : 'rgba(16,185,129,0.2)'}`,
+                        }}>
+                          {lead.status}
+                        </span>
+                      </div>
+                      <div className="flex gap-4 text-xs text-white/40">
+                        <span>{lead.email}</span>
+                        {lead.phone && <span>{lead.phone}</span>}
+                        {lead.student_count && <span>{lead.student_count} alunos</span>}
+                      </div>
+                      {lead.message && (
+                        <p className="text-white/50 text-xs mt-2 italic">&ldquo;{lead.message}&rdquo;</p>
+                      )}
+                      <p className="text-white/20 text-xs mt-2">
+                        {new Date(lead.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </Tabs.Content>
         </Tabs.Root>
       </div>
