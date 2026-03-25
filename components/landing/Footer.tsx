@@ -43,8 +43,9 @@ export function Footer() {
             </span>
           </Link>
           <div className="flex items-center gap-6 text-sm" style={{ color: 'rgba(240,244,248,0.3)' }}>
-            <a href="#features" className="hover:text-white transition-colors">Recursos</a>
-            <a href="#how-it-works" className="hover:text-white transition-colors">Como Funciona</a>
+            <Link href="/escolas" className="hover:text-white transition-colors">Para Escolas</Link>
+            <Link href="/termos" className="hover:text-white transition-colors">Termos</Link>
+            <Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
           </div>
           <p className="text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
             © {new Date().getFullYear()} Studdo. Todos os direitos reservados.
