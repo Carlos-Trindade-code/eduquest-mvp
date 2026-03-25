@@ -58,9 +58,18 @@ export const metadata: Metadata = {
     siteName: "Studdo",
     locale: "pt_BR",
     type: "website",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "Studdo — Tutor IA que ensina de verdade",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/api/og"],
     title: "Studdo — Tutor IA que ensina de verdade",
     description:
       "Plataforma de tutoria com IA que guia crianças a pensar, não apenas a copiar respostas.",
