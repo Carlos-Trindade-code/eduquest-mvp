@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, ArrowRight, Trophy, RotateCcw, Sparkles, BookOpen } from 'lucide-react';
+import { CheckCircle, XCircle, ArrowRight, Trophy, RotateCcw, Sparkles, BookOpen, Share2 } from 'lucide-react';
 import type { ExamData } from '@/components/exam/ExamGenerator';
 import { getSubjectById } from '@/lib/subjects/config';
 
@@ -151,6 +151,27 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
 
         {/* Actions */}
         <div className="flex gap-3">
+          <motion.button
+            onClick={async () => {
+              const subjectName = subjectInfo?.name || exam.subject;
+              const text = `${emoji} Acertei ${score}/${total} no quiz de ${subjectName} no Studdo! (${percentage}%)\n\nTeste voce tambem: www.studdo.com.br/quiz`;
+              if (navigator.share) {
+                try {
+                  await navigator.share({ title: `Quiz Studdo — ${subjectName}`, text, url: 'https://www.studdo.com.br/quiz' });
+                } catch { /* user cancelled */ }
+              } else {
+                await navigator.clipboard.writeText(text);
+                alert('Resultado copiado!');
+              }
+            }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all"
+            style={{ background: 'linear-gradient(135deg, #8B5CF6, #4F46E5)', color: 'white' }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Share2 size={15} />
+            Compartilhar
+          </motion.button>
           <motion.button
             onClick={onRestart}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all"
