@@ -95,22 +95,15 @@ export default function ParentDashboard() {
       <header className="glass border-b border-white/5 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
                 <Sparkles className="text-white" size={16} />
               </div>
               <span className="text-white font-bold text-lg">Studdo</span>
-            </Link>
+            </div>
             <span className="text-[var(--eq-text-secondary)] text-sm ml-1">/ Dashboard</span>
           </div>
           <div className="flex items-center gap-1">
-            <Link
-              href="/"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <Home size={14} />
-              <span className="hidden sm:inline">Início</span>
-            </Link>
             {profile?.email === 'carlostrindade@me.com' && (
               <Link
                 href="/admin"
@@ -126,10 +119,10 @@ export default function ParentDashboard() {
             </div>
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-colors border border-red-500/10"
             >
               <LogOut size={14} />
-              <span className="hidden sm:inline">Sair</span>
+              Sair
             </button>
           </div>
         </div>
@@ -248,10 +241,19 @@ export default function ParentDashboard() {
           </motion.div>
         )}
 
-        {kids.length === 0 && inviteCode && (
-          <div className="max-w-lg mx-auto mt-4 space-y-4">
+        {kids.length === 0 && (
+          <div className="max-w-lg mx-auto mt-4 space-y-6">
+            {/* Welcome message */}
+            <div className="text-center">
+              <div className="text-5xl mb-3">👋</div>
+              <h2 className="text-white text-xl font-bold mb-1">Ola, {profile?.name?.split(' ')[0]}!</h2>
+              <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
+                Vincule seu filho para acompanhar o progresso dele
+              </p>
+            </div>
+
             {/* Step 1: invite code with share */}
-            <InviteCodeCard code={inviteCode} />
+            {inviteCode && <InviteCodeCard code={inviteCode} />}
 
             {/* Steps 2 & 3 */}
             <div className="grid grid-cols-2 gap-3">
@@ -259,21 +261,44 @@ export default function ParentDashboard() {
                 <div className="text-2xl mb-2">📱</div>
                 <p className="text-white text-sm font-semibold mb-1">Passo 2</p>
                 <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Seu filho acessa <strong className="text-white/70">studdo.com.br</strong>, cria a conta e digita o código
+                  Seu filho acessa <strong className="text-white/70">studdo.com.br</strong>, cria a conta e digita o codigo
                 </p>
               </div>
               <div className="rounded-2xl p-4" style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.12)' }}>
                 <div className="text-2xl mb-2">🎉</div>
                 <p className="text-white text-sm font-semibold mb-1">Passo 3</p>
                 <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Ele aparece aqui automaticamente e você acompanha tudo em tempo real
+                  Ele aparece aqui automaticamente e voce acompanha tudo em tempo real
                 </p>
+              </div>
+            </div>
+
+            {/* Quick links */}
+            <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <p className="text-xs font-medium mb-3" style={{ color: 'rgba(240,244,248,0.4)' }}>Enquanto isso, explore:</p>
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/tutorial"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
+                  style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+                >
+                  <BookOpen size={16} className="text-blue-400" />
+                  Veja como o tutor funciona
+                </Link>
+                <Link
+                  href="/"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
+                  style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+                >
+                  <Home size={16} className="text-green-400" />
+                  Voltar para a pagina inicial
+                </Link>
               </div>
             </div>
 
             {/* Auto-refresh hint */}
             <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
-              Esta página atualiza automaticamente quando seu filho criar a conta
+              Esta pagina atualiza automaticamente quando seu filho criar a conta
             </p>
           </div>
         )}
