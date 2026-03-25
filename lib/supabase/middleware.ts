@@ -45,7 +45,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Protected routes: redirect to login if not authenticated
-  const protectedPaths = ['/tutor', '/dashboard', '/parent', '/onboarding'];
+  // Note: /tutor is open for free trial (1 session without account)
+  const protectedPaths = ['/dashboard', '/parent', '/onboarding'];
   const isProtected = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );

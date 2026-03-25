@@ -11,9 +11,10 @@ interface SessionSummaryProps {
   messageCount: number;
   subject: string;
   onNewSession: () => void;
+  isGuest?: boolean;
 }
 
-export function SessionSummary({ xpEarned, messageCount, subject, onNewSession }: SessionSummaryProps) {
+export function SessionSummary({ xpEarned, messageCount, subject, onNewSession, isGuest }: SessionSummaryProps) {
   const [feedbackDismissed, setFeedbackDismissed] = useState(false);
   const subjectInfo = getSubjectById(subject);
 
@@ -58,7 +59,7 @@ export function SessionSummary({ xpEarned, messageCount, subject, onNewSession }
       </motion.div>
 
       <div className="text-center">
-        <h2 className="text-white text-2xl font-extrabold mb-1">Sessão incrível!</h2>
+        <h2 className="text-white text-2xl font-extrabold mb-1">Sessao incrivel!</h2>
         <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
           {subjectInfo?.name ?? subject} · {messageCount} trocas com o Edu
         </p>
@@ -95,48 +96,79 @@ export function SessionSummary({ xpEarned, messageCount, subject, onNewSession }
         </motion.div>
       </div>
 
-      {/* Suggestions */}
-      {suggestions.length > 0 && (
+      {/* Guest CTA — register to continue */}
+      {isGuest ? (
         <motion.div
-          className="w-full max-w-xs"
+          className="w-full max-w-xs space-y-3"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <p className="text-xs text-center mb-3" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            Continuar estudando?
-          </p>
-          <div className="flex gap-2">
-            {suggestions.map((s) => (
-              <button
-                key={s.id}
-                onClick={onNewSession}
-                className="flex-1 flex items-center gap-2 p-3 rounded-xl text-xs font-medium text-white transition-all hover:scale-105"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
-              >
-                <span>{s.icon}</span>
-                <span>{s.name}</span>
-                <ArrowRight size={12} className="ml-auto opacity-40" />
-              </button>
-            ))}
+          <div className="rounded-2xl p-5 text-center" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
+            <p className="text-white font-bold text-sm mb-1">Quer continuar estudando?</p>
+            <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.5)' }}>
+              Crie uma conta gratuita para sessoes ilimitadas, XP e conquistas
+            </p>
+            <a
+              href="/register"
+              className="block w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm text-center shadow-lg shadow-purple-600/25 hover:opacity-90 transition-all"
+            >
+              Criar conta gratuita
+            </a>
           </div>
+          <a
+            href="/login"
+            className="block w-full py-2.5 rounded-xl text-sm text-center font-medium text-white/40 hover:text-white/60 transition-all"
+          >
+            Ja tenho conta
+          </a>
         </motion.div>
-      )}
+      ) : (
+        <>
+          {/* Suggestions */}
+          {suggestions.length > 0 && (
+            <motion.div
+              className="w-full max-w-xs"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <p className="text-xs text-center mb-3" style={{ color: 'rgba(240,244,248,0.4)' }}>
+                Continuar estudando?
+              </p>
+              <div className="flex gap-2">
+                {suggestions.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={onNewSession}
+                    className="flex-1 flex items-center gap-2 p-3 rounded-xl text-xs font-medium text-white transition-all hover:scale-105"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  >
+                    <span>{s.icon}</span>
+                    <span>{s.name}</span>
+                    <ArrowRight size={12} className="ml-auto opacity-40" />
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
-      {/* New session button */}
-      <motion.button
-        onClick={onNewSession}
-        className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(240,244,248,0.7)' }}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.7 }}
-      >
-        <RotateCcw size={15} />
-        Nova sessão
-      </motion.button>
+          {/* New session button */}
+          <motion.button
+            onClick={onNewSession}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(240,244,248,0.7)' }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+          >
+            <RotateCcw size={15} />
+            Nova sessao
+          </motion.button>
+        </>
+      )}
 
       {!feedbackDismissed && (
         <PostSessionFeedback

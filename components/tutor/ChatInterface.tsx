@@ -22,6 +22,61 @@ import { createClient } from '@/lib/supabase/client';
 import { getUserStats, addXP, checkAndAwardBadges } from '@/lib/supabase/queries';
 import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
+const TRIAL_KEY = 'studdo_trial_sessions';
+
+function getTrialCount(): number {
+  if (typeof window === 'undefined') return 0;
+  return parseInt(localStorage.getItem(TRIAL_KEY) || '0', 10);
+}
+
+function incrementTrialCount() {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(TRIAL_KEY, String(getTrialCount() + 1));
+}
+
+function TrialExpiredGate() {
+  return (
+    <div className="flex flex-col items-center justify-center flex-1 gap-6 py-12 px-4 text-center">
+      <motion.div
+        className="text-6xl"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
+        🎓
+      </motion.div>
+      <div>
+        <h2 className="text-white text-2xl font-extrabold mb-2">Gostou da experiencia?</h2>
+        <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
+          Crie uma conta gratuita para continuar estudando, ganhar XP e acompanhar seu progresso!
+        </p>
+      </div>
+      <div className="flex flex-col gap-3 w-full max-w-xs">
+        <a
+          href="/register"
+          className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm text-center shadow-lg shadow-purple-600/25 hover:opacity-90 transition-all"
+        >
+          Criar conta gratuita
+        </a>
+        <a
+          href="/login"
+          className="w-full py-3 rounded-xl text-sm text-center font-medium transition-all text-white/50 hover:text-white hover:bg-white/5"
+          style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          Ja tenho conta — Entrar
+        </a>
+      </div>
+      <div className="flex flex-col items-center gap-2 mt-2">
+        <div className="flex gap-4">
+          {['🏆 XP e Niveis', '🔥 Streak', '📊 Progresso'].map((item) => (
+            <span key={item} className="text-xs" style={{ color: 'rgba(240,244,248,0.35)' }}>{item}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ChatInterface() {
   const [homework, setHomework] = useState('');
   const [subject, setSubject] = useState('math');
@@ -36,7 +91,16 @@ export function ChatInterface() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [sessionPieces, setSessionPieces] = useState(0);
   const [milestoneMessage, setMilestoneMessage] = useState<string | null>(null);
-  const { profile } = useAuth();
+  const [trialExpired, setTrialExpired] = useState(false);
+  const { profile, loading: authLoading } = useAuth();
+  const isGuest = !profile;
+
+  // Check if guest trial is expired
+  useEffect(() => {
+    if (!authLoading && isGuest && getTrialCount() >= 1) {
+      setTrialExpired(true);
+    }
+  }, [authLoading, isGuest]);
 
   // Load XP from user_stats table
   useEffect(() => {
@@ -139,6 +203,7 @@ export function ChatInterface() {
   const handleFinishSession = async () => {
     await finishSession();
     setSessionMessageCount(messages.filter((m) => m.role === 'user').length);
+    if (isGuest) incrementTrialCount();
     setShowSummary(true);
   };
 
@@ -151,6 +216,15 @@ export function ChatInterface() {
     setSuggestions([]);
     sendMessage();
   };
+
+  // Trial expired — show registration gate
+  if (trialExpired) {
+    return (
+      <AgeThemeProvider ageGroup={ageGroup}>
+        <TrialExpiredGate />
+      </AgeThemeProvider>
+    );
+  }
 
   if (!homeworkSet) {
     return (
@@ -170,6 +244,7 @@ export function ChatInterface() {
           messageCount={sessionMessageCount}
           subject={subject}
           onNewSession={handleReset}
+          isGuest={isGuest}
         />
       ) : (
         <>

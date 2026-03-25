@@ -237,20 +237,20 @@ export function HeroSection() {
             {/* CTA */}
             <motion.div variants={fadeInUp('high')} className="mt-10 flex flex-col sm:flex-row gap-4">
               <Link
-                href="/register"
+                href="/tutor"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
                 style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 32px rgba(245,166,35,0.35)' }}
               >
-                Criar conta gratuita
+                Testar gratis agora
                 <ArrowRight size={18} />
               </Link>
-              <a
-                href="#how-it-works"
+              <Link
+                href="/register"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-medium text-base transition-all hover:bg-white/10"
                 style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
               >
-                Ver como funciona
-              </a>
+                Criar conta gratuita
+              </Link>
             </motion.div>
 
             {/* Stat bar */}
