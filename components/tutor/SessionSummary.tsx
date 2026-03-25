@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, RotateCcw, Flame, ArrowRight } from 'lucide-react';
 import { getSubjectById } from '@/lib/subjects/config';
+import { PostSessionFeedback } from '@/components/feedback/PostSessionFeedback';
 
 interface SessionSummaryProps {
   xpEarned: number;
@@ -12,6 +14,7 @@ interface SessionSummaryProps {
 }
 
 export function SessionSummary({ xpEarned, messageCount, subject, onNewSession }: SessionSummaryProps) {
+  const [feedbackDismissed, setFeedbackDismissed] = useState(false);
   const subjectInfo = getSubjectById(subject);
 
   // getAllSubjects doesn't exist — use hardcoded fallback
@@ -134,6 +137,14 @@ export function SessionSummary({ xpEarned, messageCount, subject, onNewSession }
         <RotateCcw size={15} />
         Nova sessão
       </motion.button>
+
+      {!feedbackDismissed && (
+        <PostSessionFeedback
+          triggered={true}
+          subjectContext={subjectInfo?.name}
+          onDismiss={() => setFeedbackDismissed(true)}
+        />
+      )}
     </motion.div>
   );
 }
