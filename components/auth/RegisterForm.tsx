@@ -361,9 +361,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         </div>
                       </div>
 
-                      <div className="space-y-1.5">
+                      <div className="space-y-1.5 rounded-xl p-3" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.12)' }}>
                         <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">
-                          Codigo de convite <span className="text-white/30">(opcional)</span>
+                          Codigo de convite do seu pai/mae
                         </label>
                         <div className="relative group">
                           <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
@@ -386,7 +386,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                             className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
                           />
                         </div>
-                        <p className="text-white/25 text-xs pl-1">Peca ao seu pai/mae o codigo de convite</p>
+                        <p className="text-white/25 text-xs pl-1">Se nao tiver agora, pode vincular depois no app</p>
                       </div>
                     </motion.div>
                   )}

@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, BookOpen, Brain, Trophy, BarChart3, Sparkles, Users, Copy, Check, Shield } from 'lucide-react';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { createClient } from '@/lib/supabase/client';
-import { updateProfile } from '@/lib/supabase/queries';
+import { updateProfile, redeemInviteCode } from '@/lib/supabase/queries';
+import { Link2, Ticket } from 'lucide-react';
 import type { UserType } from '@/lib/auth/types';
 
 interface WelcomeFlowProps {
@@ -24,7 +25,7 @@ interface Step {
   customContent?: React.ReactNode;
 }
 
-function buildKidSteps(profileId?: string, onAgeSelected?: () => void): Step[] {
+function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteLinked?: () => void): Step[] {
   return [
   {
     mascotExpression: 'waving',
@@ -88,6 +89,18 @@ function buildKidSteps(profileId?: string, onAgeSelected?: () => void): Step[] {
     features: [],
     customContent: (
       <AgeSelector profileId={profileId} onSelected={() => onAgeSelected?.()} />
+    ),
+  },
+  {
+    mascotExpression: 'encouraging',
+    title: 'Tem um codigo do seu pai/mae?',
+    subtitle: 'Vincule sua conta para eles acompanharem seu progresso',
+    features: [
+      { icon: Link2, text: 'Seu pai/mae ve suas conquistas e XP', color: '#10B981' },
+      { icon: Shield, text: 'Conexao segura — so com o codigo', color: '#8B5CF6' },
+    ],
+    customContent: (
+      <InviteCodeInput onLinked={() => onInviteLinked?.()} />
     ),
   },
   {
@@ -208,6 +221,97 @@ function AgeSelector({ profileId, onSelected }: { profileId?: string; onSelected
   );
 }
 
+function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
+  const [code, setCode] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [parentName, setParentName] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async () => {
+    if (code.length < 7) return;
+    setStatus('loading');
+    try {
+      const supabase = createClient();
+      const { data, error } = await redeemInviteCode(supabase, code);
+      if (error || !data?.success) {
+        setStatus('error');
+        setErrorMsg(data?.error || 'Codigo invalido. Confira com seu pai/mae.');
+        return;
+      }
+      setParentName(data.parent_name || '');
+      setStatus('success');
+      setTimeout(onLinked, 1500);
+    } catch {
+      setStatus('error');
+      setErrorMsg('Erro ao vincular. Tente novamente.');
+    }
+  };
+
+  const handleChange = (val: string) => {
+    let v = val.toUpperCase();
+    if (v.length > 0 && !v.startsWith('EQ-') && !v.startsWith('EQ') && !v.startsWith('E')) {
+      v = 'EQ-' + v;
+    }
+    if (v.length <= 7) setCode(v);
+    if (status === 'error') setStatus('idle');
+  };
+
+  if (status === 'success') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="mt-4 rounded-2xl p-5 text-center"
+        style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+      >
+        <div className="text-4xl mb-2">✅</div>
+        <p className="text-white font-bold text-sm">Vinculado{parentName ? ` com ${parentName}` : ''}!</p>
+        <p className="text-xs mt-1" style={{ color: 'rgba(240,244,248,0.5)' }}>Seu progresso sera compartilhado</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-4 space-y-3"
+    >
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
+        <div className="relative">
+          <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder="EQ-XXXX"
+            maxLength={7}
+            className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm uppercase tracking-widest font-mono text-center"
+          />
+        </div>
+        {status === 'error' && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-xs mt-2 text-center">
+            {errorMsg}
+          </motion.p>
+        )}
+        <motion.button
+          onClick={handleSubmit}
+          disabled={code.length < 7 || status === 'loading'}
+          className="w-full mt-3 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-30"
+          style={{ background: 'rgba(139,92,246,0.3)', color: 'white' }}
+          whileHover={{ scale: code.length >= 7 ? 1.02 : 1 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          {status === 'loading' ? 'Vinculando...' : 'Vincular'}
+        </motion.button>
+      </div>
+      <p className="text-xs text-center" style={{ color: 'rgba(240,244,248,0.3)' }}>
+        Seu pai/mae tem esse codigo no app deles
+      </p>
+    </motion.div>
+  );
+}
+
 function InviteCodeDisplay({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -275,13 +379,14 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(1);
   const isAgeStep = userType === 'kid' && currentStep === 2;
+  const isInviteStep = userType === 'kid' && currentStep === 3;
 
-  const advanceFromAge = () => {
+  const advanceStep = () => {
     setDirection(1);
     setCurrentStep((s) => s + 1);
   };
 
-  const steps = userType === 'parent' ? buildParentSteps(inviteCode) : buildKidSteps(profileId, advanceFromAge);
+  const steps = userType === 'parent' ? buildParentSteps(inviteCode) : buildKidSteps(profileId, advanceStep, advanceStep);
   const step = steps[currentStep];
   const isLast = currentStep === steps.length - 1;
 
@@ -371,7 +476,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
         </AnimatePresence>
 
         {/* Action button (hidden on age step — auto-advances on selection) */}
-        {!isAgeStep && (
+        {!isAgeStep && !isInviteStep && (
           <motion.button
             onClick={handleNext}
             className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
@@ -383,8 +488,18 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
           </motion.button>
         )}
 
+        {/* Skip for invite step */}
+        {isInviteStep && (
+          <button
+            onClick={handleNext}
+            className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
+          >
+            Nao tenho codigo — pular
+          </button>
+        )}
+
         {/* Skip */}
-        {!isLast && !isAgeStep && (
+        {!isLast && !isAgeStep && !isInviteStep && (
           <button
             onClick={onComplete}
             className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
