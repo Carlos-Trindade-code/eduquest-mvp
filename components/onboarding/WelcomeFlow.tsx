@@ -6,6 +6,7 @@ import { ArrowRight, BookOpen, Brain, Trophy, BarChart3, Sparkles, Users, Copy, 
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { createClient } from '@/lib/supabase/client';
 import { updateProfile, redeemInviteCode } from '@/lib/supabase/queries';
+import { trackEvent } from '@/lib/analytics/track';
 import { Link2, Ticket } from 'lucide-react';
 import type { UserType } from '@/lib/auth/types';
 
@@ -240,6 +241,7 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
       }
       setParentName(data.parent_name || '');
       setStatus('success');
+      trackEvent('invite_code_redeemed');
       setTimeout(onLinked, 1500);
     } catch {
       setStatus('error');
@@ -392,6 +394,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
 
   const handleNext = () => {
     if (isLast) {
+      trackEvent('onboarding_completed', { user_type: userType });
       onComplete();
       return;
     }

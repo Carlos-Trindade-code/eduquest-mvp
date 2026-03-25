@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { XP_REWARDS } from '@/lib/gamification/xp';
 import { createClient } from '@/lib/supabase/client';
 import { createSession, endSession, saveMessage } from '@/lib/supabase/queries';
+import { trackEvent } from '@/lib/analytics/track';
 import type { ChatMessage, AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
 interface UseChatSessionReturn {
@@ -71,6 +72,7 @@ export function useChatSession(
     setSessionXp(0);
     sessionStartRef.current = new Date();
 
+    trackEvent('session_started', { subject: subjectOverride ?? subject });
     if (userId) {
       try {
         const supabase = createClient();
@@ -95,6 +97,7 @@ export function useChatSession(
     const durationMinutes = Math.round(
       (Date.now() - sessionStartRef.current.getTime()) / 60000
     );
+    trackEvent('session_ended', { duration_minutes: durationMinutes, xp: sessionXp });
     try {
       const supabase = createClient();
       await endSession(supabase, sessionIdRef.current, durationMinutes, sessionXp);

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, CheckCircle, Loader2 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { submitFeedback } from '@/lib/supabase/queries';
+import { trackEvent } from '@/lib/analytics/track';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ export function FeedbackModal({ isOpen, onClose, source, subjectContext }: Feedb
     setLoading(true);
     const supabase = createSupabase();
     await submitFeedback(supabase, rating, comment.trim() || null, source);
+    trackEvent('feedback_submitted', { rating, source });
     setLoading(false);
     setSuccess(true);
     setTimeout(() => {

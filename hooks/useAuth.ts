@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { getProfile } from '@/lib/supabase/queries';
+import { trackEvent } from '@/lib/analytics/track';
 import type { Profile, UserType } from '@/lib/auth/types';
 import type { User } from '@supabase/supabase-js';
 
@@ -76,6 +77,7 @@ export function useAuth(): UseAuthReturn {
       if (data.user && data.user.identities && data.user.identities.length === 0) {
         return { error: 'Este email ja esta cadastrado. Tente fazer login.' };
       }
+      trackEvent('register', { user_type: userType });
       return { error: null };
     },
     [supabase]
@@ -88,6 +90,7 @@ export function useAuth(): UseAuthReturn {
         password,
       });
       if (error) return { error: translateError(error.message) };
+      trackEvent('login');
       return { error: null };
     },
     [supabase]
