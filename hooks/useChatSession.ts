@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { XP_REWARDS } from '@/lib/gamification/xp';
 import { createClient } from '@/lib/supabase/client';
 import { createSession, endSession, saveMessage } from '@/lib/supabase/queries';
@@ -32,6 +32,39 @@ export function useChatSession(
   const [sessionXp, setSessionXp] = useState(0);
   const sessionIdRef = useRef<string | null>(null);
   const sessionStartRef = useRef<Date | null>(null);
+  const sessionXpRef = useRef(0);
+
+  // Keep ref in sync for beforeunload (avoids stale closure)
+  useEffect(() => { sessionXpRef.current = sessionXp; }, [sessionXp]);
+
+  // Auto-finalize session on page leave/close
+  useEffect(() => {
+    const autoFinish = () => {
+      if (!sessionIdRef.current || !sessionStartRef.current) return;
+      const durationMinutes = Math.round(
+        (Date.now() - sessionStartRef.current.getTime()) / 60000
+      );
+      const supabase = createClient();
+      // Use sendBeacon-style: fire and forget
+      endSession(supabase, sessionIdRef.current, durationMinutes, sessionXpRef.current).catch(() => {});
+      sessionIdRef.current = null;
+      sessionStartRef.current = null;
+    };
+
+    const handleBeforeUnload = () => autoFinish();
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') autoFinish();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      autoFinish(); // cleanup on unmount (e.g. navigating away within SPA)
+    };
+  }, []);
 
   const initSession = useCallback(async (hw: string, greeting: string, subjectOverride?: string) => {
     setMessages([{ role: 'assistant', content: greeting }]);
