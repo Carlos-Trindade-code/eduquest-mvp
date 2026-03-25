@@ -1,16 +1,17 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Users, GraduationCap, UserCheck, Shield } from 'lucide-react';
+import { Users, GraduationCap, UserCheck, Shield, BookOpen } from 'lucide-react';
 import type { Profile } from '@/lib/auth/types';
 
 interface UsersTableProps {
   profiles: Profile[];
 }
 
-const typeConfig = {
+const typeConfig: Record<string, { label: string; icon: typeof GraduationCap; color: string }> = {
   kid: { label: 'Aluno', icon: GraduationCap, color: '#3B82F6' },
   parent: { label: 'Pai/Mae', icon: UserCheck, color: '#10B981' },
+  teacher: { label: 'Professor', icon: BookOpen, color: '#F59E0B' },
   admin: { label: 'Admin', icon: Shield, color: '#8B5CF6' },
 };
 

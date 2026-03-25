@@ -46,7 +46,7 @@ export async function updateSession(request: NextRequest) {
 
   // Protected routes: redirect to login if not authenticated
   // Note: /tutor is open for free trial (1 session without account)
-  const protectedPaths = ['/dashboard', '/parent', '/onboarding'];
+  const protectedPaths = ['/dashboard', '/parent', '/professor', '/onboarding'];
   const isProtected = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );
@@ -68,7 +68,7 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     // Use user_metadata to determine role (available without extra DB query)
     const userType = user.user_metadata?.user_type;
-    url.pathname = userType === 'parent' ? '/parent/dashboard' : '/tutor';
+    url.pathname = userType === 'teacher' ? '/professor' : userType === 'parent' ? '/parent/dashboard' : '/tutor';
     return NextResponse.redirect(url);
   }
 

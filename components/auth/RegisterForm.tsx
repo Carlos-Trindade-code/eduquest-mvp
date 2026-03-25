@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, Users, Ticket } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, Users, Ticket, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { fadeInUp } from '@/lib/design/animations';
@@ -249,6 +249,22 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                     <div className="text-left flex-1">
                       <p className="text-white font-semibold text-sm">Sou pai/mae</p>
                       <p className="text-[var(--eq-text-muted)] text-xs">Quero acompanhar o progresso do meu filho</p>
+                    </div>
+                    <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
+                  </motion.button>
+
+                  <motion.button
+                    onClick={() => handleTypeSelect('teacher')}
+                    className="w-full flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center shrink-0">
+                      <BookOpen size={24} className="text-green-400" />
+                    </div>
+                    <div className="text-left flex-1">
+                      <p className="text-white font-semibold text-sm">Sou professor(a)</p>
+                      <p className="text-[var(--eq-text-muted)] text-xs">Quero criar turmas e enviar materiais</p>
                     </div>
                     <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
                   </motion.button>

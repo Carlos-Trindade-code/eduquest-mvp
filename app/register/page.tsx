@@ -14,7 +14,7 @@ function RegisterContent() {
     email: string;
     password: string;
     name: string;
-    userType: 'parent' | 'kid' | 'admin';
+    userType: 'parent' | 'kid' | 'teacher' | 'admin';
     age?: number;
     grade?: string;
     inviteCode?: string;
@@ -39,8 +39,8 @@ function RegisterContent() {
       }
     }
 
-    // Full page reload ensures middleware reads new session cookies
-    window.location.href = '/onboarding';
+    // Teachers go directly to their dashboard, others to onboarding
+    window.location.href = data.userType === 'teacher' ? '/professor' : '/onboarding';
   };
 
   const handleGoogleRegister = async () => {

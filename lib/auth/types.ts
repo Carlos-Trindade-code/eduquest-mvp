@@ -1,4 +1,4 @@
-export type UserType = 'parent' | 'kid' | 'admin';
+export type UserType = 'parent' | 'kid' | 'teacher' | 'admin';
 
 export interface Suggestion {
   id: string;
