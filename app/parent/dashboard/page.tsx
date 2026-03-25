@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
-import { getLinkedKids, getKidAnalytics, getUserStats, getUserBadges, getInviteCode } from '@/lib/supabase/queries';
+import { getLinkedKids, getKidAnalytics, getUserStats, getUserBadges, getInviteCode, getKidSessions } from '@/lib/supabase/queries';
+import { getSubjectById } from '@/lib/subjects/config';
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakDisplay } from '@/components/gamification/StreakDisplay';
 import { BadgeCard } from '@/components/gamification/BadgeCard';
@@ -16,7 +17,7 @@ import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut, Home, Shie
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
-import type { Profile, UserStats, Badge } from '@/lib/auth/types';
+import type { Profile, UserStats, Badge, Session } from '@/lib/auth/types';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function ParentDashboard() {
@@ -30,6 +31,7 @@ export default function ParentDashboard() {
   const [selectedKid, setSelectedKid] = useState<Profile | null>(null);
   const [kidStats, setKidStats] = useState<UserStats | null>(null);
   const [kidBadges, setKidBadges] = useState<Badge[]>([]);
+  const [kidSessions, setKidSessions] = useState<Session[]>([]);
   const [analytics, setAnalytics] = useState<{
     totalSessions: number;
     totalMinutes: number;
@@ -72,14 +74,16 @@ export default function ParentDashboard() {
   };
 
   const loadKidData = async (kidId: string) => {
-    const [statsResult, badgesResult, analyticsResult] = await Promise.all([
+    const [statsResult, badgesResult, analyticsResult, sessionsResult] = await Promise.all([
       getUserStats(supabase, kidId),
       getUserBadges(supabase, kidId),
       getKidAnalytics(supabase, kidId, 30),
+      getKidSessions(supabase, kidId, 10),
     ]);
     setKidStats(statsResult.data);
     setKidBadges(badgesResult.data);
     setAnalytics(analyticsResult);
+    setKidSessions(sessionsResult.data);
   };
 
   if (authLoading || loading) {
@@ -199,6 +203,48 @@ export default function ParentDashboard() {
                 )}
               </div>
             </motion.div>
+
+            {/* Recent sessions */}
+            {kidSessions.length > 0 && (
+              <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-5">
+                <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes Recentes</h3>
+                <div className="space-y-2">
+                  {kidSessions.map((session) => {
+                    const sub = getSubjectById(session.subject);
+                    const date = new Date(session.created_at);
+                    const isToday = new Date().toDateString() === date.toDateString();
+                    return (
+                      <div
+                        key={session.id}
+                        className="flex items-center gap-3 p-3 rounded-xl"
+                        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0"
+                          style={{ background: `${sub?.color || '#8B5CF6'}15` }}
+                        >
+                          {sub?.icon || '📚'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-white text-sm font-medium">{sub?.name || session.subject}</span>
+                          <div className="flex items-center gap-3 mt-0.5">
+                            {session.duration_minutes != null && session.duration_minutes > 0 && (
+                              <span className="text-white/25 text-xs">{session.duration_minutes}min</span>
+                            )}
+                            {session.xp_earned > 0 && (
+                              <span className="text-amber-400/40 text-xs">+{session.xp_earned} XP</span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-white/20 text-xs shrink-0">
+                          {isToday ? date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
 
             {kidStats && (
               <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">

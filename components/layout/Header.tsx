@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Sparkles, LogOut, BarChart3, ChevronDown, Home, BookOpen, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
+import { SessionHistory } from '@/components/tutor/SessionHistory';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 
@@ -159,7 +160,10 @@ export function Header({
         </AnimatePresence>
       </div>
 
-      <PomodoroTimer onComplete={onTimerComplete} labels={timerLabels} />
+      <div className="flex items-center gap-2">
+        <SessionHistory />
+        <PomodoroTimer onComplete={onTimerComplete} labels={timerLabels} />
+      </div>
     </header>
   );
 }
