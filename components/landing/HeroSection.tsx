@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle, Send, Loader2 } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 
@@ -27,31 +28,58 @@ const chatMessages = [
 ];
 
 function ChatPreview() {
+  const [messages, setMessages] = useState(chatMessages.map(m => ({ role: m.role as 'edu' | 'kid', text: m.text })));
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [interacted, setInteracted] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg = input.trim();
+    setInput('');
+    setInteracted(true);
+    setMessages(prev => [...prev, { role: 'kid', text: userMsg }]);
+    setLoading(true);
+
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+
+    try {
+      const allMessages = [...messages, { role: 'kid', text: userMsg }].map(m => ({
+        role: m.role === 'kid' ? 'user' as const : 'assistant' as const,
+        content: m.text,
+      }));
+      const res = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: allMessages.slice(-4),
+          homework: '',
+          subject: 'other',
+          ageGroup: '10-12',
+          behavioralProfile: 'default',
+        }),
+      });
+      const data = await res.json();
+      if (data.message) {
+        setMessages(prev => [...prev, { role: 'edu', text: data.message }]);
+      }
+    } catch {
+      setMessages(prev => [...prev, { role: 'edu', text: 'Ops! Tente de novo em alguns segundos.' }]);
+    }
+    setLoading(false);
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+  };
+
   return (
     <div
       className="relative w-full max-w-sm mx-auto"
       style={{ filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.5))' }}
     >
-      {/* Phone frame */}
       <div
         className="relative rounded-[2rem] overflow-hidden"
-        style={{
-          background: '#0D1B2A',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
-        }}
+        style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
       >
-        {/* Status bar */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-2">
-          <span className="text-xs font-medium" style={{ color: 'rgba(240,244,248,0.4)' }}>9:41</span>
-          <div className="flex items-center gap-1">
-            {[4, 3, 2].map((h) => (
-              <div key={h} className="rounded-sm" style={{ width: 3, height: h * 2, background: 'rgba(240,244,248,0.35)' }} />
-            ))}
-            <div className="w-4 h-2 rounded-sm ml-1" style={{ background: 'rgba(240,244,248,0.35)' }} />
-          </div>
-        </div>
-
         {/* Chat header */}
         <div
           className="flex items-center gap-3 px-4 py-3"
@@ -62,35 +90,38 @@ function ChatPreview() {
             <div className="text-sm font-semibold text-white">Edu</div>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-xs" style={{ color: 'rgba(240,244,248,0.45)' }}>online</span>
+              <span className="text-xs" style={{ color: 'rgba(240,244,248,0.45)' }}>
+                {interacted ? 'respondendo ao vivo' : 'online'}
+              </span>
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-2 text-xs px-2 py-0.5 rounded-full"
-            style={{ background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.2)', color: '#F5A623' }}>
-            🔥 5
-          </div>
+          {interacted && (
+            <div className="ml-auto text-[10px] px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981', border: '1px solid rgba(16,185,129,0.2)' }}>
+              AO VIVO
+            </div>
+          )}
         </div>
 
         {/* Messages */}
-        <div className="px-4 py-4 space-y-3 min-h-[240px]">
-          {chatMessages.map((msg, i) => (
+        <div className="px-4 py-3 space-y-2.5 h-[260px] overflow-y-auto">
+          {messages.map((msg, i) => (
             <motion.div
               key={i}
               className={`flex ${msg.role === 'kid' ? 'justify-end' : 'justify-start'} items-end gap-2`}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: msg.delay, duration: 0.4 }}
+              transition={{ duration: 0.3 }}
             >
               {msg.role === 'edu' && (
-                <div className="w-6 h-6 rounded-full flex-shrink-0 overflow-hidden">
-                  <MascotOwl expression="encouraging" size="sm" animated={false} className="w-6 h-6" />
+                <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
+                  <MascotOwl expression="encouraging" size="sm" animated={false} className="w-5 h-5" />
                 </div>
               )}
               <div
-                className="max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-snug"
+                className="max-w-[80%] px-3 py-2 rounded-2xl text-xs leading-snug"
                 style={
                   msg.role === 'kid'
-                    ? { background: '#00B4D8', color: 'white', borderBottomRightRadius: 4 }
+                    ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
                     : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
                 }
               >
@@ -98,74 +129,74 @@ function ChatPreview() {
               </div>
             </motion.div>
           ))}
-
-          {/* Typing indicator */}
-          <motion.div
-            className="flex items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ delay: 5.6, duration: 1.5, repeat: Infinity }}
-          >
-            <div className="w-6 h-6 rounded-full flex-shrink-0 overflow-hidden">
-              <MascotOwl expression="thinking" size="sm" animated={false} className="w-6 h-6" />
+          {loading && (
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
+                <MascotOwl expression="thinking" size="sm" animated={false} className="w-5 h-5" />
+              </div>
+              <div className="flex gap-1 px-3 py-2 rounded-2xl" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                {[0, 0.2, 0.4].map((d, j) => (
+                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(240,244,248,0.4)' }}
+                    animate={{ y: [0, -3, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: d }} />
+                ))}
+              </div>
             </div>
-            <div className="flex gap-1 px-3 py-2 rounded-2xl" style={{ background: 'rgba(255,255,255,0.07)', borderBottomLeftRadius: 4 }}>
-              {[0, 0.2, 0.4].map((d, i) => (
-                <motion.span
-                  key={i}
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: 'rgba(240,244,248,0.4)' }}
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: d }}
-                />
-              ))}
-            </div>
-          </motion.div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* XP bar at bottom */}
-        <motion.div
-          className="px-4 pb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 4.8 }}
-        >
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-medium" style={{ color: '#F5A623' }}>+25 XP ganhos! 🏆</span>
-            <span className="text-xs" style={{ color: 'rgba(240,244,248,0.4)' }}>Nível 3</span>
-          </div>
-          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-            <motion.div
-              className="h-full rounded-full"
-              style={{ background: 'linear-gradient(90deg, #F5A623, #FBBF24)' }}
-              initial={{ width: '40%' }}
-              animate={{ width: '72%' }}
-              transition={{ delay: 4.9, duration: 0.8, ease: 'easeOut' }}
+        {/* Input */}
+        <div className="px-3 pb-4 pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Pergunte algo ao Edu..."
+              className="flex-1 bg-white/5 text-white placeholder-white/25 rounded-xl px-3 py-2 text-xs border border-white/10 focus:outline-none focus:border-purple-500/50"
             />
+            <motion.button
+              onClick={handleSend}
+              disabled={!input.trim() || loading}
+              className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-30"
+              style={{ background: '#8B5CF6' }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {loading ? <Loader2 size={14} className="text-white animate-spin" /> : <Send size={14} className="text-white" />}
+            </motion.button>
           </div>
-        </motion.div>
+          {!interacted && (
+            <p className="text-[10px] text-center mt-2" style={{ color: 'rgba(240,244,248,0.25)' }}>
+              Experimente — digite uma pergunta real
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Floating badges */}
-      <motion.div
-        className="absolute -right-4 top-16 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
-        style={{ background: '#10B981', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.4)' }}
-        initial={{ opacity: 0, x: 16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 3.0 }}
-      >
-        <span>✓</span> Entendeu!
-      </motion.div>
-
-      <motion.div
-        className="absolute -left-4 bottom-24 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
-        style={{ background: '#8B5CF6', color: 'white', boxShadow: '0 4px 16px rgba(139,92,246,0.4)' }}
-        initial={{ opacity: 0, x: -16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 5.2 }}
-      >
-        🏅 Primeiro Badge
-      </motion.div>
+      <AnimatePresence>
+        {!interacted && (
+          <>
+            <motion.div
+              className="absolute -right-4 top-12 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
+              style={{ background: '#10B981', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.4)' }}
+              initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+              transition={{ delay: 2.0 }}
+            >
+              <span>✓</span> Metodo Socratico
+            </motion.div>
+            <motion.div
+              className="absolute -left-4 bottom-20 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
+              style={{ background: '#8B5CF6', color: 'white', boxShadow: '0 4px 16px rgba(139,92,246,0.4)' }}
+              initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+              transition={{ delay: 3.0 }}
+            >
+              ✨ Teste ao vivo
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
