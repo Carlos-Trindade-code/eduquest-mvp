@@ -7,15 +7,15 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 
 const stats = [
-  { value: '94%', label: 'entendem o conteúdo na 1ª sessão' },
-  { value: '3×', label: 'mais retenção que aula expositiva' },
-  { value: '12min', label: 'em média para resolver uma dúvida' },
+  { value: '7', label: 'materias disponiveis' },
+  { value: '4-18', label: 'anos de idade' },
+  { value: '100%', label: 'gratuito' },
 ];
 
 const trustItems = [
-  'Sem respostas prontas — a criança pensa sozinha',
+  'Teste gratis sem cadastro — comece em 10 segundos',
+  'Quiz interativo com feedback instantaneo',
   'Dashboard em tempo real para os pais',
-  'Funciona para 4 a 18 anos',
 ];
 
 const chatMessages = [
@@ -241,15 +241,15 @@ export function HeroSection() {
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
                 style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 32px rgba(245,166,35,0.35)' }}
               >
-                Testar gratis agora
+                Testar tutor gratis
                 <ArrowRight size={18} />
               </Link>
               <Link
-                href="/register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-medium text-base transition-all hover:bg-white/10"
-                style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
+                href="/quiz"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
+                style={{ background: 'linear-gradient(135deg, #8B5CF6, #4F46E5)', color: '#FFFFFF', boxShadow: '0 8px 32px rgba(139,92,246,0.35)' }}
               >
-                Criar conta gratuita
+                Fazer um quiz
               </Link>
             </motion.div>
 

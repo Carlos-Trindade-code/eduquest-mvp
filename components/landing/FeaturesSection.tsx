@@ -6,7 +6,7 @@ import {
   Users,
   Trophy,
   BarChart3,
-  Brain,
+  Zap,
   Camera,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -42,10 +42,10 @@ const features = [
     color: '#10B981',
   },
   {
-    icon: Brain,
-    title: 'Repeticao Espacada',
+    icon: Zap,
+    title: 'Modo Quiz',
     description:
-      'Algoritmo SM-2 que revisa conceitos nos intervalos ideais para fixacao na memoria.',
+      'Teste conhecimentos com quizzes gerados pela IA. Feedback instantaneo e XP por acerto.',
     color: '#EC4899',
   },
   {
