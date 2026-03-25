@@ -12,7 +12,7 @@ import { SessionsChart } from '@/components/parent/charts/SessionsChart';
 import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut, Home, Shield } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
@@ -104,6 +104,14 @@ export default function ParentDashboard() {
             <span className="text-[var(--eq-text-secondary)] text-sm ml-1">/ Dashboard</span>
           </div>
           <div className="flex items-center gap-1">
+            <Link
+              href="/tutor"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:opacity-90 transition-all shadow-lg shadow-purple-600/20"
+            >
+              <GraduationCap size={15} />
+              <span className="hidden sm:inline">Modo Estudo</span>
+              <span className="sm:hidden">Estudar</span>
+            </Link>
             {profile?.email === 'carlostrindade@me.com' && (
               <Link
                 href="/admin"
@@ -273,9 +281,25 @@ export default function ParentDashboard() {
               </div>
             </div>
 
+            {/* CTA: use tutor now */}
+            <Link
+              href="/tutor"
+              className="block w-full rounded-2xl p-5 text-center transition-all hover:scale-[1.01]"
+              style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.15))', border: '1px solid rgba(139,92,246,0.25)' }}
+            >
+              <GraduationCap size={28} className="text-purple-400 mx-auto mb-2" />
+              <p className="text-white font-bold text-sm mb-1">Seu filho quer estudar agora?</p>
+              <p className="text-xs mb-3" style={{ color: 'rgba(240,244,248,0.5)' }}>
+                Clique aqui para abrir o tutor IA direto — sem precisar de conta separada
+              </p>
+              <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-purple-600 text-white">
+                <GraduationCap size={15} />
+                Abrir Modo Estudo
+              </span>
+            </Link>
+
             {/* Quick links */}
             <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-xs font-medium mb-3" style={{ color: 'rgba(240,244,248,0.4)' }}>Enquanto isso, explore:</p>
               <div className="flex flex-col gap-2">
                 <Link
                   href="/tutorial"
