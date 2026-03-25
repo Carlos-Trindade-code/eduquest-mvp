@@ -20,6 +20,7 @@ import { SuggestionsList } from './SuggestionsList';
 import { UsersTable } from './UsersTable';
 import { MetricsCards } from './MetricsCards';
 import { FeedbackList } from './FeedbackList';
+import { AnalyticsPanel } from './AnalyticsPanel';
 import type { AdminMetrics, Suggestion, Profile, UserFeedback, FeedbackStats } from '@/lib/auth/types';
 
 function createSupabase() {
@@ -148,6 +149,12 @@ export function AdminDashboard() {
                 )}
               </span>
             </Tabs.Trigger>
+            <Tabs.Trigger value="analytics" className={tabTriggerClass('analytics')}>
+              <span className="flex items-center gap-2">
+                <Activity size={16} />
+                Analytics
+              </span>
+            </Tabs.Trigger>
           </Tabs.List>
 
           {/* Overview tab */}
@@ -171,6 +178,11 @@ export function AdminDashboard() {
           {/* Feedback tab */}
           <Tabs.Content value="feedback">
             <FeedbackList feedbacks={feedbacks} stats={feedbackStats} />
+          </Tabs.Content>
+
+          {/* Analytics tab */}
+          <Tabs.Content value="analytics">
+            <AnalyticsPanel />
           </Tabs.Content>
         </Tabs.Root>
       </div>
