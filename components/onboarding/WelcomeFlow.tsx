@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, BookOpen, Brain, Trophy, BarChart3, Sparkles, Users, Copy, Check, Shield } from 'lucide-react';
+import { ArrowRight, BookOpen, Brain, Trophy, BarChart3, Sparkles, Users, Copy, Check, Shield, School } from 'lucide-react';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { createClient } from '@/lib/supabase/client';
 import { updateProfile, redeemInviteCode } from '@/lib/supabase/queries';
 import { trackEvent } from '@/lib/analytics/track';
+import { JoinClassroom } from '@/components/classroom/JoinClassroom';
 import { Link2, Ticket } from 'lucide-react';
 import type { UserType } from '@/lib/auth/types';
 
@@ -26,7 +27,7 @@ interface Step {
   customContent?: React.ReactNode;
 }
 
-function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteLinked?: () => void): Step[] {
+function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteLinked?: () => void, onClassroomJoined?: () => void): Step[] {
   return [
   {
     mascotExpression: 'waving',
@@ -102,6 +103,18 @@ function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteL
     ],
     customContent: (
       <InviteCodeInput onLinked={() => onInviteLinked?.()} />
+    ),
+  },
+  {
+    mascotExpression: 'thinking',
+    title: 'Tem codigo de turma?',
+    subtitle: 'Se seu professor te deu um codigo, digite aqui',
+    features: [
+      { icon: School, text: 'Acesse materiais enviados pelo professor', color: '#F59E0B' },
+      { icon: BookOpen, text: 'O tutor usa o conteudo da aula como base', color: '#3B82F6' },
+    ],
+    customContent: (
+      <JoinClassroom mode="inline" onJoined={() => onClassroomJoined?.()} />
     ),
   },
   {
@@ -382,13 +395,14 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
   const [direction, setDirection] = useState(1);
   const isAgeStep = userType === 'kid' && currentStep === 2;
   const isInviteStep = userType === 'kid' && currentStep === 3;
+  const isClassroomStep = userType === 'kid' && currentStep === 4;
 
   const advanceStep = () => {
     setDirection(1);
     setCurrentStep((s) => s + 1);
   };
 
-  const steps = userType === 'parent' ? buildParentSteps(inviteCode) : buildKidSteps(profileId, advanceStep, advanceStep);
+  const steps = userType === 'parent' ? buildParentSteps(inviteCode) : buildKidSteps(profileId, advanceStep, advanceStep, advanceStep);
   const step = steps[currentStep];
   const isLast = currentStep === steps.length - 1;
 
@@ -479,7 +493,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
         </AnimatePresence>
 
         {/* Action button (hidden on age step — auto-advances on selection) */}
-        {!isAgeStep && !isInviteStep && (
+        {!isAgeStep && !isInviteStep && !isClassroomStep && (
           <motion.button
             onClick={handleNext}
             className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
@@ -501,8 +515,18 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
           </button>
         )}
 
+        {/* Skip for classroom step */}
+        {isClassroomStep && (
+          <button
+            onClick={handleNext}
+            className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
+          >
+            Nao tenho codigo de turma — pular
+          </button>
+        )}
+
         {/* Skip */}
-        {!isLast && !isAgeStep && !isInviteStep && (
+        {!isLast && !isAgeStep && !isInviteStep && !isClassroomStep && (
           <button
             onClick={onComplete}
             className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"

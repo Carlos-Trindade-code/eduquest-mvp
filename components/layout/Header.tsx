@@ -4,6 +4,7 @@ import { Sparkles, LogOut, BarChart3, ChevronDown, Home, BookOpen, User, Zap } f
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
+import { JoinClassroom } from '@/components/classroom/JoinClassroom';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 
@@ -128,6 +129,8 @@ export function Header({
                   <Zap size={16} />
                   Quiz
                 </button>
+
+                {user && <JoinClassroom />}
 
                 <button
                   onClick={() => navigate('/tutorial')}
