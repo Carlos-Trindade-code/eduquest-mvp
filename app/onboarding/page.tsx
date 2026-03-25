@@ -32,6 +32,7 @@ export default function OnboardingPage() {
       userName={profile?.name}
       userType={profile?.user_type}
       inviteCode={inviteCode}
+      profileId={profile?.id}
       onComplete={handleComplete}
     />
   );

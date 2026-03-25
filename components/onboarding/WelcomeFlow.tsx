@@ -4,12 +4,15 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, BookOpen, Brain, Trophy, BarChart3, Sparkles, Users, Copy, Check, Shield } from 'lucide-react';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
+import { createClient } from '@/lib/supabase/client';
+import { updateProfile } from '@/lib/supabase/queries';
 import type { UserType } from '@/lib/auth/types';
 
 interface WelcomeFlowProps {
   userName?: string;
   userType?: UserType;
   inviteCode?: string | null;
+  profileId?: string;
   onComplete: () => void;
 }
 
@@ -21,7 +24,8 @@ interface Step {
   customContent?: React.ReactNode;
 }
 
-const kidSteps: Step[] = [
+function buildKidSteps(profileId?: string, onAgeSelected?: () => void): Step[] {
+  return [
   {
     mascotExpression: 'waving',
     title: 'Oi! Eu sou o Edu 👋',
@@ -78,6 +82,15 @@ const kidSteps: Step[] = [
     ),
   },
   {
+    mascotExpression: 'thinking',
+    title: 'Qual a sua idade?',
+    subtitle: 'Isso me ajuda a falar do jeito certo com você',
+    features: [],
+    customContent: (
+      <AgeSelector profileId={profileId} onSelected={() => onAgeSelected?.()} />
+    ),
+  },
+  {
     mascotExpression: 'celebrating',
     title: 'Pronto para começar? 🚀',
     subtitle: 'Sua primeira conquista está esperando por você!',
@@ -100,6 +113,7 @@ const kidSteps: Step[] = [
     ),
   },
 ];
+}
 
 function buildParentSteps(inviteCode?: string | null): Step[] {
   return [
@@ -137,6 +151,61 @@ function buildParentSteps(inviteCode?: string | null): Step[] {
       ],
     },
   ];
+}
+
+const AGE_OPTIONS = [
+  { label: '4–6 anos', emoji: '🧒', age: 5, grade: 'infantil' },
+  { label: '7–9 anos', emoji: '📚', age: 8, grade: 'fundamental-1' },
+  { label: '10–12 anos', emoji: '🔬', age: 11, grade: 'fundamental-2' },
+  { label: '13–15 anos', emoji: '🎓', age: 14, grade: 'ensino-medio' },
+  { label: '16–18 anos', emoji: '🚀', age: 17, grade: 'ensino-medio' },
+];
+
+function AgeSelector({ profileId, onSelected }: { profileId?: string; onSelected: () => void }) {
+  const [selected, setSelected] = useState<number | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleSelect = async (option: typeof AGE_OPTIONS[number]) => {
+    setSelected(option.age);
+    if (profileId) {
+      setSaving(true);
+      try {
+        const supabase = createClient();
+        await updateProfile(supabase, profileId, { age: option.age, grade: option.grade });
+      } catch {
+        // non-critical
+      }
+      setSaving(false);
+    }
+    setTimeout(onSelected, 400);
+  };
+
+  return (
+    <div className="grid grid-cols-2 gap-3 mt-2">
+      {AGE_OPTIONS.map((option, i) => (
+        <motion.button
+          key={option.age}
+          onClick={() => handleSelect(option)}
+          disabled={saving}
+          className={`rounded-xl p-4 text-center transition-all ${
+            option.age === selected ? 'ring-2 ring-purple-500' : ''
+          }`}
+          style={{
+            background: option.age === selected ? 'rgba(139,92,246,0.15)' : 'rgba(255,255,255,0.05)',
+            border: `1px solid ${option.age === selected ? 'rgba(139,92,246,0.4)' : 'rgba(255,255,255,0.08)'}`,
+          }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 + i * 0.08 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          <div className="text-2xl mb-1">{option.emoji}</div>
+          <div className="text-white text-sm font-medium">{option.label}</div>
+        </motion.button>
+      ))}
+    </div>
+  );
 }
 
 function InviteCodeDisplay({ code }: { code: string }) {
@@ -202,11 +271,17 @@ function InviteCodeDisplay({ code }: { code: string }) {
   );
 }
 
-export function WelcomeFlow({ userName, userType = 'kid', inviteCode, onComplete }: WelcomeFlowProps) {
+export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId, onComplete }: WelcomeFlowProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(1);
+  const isAgeStep = userType === 'kid' && currentStep === 2;
 
-  const steps = userType === 'parent' ? buildParentSteps(inviteCode) : kidSteps;
+  const advanceFromAge = () => {
+    setDirection(1);
+    setCurrentStep((s) => s + 1);
+  };
+
+  const steps = userType === 'parent' ? buildParentSteps(inviteCode) : buildKidSteps(profileId, advanceFromAge);
   const step = steps[currentStep];
   const isLast = currentStep === steps.length - 1;
 
@@ -295,19 +370,21 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, onComplete
           </motion.div>
         </AnimatePresence>
 
-        {/* Action button */}
-        <motion.button
-          onClick={handleNext}
-          className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
-          whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.4)' }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {isLast ? lastButtonLabel : 'Proximo'}
-          <ArrowRight size={16} />
-        </motion.button>
+        {/* Action button (hidden on age step — auto-advances on selection) */}
+        {!isAgeStep && (
+          <motion.button
+            onClick={handleNext}
+            className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
+            whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.4)' }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {isLast ? lastButtonLabel : 'Proximo'}
+            <ArrowRight size={16} />
+          </motion.button>
+        )}
 
         {/* Skip */}
-        {!isLast && (
+        {!isLast && !isAgeStep && (
           <button
             onClick={onComplete}
             className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
