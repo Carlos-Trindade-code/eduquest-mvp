@@ -198,3 +198,17 @@ export interface KidStudyStats {
   sessions_this_week: number;
   top_difficulties: string[];
 }
+
+export type ParentTaskStatus = 'pending' | 'in_progress' | 'completed';
+
+export interface ParentTask {
+  id: string;
+  parent_id: string;
+  kid_id: string;
+  subject: string;
+  description: string;
+  status: ParentTaskStatus;
+  session_id: string | null;
+  created_at: string;
+  completed_at: string | null;
+}

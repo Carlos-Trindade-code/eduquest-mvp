@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats, SessionSummary } from '@/lib/auth/types';
+import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats, SessionSummary, ParentTask } from '@/lib/auth/types';
 import { checkNewBadges } from '@/lib/gamification/badges';
 
 // ==========================================
@@ -541,4 +541,79 @@ export async function getKidStudyStats(
   kidId: string
 ) {
   return supabase.rpc('get_kid_study_stats', { p_kid_id: kidId });
+}
+
+// ==========================================
+// PARENT TASKS
+// ==========================================
+
+export async function createParentTask(
+  supabase: SupabaseClient,
+  parentId: string,
+  kidId: string,
+  subject: string,
+  description: string
+) {
+  const { data, error } = await supabase
+    .from('parent_tasks')
+    .insert({ parent_id: parentId, kid_id: kidId, subject, description })
+    .select()
+    .single();
+  return { data: data as ParentTask | null, error };
+}
+
+export async function getParentTasks(
+  supabase: SupabaseClient,
+  parentId: string,
+  kidId: string
+) {
+  const { data, error } = await supabase
+    .from('parent_tasks')
+    .select('*')
+    .eq('parent_id', parentId)
+    .eq('kid_id', kidId)
+    .order('created_at', { ascending: false });
+  return { data: (data || []) as ParentTask[], error };
+}
+
+export async function getKidPendingTasks(
+  supabase: SupabaseClient,
+  kidId: string
+) {
+  const { data, error } = await supabase
+    .from('parent_tasks')
+    .select('*')
+    .eq('kid_id', kidId)
+    .in('status', ['pending', 'in_progress'])
+    .order('created_at', { ascending: true });
+  return { data: (data || []) as ParentTask[], error };
+}
+
+export async function completeParentTask(
+  supabase: SupabaseClient,
+  taskId: string,
+  sessionId: string
+) {
+  const { data, error } = await supabase
+    .from('parent_tasks')
+    .update({
+      status: 'completed' as const,
+      session_id: sessionId,
+      completed_at: new Date().toISOString(),
+    })
+    .eq('id', taskId)
+    .select()
+    .single();
+  return { data: data as ParentTask | null, error };
+}
+
+export async function deleteParentTask(
+  supabase: SupabaseClient,
+  taskId: string
+) {
+  const { error } = await supabase
+    .from('parent_tasks')
+    .delete()
+    .eq('id', taskId);
+  return { error };
 }
