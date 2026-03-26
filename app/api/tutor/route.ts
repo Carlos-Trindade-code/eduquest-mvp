@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { buildSystemPrompt } from '@/lib/subjects/prompts';
 import { generateTutorResponse, getCurrentProvider } from '@/lib/ai/provider';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createRouteHandlerClient } from '@/lib/supabase/server';
 import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
 interface TutorRequestBody {
@@ -19,7 +19,7 @@ interface TutorRequestBody {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return Response.json({ error: 'Não autorizado' }, { status: 401 });

@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
 import mammoth from 'mammoth';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createRouteHandlerClient } from '@/lib/supabase/server';
 
 const DOCX_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -10,7 +10,7 @@ const DOCX_TYPES = [
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return Response.json({ error: 'Não autorizado' }, { status: 401 });
