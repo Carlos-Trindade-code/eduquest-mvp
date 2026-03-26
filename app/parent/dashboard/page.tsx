@@ -2,23 +2,34 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import * as Tabs from '@radix-ui/react-tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
-import { getLinkedKids, getKidAnalytics, getUserStats, getUserBadges, getInviteCode, getKidSessions } from '@/lib/supabase/queries';
-import { getSubjectById } from '@/lib/subjects/config';
+import {
+  getLinkedKids,
+  getKidAnalytics,
+  getUserStats,
+  getUserBadges,
+  getInviteCode,
+  getKidSessions,
+  getKidSessionSummaries,
+  getKidStudyStats,
+} from '@/lib/supabase/queries';
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakDisplay } from '@/components/gamification/StreakDisplay';
 import { BadgeCard } from '@/components/gamification/BadgeCard';
 import { SessionsChart } from '@/components/parent/charts/SessionsChart';
 import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
+import { StudyStatsCards } from '@/components/parent/StudyStatsCards';
+import { SessionTimeline } from '@/components/parent/SessionTimeline';
+import { SessionDetail } from '@/components/parent/SessionDetail';
+import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap } from 'lucide-react';
-import { ADMIN_EMAIL } from '@/lib/auth/constants';
+import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
-import { cn } from '@/lib/utils';
-import type { Profile, UserStats, Badge, Session } from '@/lib/auth/types';
+import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats } from '@/lib/auth/types';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function ParentDashboard() {
@@ -33,6 +44,9 @@ export default function ParentDashboard() {
   const [kidStats, setKidStats] = useState<UserStats | null>(null);
   const [kidBadges, setKidBadges] = useState<Badge[]>([]);
   const [kidSessions, setKidSessions] = useState<Session[]>([]);
+  const [summaries, setSummaries] = useState<SessionSummary[]>([]);
+  const [studyStats, setStudyStats] = useState<KidStudyStats | null>(null);
+  const [selectedSession, setSelectedSession] = useState<SessionSummary | null>(null);
   const [analytics, setAnalytics] = useState<{
     totalSessions: number;
     totalMinutes: number;
@@ -75,16 +89,21 @@ export default function ParentDashboard() {
   };
 
   const loadKidData = async (kidId: string) => {
-    const [statsResult, badgesResult, analyticsResult, sessionsResult] = await Promise.all([
+    const [statsResult, badgesResult, analyticsResult, sessionsResult, summariesResult, studyStatsResult] = await Promise.all([
       getUserStats(supabase, kidId),
       getUserBadges(supabase, kidId),
       getKidAnalytics(supabase, kidId, 30),
       getKidSessions(supabase, kidId, 10),
+      getKidSessionSummaries(supabase, kidId),
+      getKidStudyStats(supabase, kidId),
     ]);
     setKidStats(statsResult.data);
     setKidBadges(badgesResult.data);
     setAnalytics(analyticsResult);
     setKidSessions(sessionsResult.data);
+    setSummaries((summariesResult.data as SessionSummary[]) || []);
+    setStudyStats((studyStatsResult.data as KidStudyStats) || null);
+    setSelectedSession(null);
   };
 
   if (authLoading || loading) {
@@ -117,7 +136,7 @@ export default function ParentDashboard() {
               <span className="hidden sm:inline">Modo Estudo</span>
               <span className="sm:hidden">Estudar</span>
             </Link>
-            {profile?.email === ADMIN_EMAIL && (
+            {profile?.email === 'carlostrindade@me.com' && (
               <Link
                 href="/admin"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors"
@@ -166,134 +185,215 @@ export default function ParentDashboard() {
           </div>
         )}
         {selectedKid && (
-          <motion.div
-            className="space-y-6"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div variants={fadeInUp('medium')} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard icon={<BookOpen size={20} />} label="Sessoes" value={analytics?.totalSessions || 0} color="#3B82F6" />
-              <StatCard icon={<Clock size={20} />} label="Minutos" value={analytics?.totalMinutes || 0} color="#10B981" />
-              <StatCard icon={<Trophy size={20} />} label="XP Total" value={kidStats?.total_xp || 0} color="#F59E0B" />
-              <StatCard icon={<BarChart3 size={20} />} label="Streak" value={`${kidStats?.current_streak || 0} dias`} color="#F97316" />
-            </motion.div>
+          <Tabs.Root defaultValue="overview">
+            <Tabs.List className="flex gap-1 mb-6 p-1 glass rounded-xl overflow-x-auto">
+              <Tabs.Trigger
+                value="overview"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <BarChart3 size={15} />
+                  Visao Geral
+                </span>
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="sessions"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <BookOpen size={15} />
+                  Sessoes
+                  {summaries.length > 0 && (
+                    <span className="ml-0.5 px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">
+                      {summaries.length}
+                    </span>
+                  )}
+                </span>
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="achievements"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <Trophy size={15} />
+                  Conquistas
+                </span>
+              </Tabs.Trigger>
+            </Tabs.List>
 
-            <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
-              <div className="glass rounded-[var(--eq-radius)] p-5">
-                <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes (30 dias)</h3>
-                <SessionsChart
-                  data={
-                    analytics?.byDay
-                      ? Object.entries(analytics.byDay).map(([date, sessions]) => ({
-                          date: date.slice(5), // "MM-DD" apenas
-                          sessions,
-                        }))
-                      : []
-                  }
-                />
-              </div>
-              <div className="glass rounded-[var(--eq-radius)] p-5">
-                <h3 className="text-[var(--eq-text)] font-semibold mb-4">Materias Estudadas</h3>
-                {analytics && Object.keys(analytics.bySubject).length > 0 ? (
-                  <SubjectsChart data={analytics.bySubject} />
-                ) : (
-                  <div className="h-48 flex items-center justify-center text-white/50 text-sm">
-                    Sem dados ainda
+            {/* Tab 1: Visao Geral */}
+            <Tabs.Content value="overview">
+              <motion.div
+                className="space-y-6"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
+                {/* Enhanced Stats Cards */}
+                <StudyStatsCards stats={studyStats} />
+
+                {/* Charts */}
+                <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
+                  <div className="glass rounded-[var(--eq-radius)] p-5">
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes (30 dias)</h3>
+                    <SessionsChart
+                      data={
+                        analytics?.byDay
+                          ? Object.entries(analytics.byDay).map(([date, sessions]) => ({
+                              date: date.slice(5),
+                              sessions,
+                            }))
+                          : []
+                      }
+                    />
                   </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Recent sessions */}
-            {kidSessions.length > 0 && (
-              <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-5">
-                <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes Recentes</h3>
-                <div className="space-y-2">
-                  {kidSessions.map((session) => {
-                    const sub = getSubjectById(session.subject);
-                    const date = new Date(session.created_at);
-                    const isToday = new Date().toDateString() === date.toDateString();
-                    return (
-                      <div
-                        key={session.id}
-                        className="flex items-center gap-3 p-3 rounded-xl"
-                        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}
-                      >
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0"
-                          style={{ background: `${sub?.color || '#8B5CF6'}15` }}
-                        >
-                          {sub?.icon || '📚'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-white text-sm font-medium">{sub?.name || session.subject}</span>
-                          <div className="flex items-center gap-3 mt-0.5">
-                            {session.duration_minutes != null && session.duration_minutes > 0 && (
-                              <span className="text-white/50 text-xs">{session.duration_minutes}min</span>
-                            )}
-                            {session.xp_earned > 0 && (
-                              <span className="text-amber-400/60 text-xs">+{session.xp_earned} XP</span>
-                            )}
-                          </div>
-                        </div>
-                        <span className="text-white/50 text-xs shrink-0">
-                          {isToday ? date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
-                        </span>
+                  <div className="glass rounded-[var(--eq-radius)] p-5">
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Materias Estudadas</h3>
+                    {analytics && Object.keys(analytics.bySubject).length > 0 ? (
+                      <SubjectsChart data={analytics.bySubject} />
+                    ) : (
+                      <div className="h-48 flex items-center justify-center text-white/30 text-sm">
+                        Sem dados ainda
                       </div>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
+                    )}
+                  </div>
+                </motion.div>
 
-            {kidStats && (
-              <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
-                <div className="glass rounded-[var(--eq-radius)] p-5">
-                  <h3 className="text-[var(--eq-text)] font-semibold mb-3">Progresso XP</h3>
-                  <XPBar totalXp={kidStats.total_xp} />
-                </div>
-                <div className="glass rounded-[var(--eq-radius)] p-5">
-                  <h3 className="text-[var(--eq-text)] font-semibold mb-3">Sequencia de Estudo</h3>
-                  <StreakDisplay currentStreak={kidStats.current_streak} longestStreak={kidStats.longest_streak} />
-                </div>
-              </motion.div>
-            )}
+                {/* XP + Streak */}
+                {kidStats && (
+                  <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
+                    <div className="glass rounded-[var(--eq-radius)] p-5">
+                      <h3 className="text-[var(--eq-text)] font-semibold mb-3">Progresso XP</h3>
+                      <XPBar totalXp={kidStats.total_xp} />
+                    </div>
+                    <div className="glass rounded-[var(--eq-radius)] p-5">
+                      <h3 className="text-[var(--eq-text)] font-semibold mb-3">Sequencia de Estudo</h3>
+                      <StreakDisplay currentStreak={kidStats.current_streak} longestStreak={kidStats.longest_streak} />
+                    </div>
+                  </motion.div>
+                )}
 
-            <motion.div variants={fadeInUp('medium')}>
-              <div className="glass rounded-[var(--eq-radius)] p-5">
-                <h3 className="text-[var(--eq-text)] font-semibold mb-4">Conquistas</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {allBadges.map((badgeDef) => {
-                    const earned = kidBadges.find((b) => b.badge_type === badgeDef.id);
-                    return (
-                      <BadgeCard
-                        key={badgeDef.id}
-                        icon={badgeDef.icon}
-                        name={badgeDef.name}
-                        description={badgeDef.description}
-                        earned={!!earned}
-                        earnedAt={earned?.earned_at}
-                        rarity={badgeDef.rarity}
+                {analytics?.totalSessions === 0 && (
+                  <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-8 text-center">
+                    <div className="text-5xl mb-3">📚</div>
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-2">
+                      {selectedKid.name} ainda nao comecou a estudar
+                    </h3>
+                    <p className="text-[var(--eq-text-secondary)] text-sm">
+                      As estatisticas aparecerao aqui apos as primeiras sessoes.
+                    </p>
+                  </motion.div>
+                )}
+              </motion.div>
+            </Tabs.Content>
+
+            {/* Tab 2: Sessoes */}
+            <Tabs.Content value="sessions">
+              <motion.div
+                className="space-y-4"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
+                {summaries.length === 0 && kidSessions.length === 0 ? (
+                  <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-8 text-center">
+                    <div className="text-5xl mb-3">📭</div>
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-2">
+                      Nenhuma sessao registrada ainda
+                    </h3>
+                    <p className="text-[var(--eq-text-secondary)] text-sm">
+                      Quando {selectedKid.name} estudar com o Edu, as sessoes detalhadas aparecerao aqui.
+                    </p>
+                  </motion.div>
+                ) : summaries.length > 0 ? (
+                  <>
+                    <SessionTimeline
+                      summaries={summaries}
+                      onSelectSession={setSelectedSession}
+                      selectedSessionId={selectedSession?.id}
+                    />
+                    {selectedSession && (
+                      <SessionDetail
+                        summary={selectedSession}
+                        onClose={() => setSelectedSession(null)}
                       />
-                    );
-                  })}
-                </div>
-              </div>
-            </motion.div>
-
-            {analytics?.totalSessions === 0 && (
-              <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-8 text-center">
-                <div className="text-5xl mb-3">📚</div>
-                <h3 className="text-[var(--eq-text)] font-semibold mb-2">
-                  {selectedKid.name} ainda nao comecou a estudar
-                </h3>
-                <p className="text-[var(--eq-text-secondary)] text-sm">
-                  As estatisticas aparecerao aqui apos as primeiras sessoes.
-                </p>
+                    )}
+                  </>
+                ) : (
+                  /* Fallback: show old-style session list if no summaries but sessions exist */
+                  <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-5">
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes Recentes</h3>
+                    <div className="space-y-2">
+                      {kidSessions.map((session) => {
+                        const sub = getSubjectById(session.subject);
+                        const date = new Date(session.created_at);
+                        const isToday = new Date().toDateString() === date.toDateString();
+                        return (
+                          <div
+                            key={session.id}
+                            className="flex items-center gap-3 p-3 rounded-xl"
+                            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}
+                          >
+                            <div
+                              className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0"
+                              style={{ background: `${sub?.color || '#8B5CF6'}15` }}
+                            >
+                              {sub?.icon || '📚'}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-white text-sm font-medium">{sub?.name || session.subject}</span>
+                              <div className="flex items-center gap-3 mt-0.5">
+                                {session.duration_minutes != null && session.duration_minutes > 0 && (
+                                  <span className="text-white/25 text-xs">{session.duration_minutes}min</span>
+                                )}
+                                {session.xp_earned > 0 && (
+                                  <span className="text-amber-400/40 text-xs">+{session.xp_earned} XP</span>
+                                )}
+                              </div>
+                            </div>
+                            <span className="text-white/20 text-xs shrink-0">
+                              {isToday ? date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
-            )}
-          </motion.div>
+            </Tabs.Content>
+
+            {/* Tab 3: Conquistas */}
+            <Tabs.Content value="achievements">
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
+                <motion.div variants={fadeInUp('medium')}>
+                  <div className="glass rounded-[var(--eq-radius)] p-5">
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Conquistas</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {allBadges.map((badgeDef) => {
+                        const earned = kidBadges.find((b) => b.badge_type === badgeDef.id);
+                        return (
+                          <BadgeCard
+                            key={badgeDef.id}
+                            icon={badgeDef.icon}
+                            name={badgeDef.name}
+                            description={badgeDef.description}
+                            earned={!!earned}
+                            earnedAt={earned?.earned_at}
+                            rarity={badgeDef.rarity}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </Tabs.Content>
+          </Tabs.Root>
         )}
 
         {kids.length === 0 && (
@@ -368,7 +468,7 @@ export default function ParentDashboard() {
             </div>
 
             {/* Auto-refresh hint */}
-            <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
+            <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
               Esta pagina atualiza automaticamente quando seu filho criar a conta
             </p>
           </div>
@@ -376,15 +476,5 @@ export default function ParentDashboard() {
       </main>
       <FeedbackButton />
     </div>
-  );
-}
-
-function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number | string; color: string }) {
-  return (
-    <motion.div className="glass rounded-[var(--eq-radius)] p-4" whileHover={{ scale: 1.02, y: -2 }}>
-      <div className="mb-2" style={{ color }}>{icon}</div>
-      <div className="text-[var(--eq-text)] text-2xl font-bold">{value}</div>
-      <div className="text-[var(--eq-text-secondary)] text-xs">{label}</div>
-    </motion.div>
   );
 }
