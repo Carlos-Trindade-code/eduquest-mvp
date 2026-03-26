@@ -4,11 +4,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { safeRedirectPath } from '@/lib/auth/constants';
 
 function LoginContent() {
   const { signIn, signInWithGoogle, resetPassword } = useAuth();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
+  const redirect = safeRedirectPath(searchParams.get('redirect'), '/tutor');
   const authError = searchParams.get('error');
 
   const handleLogin = async (email: string, password: string) => {

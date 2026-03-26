@@ -14,6 +14,7 @@ import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
 import { Sparkles, Users, BookOpen, Clock, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap } from 'lucide-react';
+import { ADMIN_EMAIL } from '@/lib/auth/constants';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
@@ -116,7 +117,7 @@ export default function ParentDashboard() {
               <span className="hidden sm:inline">Modo Estudo</span>
               <span className="sm:hidden">Estudar</span>
             </Link>
-            {profile?.email === 'carlostrindade@me.com' && (
+            {profile?.email === ADMIN_EMAIL && (
               <Link
                 href="/admin"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors"

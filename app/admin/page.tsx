@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { Shield } from 'lucide-react';
-
-const ADMIN_EMAIL = 'carlostrindade@me.com';
+import { createClient } from '@/lib/supabase/client';
+import { ADMIN_EMAIL } from '@/lib/auth/constants';
 
 export default function AdminPage() {
   const [authorized, setAuthorized] = useState(false);
@@ -13,10 +12,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function checkAuth() {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      );
+      const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user?.email === ADMIN_EMAIL) {

@@ -19,6 +19,11 @@ function RegisterContent() {
     grade?: string;
     inviteCode?: string;
   }) => {
+    // Reject 'admin' as user_type — admin is assigned internally, not via registration
+    if (data.userType !== 'parent' && data.userType !== 'kid') {
+      throw new Error('Tipo de usuário inválido');
+    }
+
     const { error } = await signUp(data.email, data.password, data.name, data.userType);
     if (error) throw new Error(error);
 

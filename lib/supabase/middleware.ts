@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { ADMIN_EMAIL } from '@/lib/auth/constants';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -34,9 +35,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Admin route: only accessible by specific email
-  const ADMIN_EMAIL = 'carlostrindade@me.com';
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  const pathname = request.nextUrl.pathname;
+  const userType = user?.user_metadata?.user_type as string | undefined;
+
+  // --- Admin route: only accessible by specific email ---
+  if (pathname.startsWith('/admin')) {
     if (!user || user.email !== ADMIN_EMAIL) {
       const url = request.nextUrl.clone();
       url.pathname = '/';
@@ -44,30 +47,39 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // Protected routes: redirect to login if not authenticated
-  // Note: /tutor is open for free trial (1 session without account)
-  const protectedPaths = ['/dashboard', '/parent', '/professor', '/onboarding'];
-  const isProtected = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
+  // --- Protected routes: redirect to login if not authenticated ---
+  const protectedPaths = ['/tutor', '/dashboard', '/parent', '/professor', '/onboarding'];
+  const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
-    url.searchParams.set('redirect', request.nextUrl.pathname);
+    url.searchParams.set('redirect', pathname);
     return NextResponse.redirect(url);
   }
 
-  // If logged in and visiting login/register, redirect based on role
+  // --- Role enforcement: prevent cross-role access ---
+  if (user && userType) {
+    // Parents cannot access kid-only pages
+    if (pathname.startsWith('/tutor') && userType === 'parent') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/parent/dashboard';
+      return NextResponse.redirect(url);
+    }
+    // Kids cannot access parent-only pages
+    if (pathname.startsWith('/parent') && userType === 'kid') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/tutor';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // --- Auth pages: redirect already-authenticated users by role ---
   const authPaths = ['/login', '/register'];
-  const isAuthPage = authPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
+  const isAuthPage = authPaths.some((p) => pathname.startsWith(p));
 
   if (isAuthPage && user) {
     const url = request.nextUrl.clone();
-    // Use user_metadata to determine role (available without extra DB query)
-    const userType = user.user_metadata?.user_type;
     url.pathname = userType === 'teacher' ? '/professor' : userType === 'parent' ? '/parent/dashboard' : '/tutor';
     return NextResponse.redirect(url);
   }
