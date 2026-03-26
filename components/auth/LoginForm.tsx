@@ -11,15 +11,17 @@ interface LoginFormProps {
   onGoogleLogin?: () => Promise<void>;
   onForgotPassword?: (email: string) => Promise<void>;
   initialError?: string;
+  initialSuccess?: string;
 }
 
-export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialError }: LoginFormProps) {
+export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialError, initialSuccess }: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [error, setError] = useState(initialError || '');
+  const [success, setSuccess] = useState(initialSuccess || '');
   const [resetSent, setResetSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,29 +159,46 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             animate="visible"
           >
             <AnimatePresence mode="wait">
-              {error && (
+              {success && (
                 <motion.div
                   initial={{ opacity: 0, y: -10, height: 0 }}
                   animate={{ opacity: 1, y: 0, height: 'auto' }}
                   exit={{ opacity: 0, y: -10, height: 0 }}
-                  className="bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3 flex items-center gap-2"
+                  className="bg-green-500/15 border border-green-500/30 text-green-300 text-sm rounded-xl px-4 py-3 flex items-center gap-2"
                 >
-                  <span className="shrink-0">⚠️</span>
-                  {error}
+                  <span className="shrink-0">✅</span>
+                  {success}
                 </motion.div>
               )}
             </AnimatePresence>
 
+            <div role="alert" aria-live="polite">
+              <AnimatePresence mode="wait">
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: 'auto' }}
+                    exit={{ opacity: 0, y: -10, height: 0 }}
+                    className="bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3 flex items-center gap-2"
+                  >
+                    <span className="shrink-0">⚠️</span>
+                    {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className="space-y-1.5">
-              <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
+              <label htmlFor="login-email" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
               <div className="relative group">
                 <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                 <input
+                  id="login-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
-                  className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                  className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                   required
                 />
               </div>
@@ -187,7 +206,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>
+                <label htmlFor="login-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>
                 <button
                   type="button"
                   onClick={handleForgotPassword}
@@ -200,17 +219,19 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
               <div className="relative group">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                 <input
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-10 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                  className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors p-2"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

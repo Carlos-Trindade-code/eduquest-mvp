@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { getProfile } from '@/lib/supabase/queries';
 import { trackEvent } from '@/lib/analytics/track';
@@ -22,6 +22,7 @@ export function useAuth(): UseAuthReturn {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const wasLoggedIn = useRef(false);
   const supabase = createClient();
 
   const loadProfile = useCallback(async () => {
@@ -33,19 +34,32 @@ export function useAuth(): UseAuthReturn {
     // Get initial session
     supabase.auth.getUser().then(({ data: { user: u } }) => {
       setUser(u);
-      if (u) loadProfile();
+      if (u) {
+        wasLoggedIn.current = true;
+        loadProfile();
+      }
       setLoading(false);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
+        wasLoggedIn.current = true;
         loadProfile();
       } else {
         setProfile(null);
+        // If user was previously logged in and session ended unexpectedly, redirect to login
+        if (wasLoggedIn.current && event === 'SIGNED_OUT') {
+          wasLoggedIn.current = false;
+          // Only redirect if not already on login/register pages
+          const path = window.location.pathname;
+          if (path !== '/login' && path !== '/register' && path !== '/') {
+            window.location.href = '/login?msg=session_expired';
+          }
+        }
       }
     });
 

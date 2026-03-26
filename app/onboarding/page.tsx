@@ -1,15 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { WelcomeFlow } from '@/components/onboarding/WelcomeFlow';
 import { createClient } from '@/lib/supabase/client';
 import { getInviteCode } from '@/lib/supabase/queries';
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const { profile } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inviteError = searchParams.get('invite_error') === '1';
   const [inviteCode, setInviteCode] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,6 +36,21 @@ export default function OnboardingPage() {
       inviteCode={inviteCode}
       profileId={profile?.id}
       onComplete={handleComplete}
+      inviteError={inviteError}
     />
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-app flex items-center justify-center">
+          <div className="text-white animate-pulse">Carregando...</div>
+        </div>
+      }
+    >
+      <OnboardingContent />
+    </Suspense>
   );
 }

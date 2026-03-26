@@ -30,22 +30,24 @@ function RegisterContent() {
     // Auto-login after registration (works when email confirmation is disabled)
     const { error: signInError } = await signIn(data.email, data.password);
     if (signInError) {
-      window.location.href = '/login';
+      window.location.href = '/login?msg=account_created';
       return;
     }
 
     // If kid provided an invite code, try to redeem it
+    let inviteCodeFailed = false;
     if (data.userType === 'kid' && data.inviteCode) {
       try {
         const supabase = createClient();
         await redeemInviteCode(supabase, data.inviteCode);
       } catch {
-        console.warn('Failed to redeem invite code, continuing without link');
+        inviteCodeFailed = true;
       }
     }
 
     // Teachers go directly to their dashboard, others to onboarding
-    window.location.href = data.userType === 'teacher' ? '/professor' : '/onboarding';
+    const base = data.userType === 'teacher' ? '/professor' : '/onboarding';
+    window.location.href = inviteCodeFailed ? `${base}?invite_error=1` : base;
   };
 
   const handleGoogleRegister = async () => {

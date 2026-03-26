@@ -198,7 +198,7 @@ export default function ParentDashboard() {
                 {analytics && Object.keys(analytics.bySubject).length > 0 ? (
                   <SubjectsChart data={analytics.bySubject} />
                 ) : (
-                  <div className="h-48 flex items-center justify-center text-white/30 text-sm">
+                  <div className="h-48 flex items-center justify-center text-white/50 text-sm">
                     Sem dados ainda
                   </div>
                 )}
@@ -230,14 +230,14 @@ export default function ParentDashboard() {
                           <span className="text-white text-sm font-medium">{sub?.name || session.subject}</span>
                           <div className="flex items-center gap-3 mt-0.5">
                             {session.duration_minutes != null && session.duration_minutes > 0 && (
-                              <span className="text-white/25 text-xs">{session.duration_minutes}min</span>
+                              <span className="text-white/50 text-xs">{session.duration_minutes}min</span>
                             )}
                             {session.xp_earned > 0 && (
-                              <span className="text-amber-400/40 text-xs">+{session.xp_earned} XP</span>
+                              <span className="text-amber-400/60 text-xs">+{session.xp_earned} XP</span>
                             )}
                           </div>
                         </div>
-                        <span className="text-white/20 text-xs shrink-0">
+                        <span className="text-white/50 text-xs shrink-0">
                           {isToday ? date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                         </span>
                       </div>
@@ -368,7 +368,7 @@ export default function ParentDashboard() {
             </div>
 
             {/* Auto-refresh hint */}
-            <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
+            <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
               Esta pagina atualiza automaticamente quando seu filho criar a conta
             </p>
           </div>

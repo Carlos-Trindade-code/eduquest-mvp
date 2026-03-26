@@ -193,19 +193,21 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
           </motion.div>
 
           <div className="glass rounded-2xl p-6">
-            <AnimatePresence mode="wait">
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  className="bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2"
-                >
-                  <span className="shrink-0">⚠️</span>
-                  {error}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div role="alert" aria-live="polite">
+              <AnimatePresence mode="wait">
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: 'auto' }}
+                    exit={{ opacity: 0, y: -10, height: 0 }}
+                    className="bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2"
+                  >
+                    <span className="shrink-0">⚠️</span>
+                    {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             <AnimatePresence mode="wait" custom={direction}>
               {step === 1 ? (
@@ -316,30 +318,32 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   </button>
 
                   <div className="space-y-1.5">
-                    <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Nome</label>
+                    <label htmlFor="register-name" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Nome</label>
                     <div className="relative group">
                       <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
+                        id="register-name"
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder={userType === 'kid' ? 'Seu nome ou apelido' : 'Seu nome'}
-                        className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
+                    <label htmlFor="register-email" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
                     <div className="relative group">
                       <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
+                        id="register-email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="seu@email.com"
-                        className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                       />
                     </div>
@@ -354,36 +358,39 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                     >
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5">
-                          <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Idade</label>
+                          <label htmlFor="register-age" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Idade</label>
                           <input
+                            id="register-age"
                             type="number"
                             min="4"
                             max="18"
                             value={age}
                             onChange={(e) => setAge(e.target.value)}
                             placeholder="12"
-                            className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                            className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Serie/Ano</label>
+                          <label htmlFor="register-grade" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Serie/Ano</label>
                           <input
+                            id="register-grade"
                             type="text"
                             value={grade}
                             onChange={(e) => setGrade(e.target.value)}
                             placeholder="7o ano"
-                            className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                            className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-1.5 rounded-xl p-3" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.12)' }}>
-                        <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">
+                        <label htmlFor="register-invite-code" className="text-[var(--eq-text-secondary)] text-sm font-medium block">
                           Codigo de convite do seu pai/mae
                         </label>
                         <div className="relative group">
                           <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                           <input
+                            id="register-invite-code"
                             type="text"
                             value={inviteCode}
                             onChange={(e) => {
@@ -402,28 +409,30 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                             className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
                           />
                         </div>
-                        <p className="text-white/25 text-xs pl-1">Se nao tiver agora, pode vincular depois no app</p>
+                        <p className="text-white/50 text-xs pl-1">Se nao tiver agora, pode vincular depois no app</p>
                       </div>
                     </motion.div>
                   )}
 
                   <div className="space-y-1.5">
-                    <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>
+                    <label htmlFor="register-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>
                     <div className="relative group">
                       <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
+                        id="register-password"
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Minimo 6 caracteres"
-                        className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-10 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                         minLength={6}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                        aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                        className="absolute right-1 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors p-2"
                       >
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -431,15 +440,16 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[var(--eq-text-secondary)] text-sm font-medium block">Confirmar senha</label>
+                    <label htmlFor="register-confirm-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Confirmar senha</label>
                     <div className="relative group">
                       <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
+                        id="register-confirm-password"
                         type={showPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Digite a senha novamente"
-                        className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                       />
                     </div>

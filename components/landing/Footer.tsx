@@ -47,7 +47,7 @@ export function Footer() {
             <Link href="/termos" className="hover:text-white transition-colors">Termos</Link>
             <Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
           </div>
-          <p className="text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
+          <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
             © {new Date().getFullYear()} Studdo. Todos os direitos reservados.
           </p>
         </div>

@@ -86,7 +86,7 @@ export function BadgeCard({
           <p className={cn('font-semibold text-sm truncate', earned ? 'text-[var(--eq-text)]' : 'text-white/40')}>
             {name}
           </p>
-          <p className={cn('text-xs truncate', earned ? 'text-[var(--eq-text-secondary)]' : 'text-white/25')}>
+          <p className={cn('text-xs truncate', earned ? 'text-[var(--eq-text-secondary)]' : 'text-white/40')}>
             {description}
           </p>
           {earned && earnedAt && (

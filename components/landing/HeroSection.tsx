@@ -167,7 +167,7 @@ function ChatPreview() {
             </motion.button>
           </div>
           {!interacted && (
-            <p className="text-[10px] text-center mt-2" style={{ color: 'rgba(240,244,248,0.25)' }}>
+            <p className="text-[10px] text-center mt-2" style={{ color: 'rgba(240,244,248,0.5)' }}>
               Experimente — digite uma pergunta real
             </p>
           )}

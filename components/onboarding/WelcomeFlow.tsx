@@ -17,6 +17,7 @@ interface WelcomeFlowProps {
   inviteCode?: string | null;
   profileId?: string;
   onComplete: () => void;
+  inviteError?: boolean;
 }
 
 interface Step {
@@ -390,7 +391,7 @@ function InviteCodeDisplay({ code }: { code: string }) {
   );
 }
 
-export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId, onComplete }: WelcomeFlowProps) {
+export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId, onComplete, inviteError }: WelcomeFlowProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(1);
   const isAgeStep = userType === 'kid' && currentStep === 2;
@@ -420,6 +421,11 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
 
   return (
     <div className="min-h-screen bg-gradient-app flex items-center justify-center px-4 py-8">
+      {inviteError && currentStep === 0 && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm rounded-xl px-4 py-3 max-w-md text-center shadow-lg">
+          Nao conseguimos vincular o codigo do seu pai/mae. Voce pode tentar novamente depois nas configuracoes.
+        </div>
+      )}
       <div className="w-full max-w-lg">
         {/* Progress dots */}
         <div className="flex items-center justify-center gap-2 mb-8">

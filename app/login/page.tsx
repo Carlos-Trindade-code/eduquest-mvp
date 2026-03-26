@@ -11,6 +11,7 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const redirect = safeRedirectPath(searchParams.get('redirect'), '/tutor');
   const authError = searchParams.get('error');
+  const successMsg = searchParams.get('msg');
 
   const handleLogin = async (email: string, password: string) => {
     const { error } = await signIn(email, password);
@@ -38,6 +39,7 @@ function LoginContent() {
       onGoogleLogin={handleGoogleLogin}
       onForgotPassword={handleForgotPassword}
       initialError={authError === 'auth_callback_failed' ? 'Erro ao autenticar com Google. Tente novamente.' : undefined}
+      initialSuccess={successMsg === 'account_created' ? 'Conta criada com sucesso! Faca login para continuar.' : successMsg === 'session_expired' ? 'Sua sessao expirou. Faca login novamente.' : undefined}
     />
   );
 }

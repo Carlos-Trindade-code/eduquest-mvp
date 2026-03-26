@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, LogOut, BarChart3, ChevronDown, Home, BookOpen, User, Zap } from 'lucide-react';
+import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
@@ -58,14 +58,15 @@ export function Header({
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+          aria-expanded={menuOpen}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity p-1 -ml-1"
         >
+          <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+            {menuOpen ? <X size={18} className="text-white/70" /> : <Menu size={18} className="text-white/70" />}
+          </div>
           <Sparkles className="text-yellow-400" size={22} />
           <span className="text-white font-bold text-xl">{appName}</span>
-          <ChevronDown
-            size={14}
-            className={`text-white/50 transition-transform ${menuOpen ? 'rotate-180' : ''}`}
-          />
         </button>
 
         <AnimatePresence>
@@ -86,7 +87,7 @@ export function Header({
                     </div>
                     <div className="min-w-0">
                       <p className="text-white font-semibold text-sm truncate">{displayName}</p>
-                      <p className="text-white/40 text-xs truncate">{displayEmail}</p>
+                      <p className="text-white/50 text-xs truncate">{displayEmail}</p>
                     </div>
                   </div>
                 </div>
