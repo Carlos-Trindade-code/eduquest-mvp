@@ -20,7 +20,7 @@ function RegisterContent() {
     inviteCode?: string;
   }) => {
     // Reject 'admin' as user_type — admin is assigned internally, not via registration
-    if (data.userType !== 'parent' && data.userType !== 'kid') {
+    if (data.userType !== 'parent' && data.userType !== 'kid' && data.userType !== 'teacher') {
       throw new Error('Tipo de usuário inválido');
     }
 
