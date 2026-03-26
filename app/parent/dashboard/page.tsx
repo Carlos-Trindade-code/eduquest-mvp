@@ -14,6 +14,7 @@ import {
   getKidSessions,
   getKidSessionSummaries,
   getKidStudyStats,
+  getParentTasks,
 } from '@/lib/supabase/queries';
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakDisplay } from '@/components/gamification/StreakDisplay';
@@ -23,13 +24,14 @@ import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { StudyStatsCards } from '@/components/parent/StudyStatsCards';
 import { SessionTimeline } from '@/components/parent/SessionTimeline';
 import { SessionDetail } from '@/components/parent/SessionDetail';
+import { TasksTab } from '@/components/parent/TasksTab';
 import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
-import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats } from '@/lib/auth/types';
+import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats, ParentTask } from '@/lib/auth/types';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function ParentDashboard() {
@@ -46,6 +48,7 @@ export default function ParentDashboard() {
   const [kidSessions, setKidSessions] = useState<Session[]>([]);
   const [summaries, setSummaries] = useState<SessionSummary[]>([]);
   const [studyStats, setStudyStats] = useState<KidStudyStats | null>(null);
+  const [parentTasks, setParentTasks] = useState<ParentTask[]>([]);
   const [selectedSession, setSelectedSession] = useState<SessionSummary | null>(null);
   const [analytics, setAnalytics] = useState<{
     totalSessions: number;
@@ -89,13 +92,14 @@ export default function ParentDashboard() {
   };
 
   const loadKidData = async (kidId: string) => {
-    const [statsResult, badgesResult, analyticsResult, sessionsResult, summariesResult, studyStatsResult] = await Promise.all([
+    const [statsResult, badgesResult, analyticsResult, sessionsResult, summariesResult, studyStatsResult, tasksResult] = await Promise.all([
       getUserStats(supabase, kidId),
       getUserBadges(supabase, kidId),
       getKidAnalytics(supabase, kidId, 30),
       getKidSessions(supabase, kidId, 10),
       getKidSessionSummaries(supabase, kidId),
       getKidStudyStats(supabase, kidId),
+      getParentTasks(supabase, profile!.id, kidId),
     ]);
     setKidStats(statsResult.data);
     setKidBadges(badgesResult.data);
@@ -103,6 +107,7 @@ export default function ParentDashboard() {
     setKidSessions(sessionsResult.data);
     setSummaries((summariesResult.data as SessionSummary[]) || []);
     setStudyStats((studyStatsResult.data as KidStudyStats) || null);
+    setParentTasks(tasksResult.data);
     setSelectedSession(null);
   };
 
@@ -217,6 +222,20 @@ export default function ParentDashboard() {
                 <span className="flex items-center gap-2">
                   <Trophy size={15} />
                   Conquistas
+                </span>
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="tasks"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <ClipboardList size={15} />
+                  Tarefas
+                  {parentTasks.filter(t => t.status === 'pending').length > 0 && (
+                    <span className="ml-1.5 w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center">
+                      {parentTasks.filter(t => t.status === 'pending').length}
+                    </span>
+                  )}
                 </span>
               </Tabs.Trigger>
             </Tabs.List>
@@ -392,6 +411,18 @@ export default function ParentDashboard() {
                   </div>
                 </motion.div>
               </motion.div>
+            </Tabs.Content>
+
+            {/* Tab 4: Tarefas */}
+            <Tabs.Content value="tasks">
+              <TasksTab
+                kidId={selectedKid.id}
+                parentId={profile!.id}
+                tasks={parentTasks}
+                summaries={summaries}
+                onTaskCreated={() => loadKidData(selectedKid.id)}
+                onTaskDeleted={() => loadKidData(selectedKid.id)}
+              />
             </Tabs.Content>
           </Tabs.Root>
         )}

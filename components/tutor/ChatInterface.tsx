@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, RotateCcw, Sparkles } from 'lucide-react';
+import { BookOpen, RotateCcw, Sparkles, ClipboardList } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -19,8 +19,8 @@ import { getSuggestions } from '@/lib/subjects/suggestions';
 import { getBuildForSubject, TOTAL_PIECES } from '@/lib/gamification/builds';
 import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
-import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary } from '@/lib/supabase/queries';
-import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
+import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask } from '@/lib/supabase/queries';
+import type { AgeGroup, BehavioralProfile, ParentTask } from '@/lib/auth/types';
 
 const TRIAL_KEY = 'studdo_trial_sessions';
 
@@ -98,6 +98,8 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   const [sessionPieces, setSessionPieces] = useState(0);
   const [milestoneMessage, setMilestoneMessage] = useState<string | null>(null);
   const [trialExpired, setTrialExpired] = useState(false);
+  const [pendingTasks, setPendingTasks] = useState<ParentTask[]>([]);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{
     topics_covered: string[];
     strengths: string[];
@@ -127,6 +129,16 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
       });
     }
   }, [profile]);
+
+  // Load pending tasks from parents
+  useEffect(() => {
+    if (profile?.id && !homeworkSet) {
+      const supabase = createClient();
+      getKidPendingTasks(supabase, profile.id).then(({ data }) => {
+        setPendingTasks(data);
+      });
+    }
+  }, [profile, homeworkSet]);
 
   const handleCloseBadgeModal = useCallback(() => setNewBadgeIds([]), []);
 
@@ -206,6 +218,16 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     }
   };
 
+  const handleStartFromTask = (task: ParentTask) => {
+    setActiveTaskId(task.id);
+    handleStart({
+      homework: task.description,
+      subject: task.subject,
+      ageGroup,
+      behavioralProfile,
+    });
+  };
+
   const handleReset = () => {
     setHomeworkSet(false);
     setHomework('');
@@ -218,6 +240,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     setSummaryResult(null);
     setSummaryLoading(false);
     setSessionDuration(0);
+    setActiveTaskId(null);
     finishCalledRef.current = false;
     resetSession();
     onSessionEnd?.();
@@ -277,6 +300,13 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
       // Fallback — show summary without AI
     }
 
+    // Complete parent task if session was started from one
+    if (activeTaskId && profile?.id && sessionData?.sessionId) {
+      const supabase = createClient();
+      await completeParentTask(supabase, activeTaskId, sessionData.sessionId);
+      setActiveTaskId(null);
+    }
+
     setSummaryLoading(false);
     if (isGuest) incrementTrialCount();
   };
@@ -310,6 +340,42 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   if (!homeworkSet) {
     return (
       <AgeThemeProvider ageGroup={ageGroup}>
+        {pendingTasks.length > 0 && (
+          <div className="mb-4 space-y-3">
+            <p className="text-amber-400 text-xs font-bold flex items-center gap-1.5">
+              <ClipboardList size={14} />
+              Tarefas sugeridas
+            </p>
+            {pendingTasks.map((task) => {
+              const subjectInfo = getSubjectById(task.subject);
+              return (
+                <motion.div
+                  key={task.id}
+                  className="glass rounded-[var(--eq-radius-sm)] p-4"
+                  style={{ border: '1px solid rgba(245,158,11,0.2)' }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg">{subjectInfo?.icon || '📚'}</span>
+                    <span className="text-white text-sm font-semibold">{subjectInfo?.name || task.subject}</span>
+                  </div>
+                  <p className="text-white/60 text-xs mb-3">{task.description}</p>
+                  <button
+                    onClick={() => handleStartFromTask(task)}
+                    className="w-full py-2 rounded-lg text-xs font-bold transition-all hover:opacity-90"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(139,92,246,0.8), rgba(99,102,241,0.8))',
+                      color: 'white',
+                    }}
+                  >
+                    Começar esta tarefa
+                  </button>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
         <HomeworkSetup onStart={handleStart} />
       </AgeThemeProvider>
     );
