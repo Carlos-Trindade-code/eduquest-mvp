@@ -6,6 +6,11 @@ import { createSession, endSession, saveMessage } from '@/lib/supabase/queries';
 import { trackEvent } from '@/lib/analytics/track';
 import type { ChatMessage, AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
+interface FinishSessionResult {
+  sessionId: string | null;
+  durationMinutes: number;
+}
+
 interface UseChatSessionReturn {
   messages: ChatMessage[];
   input: string;
@@ -16,7 +21,7 @@ interface UseChatSessionReturn {
   sendMessageText: (text: string) => Promise<void>;
   initSession: (homework: string, greeting: string, subjectOverride?: string) => void;
   resetSession: () => void;
-  finishSession: () => Promise<void>;
+  finishSession: () => Promise<FinishSessionResult | null>;
 }
 
 export function useChatSession(
@@ -92,18 +97,20 @@ export function useChatSession(
     sessionStartRef.current = null;
   }, []);
 
-  const finishSession = useCallback(async () => {
-    if (!sessionIdRef.current || !sessionStartRef.current) return;
+  const finishSession = useCallback(async (): Promise<FinishSessionResult | null> => {
+    if (!sessionIdRef.current || !sessionStartRef.current) return null;
     const durationMinutes = Math.round(
       (Date.now() - sessionStartRef.current.getTime()) / 60000
     );
+    const sessionId = sessionIdRef.current;
     trackEvent('session_ended', { duration_minutes: durationMinutes, xp: sessionXp });
     try {
       const supabase = createClient();
-      await endSession(supabase, sessionIdRef.current, durationMinutes, sessionXp);
+      await endSession(supabase, sessionId, durationMinutes, sessionXp);
     } catch {
       // silencioso
     }
+    return { sessionId, durationMinutes };
   }, [sessionXp]);
 
   const sendMessage = useCallback(async () => {

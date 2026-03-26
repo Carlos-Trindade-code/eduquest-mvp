@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Coffee, X } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
@@ -8,10 +8,16 @@ import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 
 export default function TutorPage() {
   const [showBreak, setShowBreak] = useState(false);
+  const [sessionActive, setSessionActive] = useState(false);
+  const finishRef = useRef<(() => void) | null>(null);
 
   return (
     <div className="min-h-screen bg-gradient-app flex flex-col">
-      <Header onTimerComplete={() => setShowBreak(true)} />
+      <Header
+        onTimerComplete={() => setShowBreak(true)}
+        showFinish={sessionActive}
+        onFinishSession={() => finishRef.current?.()}
+      />
 
       {/* Break notification overlay */}
       <AnimatePresence>
@@ -40,7 +46,11 @@ export default function TutorPage() {
       </AnimatePresence>
 
       <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 py-5 overflow-hidden">
-        <ChatInterface />
+        <ChatInterface
+          onSessionStart={() => setSessionActive(true)}
+          onSessionEnd={() => setSessionActive(false)}
+          finishRef={finishRef}
+        />
       </main>
       <FeedbackButton />
     </div>

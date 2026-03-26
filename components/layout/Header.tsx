@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap } from 'lucide-react';
+import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
@@ -12,12 +12,16 @@ interface HeaderProps {
   appName?: string;
   timerLabels?: { start: string; pause: string };
   onTimerComplete?: () => void;
+  onFinishSession?: () => void;
+  showFinish?: boolean;
 }
 
 export function Header({
   appName = 'Studdo',
   timerLabels,
   onTimerComplete,
+  onFinishSession,
+  showFinish,
 }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -173,6 +177,22 @@ export function Header({
       </div>
 
       <div className="flex items-center gap-2">
+        {showFinish && (
+          <motion.button
+            onClick={onFinishSession}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+            style={{
+              background: 'rgba(239,68,68,0.15)',
+              border: '1px solid rgba(239,68,68,0.3)',
+              color: '#EF4444',
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Square size={12} fill="currentColor" />
+            Finalizar
+          </motion.button>
+        )}
         <SessionHistory />
         <PomodoroTimer onComplete={onTimerComplete} labels={timerLabels} />
       </div>

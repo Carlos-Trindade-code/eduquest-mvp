@@ -1,7 +1,7 @@
 // components/tutor/ChatInterface.tsx
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, RotateCcw, Sparkles } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
@@ -19,7 +19,7 @@ import { getSuggestions } from '@/lib/subjects/suggestions';
 import { getBuildForSubject, TOTAL_PIECES } from '@/lib/gamification/builds';
 import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
-import { getUserStats, addXP, checkAndAwardBadges } from '@/lib/supabase/queries';
+import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary } from '@/lib/supabase/queries';
 import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
 
 const TRIAL_KEY = 'studdo_trial_sessions';
@@ -77,7 +77,13 @@ function TrialExpiredGate() {
   );
 }
 
-export function ChatInterface() {
+interface ChatInterfaceProps {
+  onSessionStart?: () => void;
+  onSessionEnd?: () => void;
+  finishRef?: React.MutableRefObject<(() => void) | null>;
+}
+
+export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatInterfaceProps) {
   const [homework, setHomework] = useState('');
   const [subject, setSubject] = useState('math');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
@@ -92,6 +98,16 @@ export function ChatInterface() {
   const [sessionPieces, setSessionPieces] = useState(0);
   const [milestoneMessage, setMilestoneMessage] = useState<string | null>(null);
   const [trialExpired, setTrialExpired] = useState(false);
+  const [summaryResult, setSummaryResult] = useState<{
+    topics_covered: string[];
+    strengths: string[];
+    difficulties: string[];
+    ai_suggestion: string;
+    parent_tip: string;
+  } | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [sessionDuration, setSessionDuration] = useState(0);
+  const finishCalledRef = useRef(false);
   const { profile, loading: authLoading } = useAuth();
   const isGuest = !profile;
 
@@ -168,6 +184,8 @@ export function ChatInterface() {
     setHomeworkSet(true);
     setSessionPieces(0);
     setSuggestions([]);
+    finishCalledRef.current = false;
+    onSessionStart?.();
 
     if (config.homework) {
       // Photo was uploaded — start with photo content
@@ -197,15 +215,78 @@ export function ChatInterface() {
     setSessionPieces(0);
     setSuggestions([]);
     setMilestoneMessage(null);
+    setSummaryResult(null);
+    setSummaryLoading(false);
+    setSessionDuration(0);
+    finishCalledRef.current = false;
     resetSession();
+    onSessionEnd?.();
   };
 
   const handleFinishSession = async () => {
-    await finishSession();
-    setSessionMessageCount(messages.filter((m) => m.role === 'user').length);
-    if (isGuest) incrementTrialCount();
+    if (finishCalledRef.current) return;
+    finishCalledRef.current = true;
+    setSummaryLoading(true);
     setShowSummary(true);
+    onSessionEnd?.();
+
+    const sessionData = await finishSession();
+    const userMessageCount = messages.filter((m) => m.role === 'user').length;
+    setSessionMessageCount(userMessageCount);
+    const duration = sessionData?.durationMinutes ?? 0;
+    setSessionDuration(duration);
+
+    // Generate AI summary
+    try {
+      const res = await fetch('/api/session-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          subject,
+          ageGroup,
+          durationMinutes: duration,
+          xpEarned: sessionXp,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const summary = data.summary || data;
+        setSummaryResult(summary);
+
+        // Save to database
+        if (profile?.id && sessionData?.sessionId) {
+          const supabase = createClient();
+          await saveSessionSummary(supabase, {
+            session_id: sessionData.sessionId,
+            kid_id: profile.id,
+            subject,
+            duration_minutes: duration,
+            message_count: messages.length,
+            xp_earned: sessionXp,
+            topics_covered: summary.topics_covered ?? [],
+            strengths: summary.strengths ?? [],
+            difficulties: summary.difficulties ?? [],
+            ai_suggestion: summary.ai_suggestion ?? null,
+            parent_tip: summary.parent_tip ?? null,
+          });
+        }
+      }
+    } catch {
+      // Fallback — show summary without AI
+    }
+
+    setSummaryLoading(false);
+    if (isGuest) incrementTrialCount();
   };
+
+  // Wire up finishRef so the header button can trigger finish
+  useEffect(() => {
+    if (finishRef) {
+      finishRef.current = homeworkSet && !showSummary ? handleFinishSession : null;
+    }
+  });
 
   const handleSuggestionClick = async (suggestion: string) => {
     setSuggestions([]);
@@ -243,6 +324,9 @@ export function ChatInterface() {
           xpEarned={sessionXp}
           messageCount={sessionMessageCount}
           subject={subject}
+          durationMinutes={sessionDuration}
+          summaryResult={summaryResult}
+          summaryLoading={summaryLoading}
           onNewSession={handleReset}
           isGuest={isGuest}
         />
@@ -325,7 +409,7 @@ export function ChatInterface() {
             )}
           </AnimatePresence>
 
-          <div className="flex flex-col gap-2 mt-2">
+          <div className="mt-2">
             <MessageInput
               value={input}
               onChange={setInput}
@@ -333,18 +417,6 @@ export function ChatInterface() {
               disabled={loading}
               placeholder="Digite sua resposta..."
             />
-            {messages.length > 6 && (
-              <button
-                onClick={() => {
-                  if (window.confirm('Encerrar a sessão de estudo?')) {
-                    handleFinishSession();
-                  }
-                }}
-                className="text-white/20 hover:text-white/50 text-xs transition-colors text-center py-1"
-              >
-                Encerrar sessão
-              </button>
-            )}
           </div>
         </>
       )}
