@@ -12,9 +12,7 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return Response.json({ error: 'Não autorizado' }, { status: 401 });
-    }
+    // Auth is optional — guests can use OCR during trial
     const formData = await request.formData();
     const imageFile = formData.get('image') as File;
 

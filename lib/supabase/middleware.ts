@@ -48,7 +48,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   // --- Protected routes: redirect to login if not authenticated ---
-  const protectedPaths = ['/tutor', '/dashboard', '/parent', '/professor', '/onboarding'];
+  // Note: /tutor and /quiz are open for free trial (guest can try before registering)
+  const protectedPaths = ['/dashboard', '/parent', '/professor', '/onboarding'];
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
 
   if (isProtected && !user) {

@@ -23,10 +23,16 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
   const [error, setError] = useState('');
 
   const handleStart = async () => {
-    if (!topic.trim()) {
-      setError('Digite um tema para o quiz');
-      return;
-    }
+    const subjectLabels: Record<string, string> = {
+      math: 'Matemática geral',
+      portuguese: 'Português geral',
+      history: 'História geral',
+      science: 'Ciências geral',
+      geography: 'Geografia geral',
+      english: 'Inglês geral',
+      other: 'Conhecimentos gerais',
+    };
+    const effectiveTopic = topic.trim() || subjectLabels[subject] || subject;
     setLoading(true);
     setError('');
 
@@ -34,7 +40,7 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
       const res = await fetch('/api/exam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, subject, ageGroup, questionCount }),
+        body: JSON.stringify({ topic: effectiveTopic, subject, ageGroup, questionCount }),
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);

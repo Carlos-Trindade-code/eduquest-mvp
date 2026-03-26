@@ -84,10 +84,7 @@ export async function POST(request: Request) {
     const body: ExamRequest = await request.json();
 
     if (!body.topic && !body.fileContent) {
-      return NextResponse.json(
-        { error: 'Informe um tema ou envie um arquivo' },
-        { status: 400 }
-      );
+      body.topic = getSubjectName(body.subject);
     }
 
     const systemPrompt = buildExamPrompt(body);

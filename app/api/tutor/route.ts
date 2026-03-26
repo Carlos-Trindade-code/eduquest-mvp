@@ -21,9 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return Response.json({ error: 'Não autorizado' }, { status: 401 });
-    }
+    // Auth is optional — guests can use the trial (limited client-side)
     const body: TutorRequestBody = await request.json();
     const {
       messages,
