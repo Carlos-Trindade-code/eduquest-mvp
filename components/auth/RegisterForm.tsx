@@ -323,7 +323,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-name"
+                        name="name"
                         type="text"
+                        autoComplete="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder={userType === 'kid' ? 'Seu nome ou apelido' : 'Seu nome'}
@@ -339,7 +341,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-email"
+                        name="email"
                         type="email"
+                        autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="seu@email.com"
@@ -420,7 +424,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-password"
+                        name="password"
                         type={showPassword ? 'text' : 'password'}
+                        autoComplete="new-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Minimo 6 caracteres"
@@ -445,7 +451,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-confirm-password"
+                        name="confirm-password"
                         type={showPassword ? 'text' : 'password'}
+                        autoComplete="new-password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Digite a senha novamente"
