@@ -171,3 +171,30 @@ export interface FeedbackStats {
     post_session: number;
   };
 }
+
+export interface SessionSummary {
+  id: string;
+  session_id: string;
+  kid_id: string;
+  subject: string;
+  duration_minutes: number;
+  message_count: number;
+  xp_earned: number;
+  topics_covered: string[];
+  strengths: string[];
+  difficulties: string[];
+  ai_suggestion: string | null;
+  parent_tip: string | null;
+  created_at: string;
+}
+
+export interface KidStudyStats {
+  total_sessions: number;
+  total_minutes: number;
+  total_xp: number;
+  current_streak: number;
+  subjects_studied: string[];
+  avg_session_minutes: number;
+  sessions_this_week: number;
+  top_difficulties: string[];
+}

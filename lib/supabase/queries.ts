@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats } from '@/lib/auth/types';
+import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats, SessionSummary } from '@/lib/auth/types';
 import { checkNewBadges } from '@/lib/gamification/badges';
 
 // ==========================================
@@ -501,4 +501,44 @@ export async function getFeedbackStats(supabase: SupabaseClient): Promise<Feedba
     return null;
   }
   return data as FeedbackStats;
+}
+
+// ==========================================
+// SESSION SUMMARIES + PARENT STATS
+// ==========================================
+
+export async function saveSessionSummary(
+  supabase: SupabaseClient,
+  summary: Omit<SessionSummary, 'id' | 'created_at'>
+) {
+  return supabase.from('session_summaries').insert(summary).select().single();
+}
+
+export async function getKidSessionSummaries(
+  supabase: SupabaseClient,
+  kidId: string,
+  options?: { limit?: number; offset?: number; subject?: string }
+) {
+  return supabase.rpc('get_kid_session_summaries', {
+    p_kid_id: kidId,
+    p_limit: options?.limit ?? 20,
+    p_offset: options?.offset ?? 0,
+    p_subject: options?.subject ?? null,
+  });
+}
+
+export async function getSessionMessagesForParent(
+  supabase: SupabaseClient,
+  sessionId: string
+) {
+  return supabase.rpc('get_session_messages_for_parent', {
+    p_session_id: sessionId,
+  });
+}
+
+export async function getKidStudyStats(
+  supabase: SupabaseClient,
+  kidId: string
+) {
+  return supabase.rpc('get_kid_study_stats', { p_kid_id: kidId });
 }
