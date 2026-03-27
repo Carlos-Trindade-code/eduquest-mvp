@@ -60,18 +60,27 @@ export function Header({
     <header className="flex items-center justify-between px-6 py-4 bg-black/20 shrink-0">
       {/* Logo + Menu */}
       <div className="relative" ref={menuRef}>
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-          aria-expanded={menuOpen}
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity p-1 -ml-1"
-        >
-          <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+        <div className="flex items-center gap-1">
+          {/* Logo — navigates home */}
+          <button
+            onClick={() => navigate('/')}
+            aria-label="Ir para página inicial"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity p-1 -ml-1"
+          >
+            <Sparkles className="text-yellow-400" size={22} />
+            <span className="text-white font-bold text-xl">{appName}</span>
+          </button>
+
+          {/* Menu toggle */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuOpen}
+            className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors ml-2"
+          >
             {menuOpen ? <X size={18} className="text-white/70" /> : <Menu size={18} className="text-white/70" />}
-          </div>
-          <Sparkles className="text-yellow-400" size={22} />
-          <span className="text-white font-bold text-xl">{appName}</span>
-        </button>
+          </button>
+        </div>
 
         <AnimatePresence>
           {menuOpen && (

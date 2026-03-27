@@ -14,8 +14,11 @@ import {
   Shield,
   MessageSquare,
   School,
+  ArrowLeft,
+  LogOut,
 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
+import { useRouter } from 'next/navigation';
 import { getAdminMetrics, getAllSuggestions, getAllProfiles, updateSuggestionStatus, getAllFeedback, getFeedbackStats } from '@/lib/supabase/queries';
 import { SuggestionsList } from './SuggestionsList';
 import { UsersTable } from './UsersTable';
@@ -41,6 +44,7 @@ export function AdminDashboard() {
   const [schoolLeads, setSchoolLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const router = useRouter();
 
   const supabase = createSupabase();
 
@@ -108,9 +112,28 @@ export function AdminDashboard() {
                 <p className="text-white/40 text-xs">Painel de controle</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-white/30 text-xs">
-              <Clock size={12} />
-              {new Date().toLocaleDateString('pt-BR')}
+            <div className="flex items-center gap-4">
+              <span className="text-white/30 text-xs flex items-center gap-1">
+                <Clock size={12} />
+                {new Date().toLocaleDateString('pt-BR')}
+              </span>
+              <button
+                onClick={() => router.push('/')}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/5 rounded-lg text-sm transition-colors"
+              >
+                <ArrowLeft size={14} />
+                Voltar
+              </button>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.href = '/login';
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-red-400/70 hover:text-red-400 hover:bg-red-500/10 rounded-lg text-sm transition-colors"
+              >
+                <LogOut size={14} />
+                Sair
+              </button>
             </div>
           </div>
         </div>
