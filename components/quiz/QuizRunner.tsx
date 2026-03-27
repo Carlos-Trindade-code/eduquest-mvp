@@ -180,7 +180,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
             whileTap={{ scale: 0.97 }}
           >
             <RotateCcw size={15} />
-            Novo quiz
+            Gerar novo quiz
           </motion.button>
         </div>
       </motion.div>

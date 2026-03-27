@@ -2,13 +2,16 @@
 import { Suspense } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { RegisterForm } from '@/components/auth/RegisterForm';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { redeemInviteCode } from '@/lib/supabase/queries';
+import { safeRedirectPath } from '@/lib/auth/constants';
 
 function RegisterContent() {
   const { signUp, signIn, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = safeRedirectPath(searchParams.get('redirect'), '');
 
   const handleRegister = async (data: {
     email: string;
@@ -43,6 +46,12 @@ function RegisterContent() {
       } catch {
         inviteCodeFailed = true;
       }
+    }
+
+    // If there's a redirect param (e.g., guest came from /tutor), go there directly
+    if (redirect) {
+      window.location.href = redirect;
+      return;
     }
 
     // Teachers go directly to their dashboard, others to onboarding

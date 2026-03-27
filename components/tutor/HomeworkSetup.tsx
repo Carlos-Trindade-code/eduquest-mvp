@@ -3,7 +3,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, FileText, School } from 'lucide-react';
+import { Sparkles, FileText, School, Home } from 'lucide-react';
+import Link from 'next/link';
 import { SubjectSelector } from './SubjectSelector';
 import { AgeGroupSelector } from './AgeGroupSelector';
 import { PhotoUpload } from './PhotoUpload';
@@ -146,7 +147,7 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
       </motion.div>
 
       {/* Submit — always enabled (no homework text required) */}
-      <motion.div variants={fadeInUp('medium')}>
+      <motion.div variants={fadeInUp('medium')} className="space-y-3 mt-4">
         <Button
           onClick={() => {
             const context = [
@@ -158,11 +159,18 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
           variant="primary"
           size="lg"
           rounded="lg"
-          className="w-full mt-4 gap-2"
+          className="w-full gap-2"
         >
           <Sparkles className="w-4 h-4" />
           Começar com o Edu ✨
         </Button>
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-1.5 text-white/40 hover:text-white/70 text-xs transition-colors py-1"
+        >
+          <Home size={12} />
+          Voltar ao inicio
+        </Link>
       </motion.div>
     </motion.div>
   );

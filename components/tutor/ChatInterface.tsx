@@ -53,13 +53,13 @@ function TrialExpiredGate() {
       </div>
       <div className="flex flex-col gap-3 w-full max-w-xs">
         <a
-          href="/register"
+          href="/register?redirect=/tutor"
           className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-sm text-center shadow-lg shadow-purple-600/25 hover:opacity-90 transition-all"
         >
           Criar conta gratuita
         </a>
         <a
-          href="/login"
+          href="/login?redirect=/tutor"
           className="w-full py-3 rounded-xl text-sm text-center font-medium transition-all text-white/50 hover:text-white hover:bg-white/5"
           style={{ border: '1px solid rgba(255,255,255,0.08)' }}
         >
