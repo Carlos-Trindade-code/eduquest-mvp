@@ -15,10 +15,12 @@ interface UseChatSessionReturn {
   messages: ChatMessage[];
   input: string;
   loading: boolean;
+  error: boolean;
   sessionXp: number;
   setInput: (value: string) => void;
   sendMessage: () => Promise<void>;
   sendMessageText: (text: string) => Promise<void>;
+  retryLastMessage: () => Promise<void>;
   initSession: (homework: string, greeting: string, subjectOverride?: string) => void;
   resetSession: () => void;
   finishSession: () => Promise<FinishSessionResult | null>;
@@ -35,7 +37,9 @@ export function useChatSession(
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [sessionXp, setSessionXp] = useState(0);
+  const lastUserMessageRef = useRef<string | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const sessionStartRef = useRef<Date | null>(null);
   const sessionXpRef = useRef(0);
@@ -121,6 +125,8 @@ export function useChatSession(
     setMessages(newMessages);
     setInput('');
     setLoading(true);
+    setError(false);
+    lastUserMessageRef.current = input;
 
     // Salva mensagem do usuário
     if (sessionIdRef.current) {
@@ -152,14 +158,10 @@ export function useChatSession(
         setSessionXp((prev) => prev + xp);
         onXPEarned?.(xp);
       } else {
-        const errMsg = data.error || 'Ops! Tenta de novo!';
-        setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
+        setError(true);
       }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'Ops! Tenta de novo!' },
-      ]);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -172,6 +174,8 @@ export function useChatSession(
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setLoading(true);
+    setError(false);
+    lastUserMessageRef.current = text;
 
     if (sessionIdRef.current) {
       const supabase = createClient();
@@ -202,14 +206,48 @@ export function useChatSession(
         setSessionXp((prev) => prev + xp);
         onXPEarned?.(xp);
       } else {
-        const errMsg = data.error || 'Ops! Tenta de novo!';
-        setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
+        setError(true);
       }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'Ops! Tenta de novo!' },
-      ]);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
+
+  const retryLastMessage = useCallback(async () => {
+    if (!lastUserMessageRef.current || loading) return;
+    setError(false);
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages,
+          homework,
+          subject,
+          ageGroup,
+          behavioralProfile,
+        }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.message) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
+        if (sessionIdRef.current) {
+          const supabase = createClient();
+          saveMessage(supabase, sessionIdRef.current, 'assistant', data.message).catch(() => {});
+        }
+        const xp = XP_REWARDS.MESSAGE_SENT;
+        setSessionXp((prev) => prev + xp);
+        onXPEarned?.(xp);
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -219,10 +257,12 @@ export function useChatSession(
     messages,
     input,
     loading,
+    error,
     sessionXp,
     setInput,
     sendMessage,
     sendMessageText,
+    retryLastMessage,
     initSession,
     resetSession,
     finishSession,

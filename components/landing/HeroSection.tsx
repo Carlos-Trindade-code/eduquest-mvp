@@ -7,10 +7,80 @@ import { ArrowRight, CheckCircle, Send, Loader2 } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 
+const mobileChatMessages = [
+  { role: 'kid' as const, text: 'Nao entendo fracoes' },
+  { role: 'edu' as const, text: 'Vamos pensar juntos! Se voce tem uma pizza cortada em 4 pedacos e come 1, que fracao sobra?' },
+  { role: 'kid' as const, text: '3/4!' },
+  { role: 'edu' as const, text: 'Exatamente! Voce ja sabe mais do que imagina!' },
+];
+
+function MobileChatPreview() {
+  return (
+    <motion.div
+      className="lg:hidden mt-12 w-full max-w-sm mx-auto"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+    >
+      <div
+        className="relative rounded-2xl overflow-hidden"
+        style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
+      >
+        <div
+          className="flex items-center gap-3 px-4 py-2.5"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+        >
+          <MascotOwl expression="waving" size="sm" animated={false} decorative />
+          <div>
+            <div className="text-sm font-semibold text-white">Edu</div>
+            <div className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span className="text-xs" style={{ color: 'rgba(240,244,248,0.45)' }}>online</span>
+            </div>
+          </div>
+        </div>
+        <div className="px-4 py-3 space-y-2.5">
+          {mobileChatMessages.map((msg, i) => (
+            <motion.div
+              key={i}
+              className={`flex ${msg.role === 'kid' ? 'justify-end' : 'justify-start'} items-end gap-2`}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 + i * 0.25 }}
+            >
+              {msg.role === 'edu' && (
+                <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
+                  <MascotOwl expression="encouraging" size="sm" animated={false} className="w-5 h-5" decorative />
+                </div>
+              )}
+              <div
+                className="max-w-[80%] px-3 py-2 rounded-2xl text-xs leading-snug"
+                style={
+                  msg.role === 'kid'
+                    ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
+                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
+                }
+              >
+                {msg.text}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <p className="text-[10px] text-center" style={{ color: 'rgba(240,244,248,0.5)' }}>
+            Experimente — pergunte algo ao Edu no desktop
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 const stats = [
   { value: '7', label: 'materias disponiveis' },
   { value: '4-18', label: 'anos de idade' },
   { value: '100%', label: 'gratuito' },
+  { value: '🔒', label: 'dados protegidos' },
 ];
 
 const trustItems = [
@@ -114,7 +184,7 @@ function ChatPreview() {
             >
               {msg.role === 'edu' && (
                 <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
-                  <MascotOwl expression="encouraging" size="sm" animated={false} className="w-5 h-5" />
+                  <MascotOwl expression="encouraging" size="sm" animated={false} className="w-5 h-5" decorative />
                 </div>
               )}
               <div
@@ -287,7 +357,7 @@ export function HeroSection() {
             {/* Stat bar */}
             <motion.div
               variants={fadeInUp('high')}
-              className="mt-12 grid grid-cols-3 gap-6 pt-8"
+              className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8"
               style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
             >
               {stats.map((s) => (
@@ -297,6 +367,9 @@ export function HeroSection() {
                 </div>
               ))}
             </motion.div>
+
+            {/* Mobile static chat preview */}
+            <MobileChatPreview />
           </motion.div>
 
           {/* RIGHT: chat preview — desktop: interactive, mobile: static animated */}
@@ -307,65 +380,6 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
           >
             <ChatPreview />
-          </motion.div>
-
-          {/* Mobile-only: static chat demo */}
-          <motion.div
-            className="lg:hidden mt-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <div
-              className="relative rounded-2xl overflow-hidden mx-auto max-w-sm"
-              style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              <div
-                className="flex items-center gap-3 px-4 py-2.5"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
-              >
-                <MascotOwl expression="waving" size="sm" animated={false} />
-                <div>
-                  <div className="text-sm font-semibold text-white">Edu</div>
-                  <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    <span className="text-[10px]" style={{ color: 'rgba(240,244,248,0.45)' }}>online</span>
-                  </div>
-                </div>
-              </div>
-              <div className="px-4 py-3 space-y-2">
-                {chatMessages.map((msg, i) => (
-                  <motion.div
-                    key={i}
-                    className={`flex ${msg.role === 'kid' ? 'justify-end' : 'justify-start'} items-end gap-2`}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: msg.delay }}
-                  >
-                    {msg.role === 'edu' && (
-                      <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
-                        <MascotOwl expression="encouraging" size="sm" animated={false} className="w-5 h-5" />
-                      </div>
-                    )}
-                    <div
-                      className="max-w-[80%] px-3 py-2 rounded-2xl text-xs leading-snug"
-                      style={
-                        msg.role === 'kid'
-                          ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
-                          : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
-                      }
-                    >
-                      {msg.text}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-              <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <p className="text-[10px] text-center" style={{ color: 'rgba(240,244,248,0.4)' }}>
-                  Teste ao vivo — clique em "Testar tutor gratis"
-                </p>
-              </div>
-            </div>
           </motion.div>
 
         </div>

@@ -49,7 +49,7 @@ export function DemoChatSimulation() {
     <div className="w-full max-w-md mx-auto">
       {/* Chat header */}
       <div className="flex items-center gap-3 mb-4 px-2">
-        <MascotOwl expression="encouraging" size="sm" animated />
+        <MascotOwl expression="encouraging" size="sm" animated decorative />
         <div>
           <p className="text-white text-sm font-semibold">Edu, seu tutor</p>
           <div className="flex items-center gap-1.5">

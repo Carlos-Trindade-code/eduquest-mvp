@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check, MessageCircle } from 'lucide-react';
+import { Copy, Check, MessageCircle, Users } from 'lucide-react';
 
 interface InviteCodeCardProps {
   code: string;
@@ -42,15 +42,18 @@ export function InviteCodeCard({ code, hasKids = false }: InviteCodeCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'rgba(139,92,246,0.8)' }}>
-        {hasKids ? 'Código de convite' : '👋 Passo 1 — Convide seu filho'}
-      </p>
+      <div className="flex items-center gap-2 mb-3">
+        <Users size={16} style={{ color: '#8B5CF6' }} />
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'rgba(139,92,246,0.8)' }}>
+          {hasKids ? 'Código de Convite Familiar' : '👋 Passo 1 — Convide seu filho'}
+        </p>
+      </div>
 
       {/* Code display */}
       <div className="flex items-center gap-2 mb-3">
         <div
           className="flex-1 rounded-xl px-5 py-3 text-center"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.15)' }}
         >
           <span className="text-white text-2xl font-mono font-bold tracking-[0.3em]">{code}</span>
         </div>

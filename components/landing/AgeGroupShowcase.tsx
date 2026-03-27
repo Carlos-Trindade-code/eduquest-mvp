@@ -89,35 +89,45 @@ export function AgeGroupShowcase() {
         </motion.div>
 
         {/* Age tabs */}
-        <div className="flex justify-center gap-2 mb-12 flex-wrap">
-          {ageGroups.map((ag, i) => (
-            <button
-              key={ag.id}
-              onClick={() => setSelected(i)}
-              className={cn(
-                'relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all',
-                selected === i
-                  ? 'text-white'
-                  : 'text-white/50 hover:text-white/70 hover:bg-white/5'
-              )}
-            >
-              {selected === i && (
-                <motion.div
-                  layoutId="age-tab-bg"
-                  className="absolute inset-0 rounded-xl"
-                  style={{ background: ag.color }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">{ag.label}</span>
-            </button>
-          ))}
+        <div className="relative mb-12">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#0D1B2A] to-transparent z-10 lg:hidden" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0D1B2A] to-transparent z-10 lg:hidden" />
+          <div className="flex justify-start lg:justify-center gap-2 overflow-x-auto flex-nowrap px-4 lg:px-0 lg:flex-wrap hide-scrollbar" role="tablist" aria-label="Faixas etarias">
+            {ageGroups.map((ag, i) => (
+              <button
+                key={ag.id}
+                onClick={() => setSelected(i)}
+                role="tab"
+                aria-selected={selected === i}
+                aria-controls="age-group-panel"
+                className={cn(
+                  'relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900',
+                  selected === i
+                    ? 'text-white'
+                    : 'text-white/50 hover:text-white/70 hover:bg-white/5'
+                )}
+              >
+                {selected === i && (
+                  <motion.div
+                    layoutId="age-tab-bg"
+                    className="absolute inset-0 rounded-xl"
+                    style={{ background: ag.color }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{ag.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Content */}
         <AnimatePresence mode="wait">
           <motion.div
             key={group.id}
+            id="age-group-panel"
+            role="tabpanel"
+            aria-label={group.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}

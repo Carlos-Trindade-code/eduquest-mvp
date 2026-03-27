@@ -250,7 +250,7 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
       const { data, error } = await redeemInviteCode(supabase, code);
       if (error || !data?.success) {
         setStatus('error');
-        setErrorMsg(data?.error || 'Codigo invalido. Confira com seu pai/mae.');
+        setErrorMsg(data?.error || 'Algo deu errado. Tente novamente.');
         return;
       }
       setParentName(data.parent_name || '');
@@ -259,7 +259,7 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
       setTimeout(onLinked, 1500);
     } catch {
       setStatus('error');
-      setErrorMsg('Erro ao vincular. Tente novamente.');
+      setErrorMsg('Algo deu errado. Tente novamente.');
     }
   };
 
@@ -294,6 +294,10 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
       className="mt-4 space-y-3"
     >
       <div className="rounded-2xl p-5" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
+        <div className="flex items-center gap-2 mb-3">
+          <Users size={16} style={{ color: '#8B5CF6' }} />
+          <span className="text-sm font-semibold" style={{ color: '#8B5CF6' }}>Código do pai/mãe (EQ-XXXX)</span>
+        </div>
         <div className="relative">
           <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
           <input
@@ -322,7 +326,7 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
         </motion.button>
       </div>
       <p className="text-xs text-center" style={{ color: 'rgba(240,244,248,0.3)' }}>
-        Seu pai/mae tem esse codigo no app deles
+        Peça ao seu pai/mãe
       </p>
     </motion.div>
   );

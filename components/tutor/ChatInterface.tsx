@@ -183,10 +183,12 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     messages,
     input,
     loading,
+    error: chatError,
     sessionXp,
     setInput,
     sendMessage,
     sendMessageText,
+    retryLastMessage,
     initSession,
     resetSession,
     finishSession,
@@ -481,7 +483,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
             </button>
           </motion.div>
 
-          <MessageList messages={messages} loading={loading} />
+          <MessageList messages={messages} loading={loading} error={chatError} onRetry={retryLastMessage} />
 
           {/* Topic suggestion chips — cleared on first send */}
           <AnimatePresence>

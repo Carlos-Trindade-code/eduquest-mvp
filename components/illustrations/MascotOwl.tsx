@@ -9,13 +9,16 @@ export type MascotExpression =
   | 'encouraging'
   | 'celebrating'
   | 'waving'
-  | 'reading';
+  | 'reading'
+  | 'sad';
 
 interface MascotOwlProps {
   expression?: MascotExpression;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   animated?: boolean;
   className?: string;
+  /** When true, marks the mascot as decorative (aria-hidden, no role/label) */
+  decorative?: boolean;
 }
 
 const sizeMap = {
@@ -32,6 +35,7 @@ const ariaLabels: Record<MascotExpression, string> = {
   celebrating: 'Edu esta comemorando',
   waving: 'Edu esta acenando para voce',
   reading: 'Edu esta lendo',
+  sad: 'Edu esta triste',
 };
 
 const eyeExpressions: Record<MascotExpression, { leftPupilY: number; rightPupilY: number; leftEyeScale: number; rightEyeScale: number; blinkRate: number }> = {
@@ -41,6 +45,7 @@ const eyeExpressions: Record<MascotExpression, { leftPupilY: number; rightPupilY
   celebrating: { leftPupilY: -1, rightPupilY: -1, leftEyeScale: 1.2, rightEyeScale: 1.2, blinkRate: 2 },
   waving: { leftPupilY: 0, rightPupilY: 0, leftEyeScale: 1.1, rightEyeScale: 1, blinkRate: 3 },
   reading: { leftPupilY: 3, rightPupilY: 3, leftEyeScale: 0.85, rightEyeScale: 0.85, blinkRate: 5 },
+  sad: { leftPupilY: 3, rightPupilY: 3, leftEyeScale: 0.8, rightEyeScale: 0.8, blinkRate: 6 },
 };
 
 export function MascotOwl({
@@ -48,6 +53,7 @@ export function MascotOwl({
   size = 'md',
   animated = true,
   className,
+  decorative = false,
 }: MascotOwlProps) {
   const shouldReduceMotion = useReducedMotion();
   const s = sizeMap[size];
@@ -62,8 +68,10 @@ export function MascotOwl({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={cn('select-none', className)}
-      role="img"
-      aria-label={ariaLabels[expression]}
+      {...(decorative
+        ? { 'aria-hidden': true as const }
+        : { role: 'img' as const, 'aria-label': ariaLabels[expression] }
+      )}
       animate={
         isAnimated
           ? {
@@ -242,6 +250,20 @@ export function MascotOwl({
       {expression === 'celebrating' && (
         <motion.path
           d="M54 63 Q60 68 66 63"
+          stroke="#92400E"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4 }}
+        />
+      )}
+
+      {/* Sad frown */}
+      {expression === 'sad' && (
+        <motion.path
+          d="M54 67 Q60 62 66 67"
           stroke="#92400E"
           strokeWidth="1.5"
           fill="none"

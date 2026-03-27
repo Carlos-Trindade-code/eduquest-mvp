@@ -104,7 +104,7 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
               <button
                 key={n}
                 onClick={() => setQuestionCount(n)}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 ${
                   questionCount === n
                     ? 'bg-purple-600 text-white'
                     : 'bg-white/5 text-white/50 hover:text-white hover:bg-white/10'
@@ -118,7 +118,7 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
         </div>
 
         {error && (
-          <p className="text-red-400 text-xs text-center">{error}</p>
+          <p className="text-red-400 text-xs text-center" role="alert">{error}</p>
         )}
 
         {/* Start button */}

@@ -576,7 +576,7 @@ export function DemoShowcase() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-4">
               {scenes.map((scene) => {
                 const isActive = activeScene === scene.id;
                 return (

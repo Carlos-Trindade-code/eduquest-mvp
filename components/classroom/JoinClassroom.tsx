@@ -25,10 +25,32 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
     try {
       const supabase = createClient();
       const { data, error } = await supabase.rpc('join_classroom', { classroom_code: code });
-      if (error) throw error;
-      if (!data?.success) {
+      if (error) {
+        const msg = error.message?.toLowerCase() || '';
+        if (msg.includes('not found') || msg.includes('invalid')) {
+          setStatus('error');
+          setErrorMsg('Turma nao encontrada. Verifique se digitou o codigo corretamente.');
+          return;
+        }
+        if (msg.includes('already') || msg.includes('ja')) {
+          setStatus('error');
+          setErrorMsg('Voce ja faz parte desta turma!');
+          return;
+        }
         setStatus('error');
-        setErrorMsg(data?.error || 'Codigo invalido');
+        setErrorMsg('Algo deu errado. Tente novamente.');
+        return;
+      }
+      if (!data?.success) {
+        const rpcError = (data?.error || '').toLowerCase();
+        let friendlyError = 'Algo deu errado. Tente novamente.';
+        if (rpcError.includes('not found') || rpcError.includes('invalid') || rpcError.includes('nao encontr')) {
+          friendlyError = 'Turma nao encontrada. Verifique se digitou o codigo corretamente.';
+        } else if (rpcError.includes('already') || rpcError.includes('ja')) {
+          friendlyError = 'Voce ja faz parte desta turma!';
+        }
+        setStatus('error');
+        setErrorMsg(friendlyError);
         return;
       }
       setClassroomName(data.classroom_name || '');
@@ -40,7 +62,7 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
       }, 1500);
     } catch {
       setStatus('error');
-      setErrorMsg('Erro ao entrar na turma');
+      setErrorMsg('Algo deu errado. Tente novamente.');
     }
   };
 
@@ -68,6 +90,10 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
         </motion.div>
       ) : (
         <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-1">
+            <School size={16} style={{ color: '#10B981' }} />
+            <span className="text-sm font-semibold" style={{ color: '#10B981' }}>Código da turma (ST-XXXX)</span>
+          </div>
           <div className="relative">
             <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
             <input
@@ -76,7 +102,7 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
               onChange={(e) => handleChange(e.target.value)}
               placeholder="ST-XXXX"
               maxLength={7}
-              className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm uppercase tracking-widest font-mono text-center"
+              className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-green-500/50 text-sm uppercase tracking-widest font-mono text-center"
             />
           </div>
           {status === 'error' && (
@@ -86,7 +112,7 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
             onClick={handleJoin}
             disabled={code.length < 6 || status === 'loading'}
             className="w-full py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-30"
-            style={{ background: 'rgba(139,92,246,0.3)', color: 'white' }}
+            style={{ background: 'rgba(16,185,129,0.3)', color: 'white' }}
             whileHover={code.length >= 6 ? { scale: 1.02 } : {}}
             whileTap={{ scale: 0.98 }}
           >
@@ -95,7 +121,7 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
             ) : 'Entrar na turma'}
           </motion.button>
           <p className="text-xs text-center" style={{ color: 'rgba(240,244,248,0.3)' }}>
-            Peca o codigo ao seu professor
+            Este código é fornecido pelo seu professor
           </p>
         </div>
       )}

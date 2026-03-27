@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Instagram, Linkedin, Mail } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -46,6 +46,17 @@ export function Footer() {
             <Link href="/escolas" className="hover:text-white transition-colors">Para Escolas</Link>
             <Link href="/termos" className="hover:text-white transition-colors">Termos</Link>
             <Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <a href="https://instagram.com/studdo.br" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white" style={{ color: 'rgba(240,244,248,0.35)' }}>
+              <Instagram size={18} />
+            </a>
+            <a href="https://linkedin.com/company/studdo" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white" style={{ color: 'rgba(240,244,248,0.35)' }}>
+              <Linkedin size={18} />
+            </a>
+            <a href="mailto:contato@studdo.com.br" className="transition-colors hover:text-white" style={{ color: 'rgba(240,244,248,0.35)' }}>
+              <Mail size={18} />
+            </a>
           </div>
           <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
             © {new Date().getFullYear()} Studdo. Todos os direitos reservados.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useAuth } from '@/hooks/useAuth';
@@ -28,13 +28,29 @@ import { TasksTab } from '@/components/parent/TasksTab';
 import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell, RefreshCw, Loader2, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats, ParentTask } from '@/lib/auth/types';
 import { AlertCard } from '@/components/parent/AlertCard';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 import type { AlertSeverity } from '@/lib/auth/types';
+
+function useRelativeTime(timestamp: number | null) {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (!timestamp) return;
+    const interval = setInterval(() => setTick((t) => t + 1), 15000);
+    return () => clearInterval(interval);
+  }, [timestamp]);
+  if (!timestamp) return null;
+  const diff = Math.floor((Date.now() - timestamp) / 1000);
+  if (diff < 10) return 'Atualizado agora';
+  if (diff < 60) return `Atualizado ha ${diff}s`;
+  const mins = Math.floor(diff / 60);
+  if (mins < 60) return `Atualizado ha ${mins}min`;
+  return `Atualizado ha ${Math.floor(mins / 60)}h`;
+}
 
 interface SimpleAlert {
   type: string;
@@ -124,6 +140,12 @@ export default function ParentDashboard() {
   } | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState('overview');
+  const lastRefreshLabel = useRelativeTime(lastRefreshedAt);
+  const selectedKidRef = useRef<Profile | null>(null);
+  selectedKidRef.current = selectedKid;
 
   const supabase = createClient();
 
@@ -143,6 +165,18 @@ export default function ParentDashboard() {
     if (!selectedKid) return;
     loadKidData(selectedKid.id);
   }, [selectedKid]);
+
+  // Auto-refresh kid data every 30 seconds (only when tab is visible)
+  useEffect(() => {
+    if (!selectedKid) return;
+    const refresh = () => {
+      if (document.visibilityState === 'visible' && selectedKidRef.current) {
+        silentRefresh(selectedKidRef.current.id);
+      }
+    };
+    const interval = setInterval(refresh, 30000);
+    return () => clearInterval(interval);
+  }, [selectedKid?.id]);
 
   const loadKids = async () => {
     if (!profile) return;
@@ -174,6 +208,38 @@ export default function ParentDashboard() {
     setStudyStats((studyStatsResult.data as KidStudyStats) || null);
     setParentTasks(tasksResult.data);
     setSelectedSession(null);
+    setLastRefreshedAt(Date.now());
+  };
+
+  const silentRefresh = useCallback(async (kidId: string) => {
+    setIsRefreshing(true);
+    try {
+      const [statsResult, badgesResult, analyticsResult, sessionsResult, summariesResult, studyStatsResult, tasksResult] = await Promise.all([
+        getUserStats(supabase, kidId),
+        getUserBadges(supabase, kidId),
+        getKidAnalytics(supabase, kidId, 30),
+        getKidSessions(supabase, kidId, 10),
+        getKidSessionSummaries(supabase, kidId),
+        getKidStudyStats(supabase, kidId),
+        getParentTasks(supabase, profile!.id, kidId),
+      ]);
+      setKidStats(statsResult.data);
+      setKidBadges(badgesResult.data);
+      setAnalytics(analyticsResult);
+      setKidSessions(sessionsResult.data);
+      setSummaries((summariesResult.data as SessionSummary[]) || []);
+      setStudyStats((studyStatsResult.data as KidStudyStats) || null);
+      setParentTasks(tasksResult.data);
+      setLastRefreshedAt(Date.now());
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [profile]);
+
+  const handleManualRefresh = () => {
+    if (selectedKid && !isRefreshing) {
+      silentRefresh(selectedKid.id);
+    }
   };
 
   if (authLoading || loading) {
@@ -285,7 +351,25 @@ export default function ParentDashboard() {
           </div>
         )}
         {selectedKid && (
-          <Tabs.Root defaultValue="overview">
+          <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
+            {/* Refresh indicator */}
+            {lastRefreshLabel && (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[var(--eq-text-secondary)] text-xs">{lastRefreshLabel}</span>
+                <button
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing}
+                  className="p-1 rounded-md text-[var(--eq-text-secondary)] hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
+                  title="Atualizar dados"
+                >
+                  {isRefreshing ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <RefreshCw size={14} />
+                  )}
+                </button>
+              </div>
+            )}
             <Tabs.List className="flex gap-1 mb-6 p-1 glass rounded-xl overflow-x-auto">
               <Tabs.Trigger
                 value="overview"
@@ -321,16 +405,21 @@ export default function ParentDashboard() {
               </Tabs.Trigger>
               <Tabs.Trigger
                 value="tasks"
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm relative"
               >
                 <span className="flex items-center gap-2">
                   <ClipboardList size={15} />
                   Tarefas
-                  {parentTasks.filter(t => t.status === 'pending').length > 0 && (
+                  {parentTasks.filter(t => t.status === 'pending').length > 0 ? (
                     <span className="ml-1.5 w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center">
                       {parentTasks.filter(t => t.status === 'pending').length}
                     </span>
-                  )}
+                  ) : parentTasks.length === 0 ? (
+                    <span className="relative flex h-2.5 w-2.5 ml-1">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-500" />
+                    </span>
+                  ) : null}
                 </span>
               </Tabs.Trigger>
               <Tabs.Trigger
@@ -353,7 +442,7 @@ export default function ParentDashboard() {
                 animate="visible"
               >
                 {/* Enhanced Stats Cards */}
-                <StudyStatsCards stats={studyStats} />
+                <StudyStatsCards stats={studyStats} summaries={summaries} />
 
                 {/* Charts */}
                 <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
@@ -408,6 +497,23 @@ export default function ParentDashboard() {
                   </motion.div>
                 )}
               </motion.div>
+
+              {/* FAB: Sugerir tarefa */}
+              <motion.button
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
+                onClick={() => setActiveTab('tasks')}
+                className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-semibold shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50 transition-shadow"
+                style={{
+                  background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Plus size={18} />
+                Sugerir tarefa
+              </motion.button>
             </Tabs.Content>
 
             {/* Tab 2: Sessoes */}

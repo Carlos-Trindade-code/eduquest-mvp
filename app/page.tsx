@@ -11,6 +11,7 @@ import { FeaturesSection } from '@/components/landing/FeaturesSection';
 import { AgeGroupShowcase } from '@/components/landing/AgeGroupShowcase';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { ParentDashboardPreview } from '@/components/landing/ParentDashboardPreview';
+import { SchoolsSection } from '@/components/landing/SchoolsSection';
 import { FAQSection } from '@/components/landing/FAQSection';
 import { Footer } from '@/components/landing/Footer';
 
@@ -27,6 +28,7 @@ export default function LandingPage() {
       <AgeGroupShowcase />
       <HowItWorks />
       <ParentDashboardPreview />
+      <SchoolsSection />
       <FAQSection />
       <Footer />
       <MusicPlayer />

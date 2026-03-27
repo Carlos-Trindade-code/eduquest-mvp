@@ -13,7 +13,19 @@ function getTransition(intensity: Intensity): Transition {
   }
 }
 
-export function fadeInUp(intensity: Intensity = 'medium'): Variants {
+/** Minimal transition for reduced-motion: just a quick opacity fade */
+const reducedTransition: Transition = { duration: 0.15, ease: 'easeOut' };
+
+function reducedVariants(): Variants {
+  return {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: reducedTransition },
+    exit: { opacity: 0, transition: { duration: 0.1 } },
+  };
+}
+
+export function fadeInUp(intensity: Intensity = 'medium', reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   return {
     hidden: { opacity: 0, y: intensity === 'high' ? 30 : intensity === 'medium' ? 20 : 10 },
     visible: { opacity: 1, y: 0, transition: getTransition(intensity) },
@@ -21,7 +33,8 @@ export function fadeInUp(intensity: Intensity = 'medium'): Variants {
   };
 }
 
-export function fadeIn(intensity: Intensity = 'medium'): Variants {
+export function fadeIn(intensity: Intensity = 'medium', reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   return {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: getTransition(intensity) },
@@ -29,7 +42,8 @@ export function fadeIn(intensity: Intensity = 'medium'): Variants {
   };
 }
 
-export function scaleIn(intensity: Intensity = 'medium'): Variants {
+export function scaleIn(intensity: Intensity = 'medium', reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   return {
     hidden: { opacity: 0, scale: intensity === 'high' ? 0.5 : 0.85 },
     visible: { opacity: 1, scale: 1, transition: getTransition(intensity) },
@@ -37,7 +51,8 @@ export function scaleIn(intensity: Intensity = 'medium'): Variants {
   };
 }
 
-export function slideInLeft(intensity: Intensity = 'medium'): Variants {
+export function slideInLeft(intensity: Intensity = 'medium', reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   return {
     hidden: { opacity: 0, x: intensity === 'high' ? -50 : -25 },
     visible: { opacity: 1, x: 0, transition: getTransition(intensity) },
@@ -45,7 +60,8 @@ export function slideInLeft(intensity: Intensity = 'medium'): Variants {
   };
 }
 
-export function slideInRight(intensity: Intensity = 'medium'): Variants {
+export function slideInRight(intensity: Intensity = 'medium', reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   return {
     hidden: { opacity: 0, x: intensity === 'high' ? 50 : 25 },
     visible: { opacity: 1, x: 0, transition: getTransition(intensity) },
@@ -53,7 +69,8 @@ export function slideInRight(intensity: Intensity = 'medium'): Variants {
   };
 }
 
-export function bounceIn(intensity: Intensity = 'high'): Variants {
+export function bounceIn(intensity: Intensity = 'high', reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   return {
     hidden: { opacity: 0, scale: 0.3 },
     visible: {
@@ -69,6 +86,16 @@ export function bounceIn(intensity: Intensity = 'high'): Variants {
   };
 }
 
+export function staggerContainerFn(reduceMotion = false): Variants {
+  if (reduceMotion) {
+    return {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { staggerChildren: 0, delayChildren: 0 } },
+    };
+  }
+  return staggerContainer;
+}
+
 export const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -76,6 +103,16 @@ export const staggerContainer: Variants = {
     transition: { staggerChildren: 0.08, delayChildren: 0.05 },
   },
 };
+
+export function staggerContainerSlowFn(reduceMotion = false): Variants {
+  if (reduceMotion) {
+    return {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { staggerChildren: 0, delayChildren: 0 } },
+    };
+  }
+  return staggerContainerSlow;
+}
 
 export const staggerContainerSlow: Variants = {
   hidden: { opacity: 0 },
@@ -86,7 +123,8 @@ export const staggerContainerSlow: Variants = {
 };
 
 // Chat message animation by age group
-export function chatMessageVariants(intensity: Intensity): Variants {
+export function chatMessageVariants(intensity: Intensity, reduceMotion = false): Variants {
+  if (reduceMotion) return reducedVariants();
   switch (intensity) {
     case 'high':
       return {

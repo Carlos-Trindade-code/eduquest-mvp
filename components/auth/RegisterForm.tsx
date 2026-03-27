@@ -469,7 +469,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       />
                     </div>
                     {confirmTouched && confirmPassword && password !== confirmPassword && (
-                      <p className="text-red-400 text-xs mt-1">As senhas nao conferem</p>
+                      <p className="text-red-400 text-xs mt-1" role="alert">As senhas nao conferem</p>
                     )}
                   </div>
 

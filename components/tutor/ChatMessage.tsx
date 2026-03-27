@@ -29,7 +29,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       {!isUser && (
         <div className="shrink-0 mt-1">
           {tokens.showMascot ? (
-            <MascotOwl expression="encouraging" size="sm" animated={false} />
+            <MascotOwl expression="encouraging" size="sm" animated={false} decorative />
           ) : (
             <div
               className="flex items-center justify-center rounded-full text-white text-xs font-bold"

@@ -3,14 +3,21 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Plus, Users, BookOpen, Copy, Check, Upload, Sparkles, LogOut, Shield,
-  ChevronRight, FileText, Trash2, Loader2, X,
+  Plus, Users, Copy, Check, Upload, Sparkles, LogOut, Shield,
+  FileText, Loader2, X, Clock, Star,
+  Activity, BarChart3, Zap,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { getSubjectById, subjects } from '@/lib/subjects/config';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
+import {
+  getStudentAnalytics,
+  getClassroomStats,
+  type StudentAnalytics,
+  type ClassroomStatsResult,
+} from '@/lib/supabase/queries';
 
 interface Classroom {
   id: string;
@@ -38,6 +45,32 @@ interface Material {
   created_at: string;
 }
 
+function formatRelativeDate(dateStr: string | null): string {
+  if (!dateStr) return 'Nunca';
+  const diffMs = Date.now() - new Date(dateStr).getTime();
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffDays === 0) return 'Hoje';
+  if (diffDays === 1) return 'Ontem';
+  if (diffDays < 7) return `Ha ${diffDays} dias`;
+  if (diffDays < 14) return 'Ha 1 semana';
+  if (diffDays < 30) return `Ha ${Math.floor(diffDays / 7)} semanas`;
+  return `Ha ${Math.floor(diffDays / 30)} mes${Math.floor(diffDays / 30) > 1 ? 'es' : ''}`;
+}
+
+function getActivityStatus(lastSessionDate: string | null): 'green' | 'yellow' | 'red' {
+  if (!lastSessionDate) return 'red';
+  const diffDays = Math.floor((Date.now() - new Date(lastSessionDate).getTime()) / 86400000);
+  if (diffDays === 0) return 'green';
+  if (diffDays < 7) return 'yellow';
+  return 'red';
+}
+
+const ACTIVITY_DOT_COLORS: Record<string, string> = {
+  green: 'bg-emerald-400 shadow-emerald-400/50',
+  yellow: 'bg-yellow-400 shadow-yellow-400/50',
+  red: 'bg-red-400/60 shadow-red-400/30',
+};
+
 export default function ProfessorPage() {
   const { profile, loading: authLoading, signOut } = useAuth();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
@@ -47,56 +80,61 @@ export default function ProfessorPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [studentAnalytics, setStudentAnalytics] = useState<Record<string, StudentAnalytics>>({});
+  const [classroomStats, setClassroomStats] = useState<ClassroomStatsResult | null>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
   const supabase = createClient();
 
-  useEffect(() => {
-    if (!profile) return;
-    loadClassrooms();
-  }, [profile]);
-
-  useEffect(() => {
-    if (!selectedClassroom) return;
-    loadClassroomData(selectedClassroom.id);
-  }, [selectedClassroom]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (profile) loadClassrooms(); }, [profile]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (selectedClassroom) loadClassroomData(selectedClassroom.id); }, [selectedClassroom]);
 
   const loadClassrooms = async () => {
     if (!profile) return;
-    const { data } = await supabase
-      .from('classrooms')
-      .select('*')
-      .eq('teacher_id', profile.id)
-      .order('created_at', { ascending: false });
+    const { data } = await supabase.from('classrooms').select('*').eq('teacher_id', profile.id).order('created_at', { ascending: false });
     setClassrooms((data || []) as Classroom[]);
     if (data && data.length > 0 && !selectedClassroom) setSelectedClassroom(data[0] as Classroom);
     setLoading(false);
   };
 
   const loadClassroomData = async (classroomId: string) => {
+    setAnalyticsLoading(true);
     const [membersRes, materialsRes] = await Promise.all([
       supabase.from('classroom_members').select('*, profiles(name, email)').eq('classroom_id', classroomId),
       supabase.from('classroom_materials').select('*').eq('classroom_id', classroomId).order('created_at', { ascending: false }),
     ]);
-    setMembers((membersRes.data || []) as ClassroomMember[]);
+    const loadedMembers = (membersRes.data || []) as ClassroomMember[];
+    setMembers(loadedMembers);
     setMaterials((materialsRes.data || []) as Material[]);
+    const kidIds = loadedMembers.map((m) => m.student_id);
+    if (kidIds.length > 0) {
+      const nameMap: Record<string, string> = {};
+      loadedMembers.forEach((m) => { nameMap[m.student_id] = m.profiles?.name || 'Aluno'; });
+      const [analytics, stats] = await Promise.all([
+        getStudentAnalytics(supabase, kidIds),
+        getClassroomStats(supabase, kidIds, nameMap),
+      ]);
+      const analyticsMap: Record<string, StudentAnalytics> = {};
+      analytics.forEach((a) => { analyticsMap[a.kidId] = a; });
+      setStudentAnalytics(analyticsMap);
+      setClassroomStats(stats);
+    } else {
+      setStudentAnalytics({});
+      setClassroomStats(null);
+    }
+    setAnalyticsLoading(false);
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    window.location.href = '/login';
-  };
+  const handleSignOut = async () => { await signOut(); window.location.href = '/login'; };
 
   if (authLoading || loading) {
-    return (
-      <div className="min-h-screen bg-gradient-app flex items-center justify-center">
-        <div className="text-white text-lg animate-pulse">Carregando...</div>
-      </div>
-    );
+    return (<div className="min-h-screen bg-gradient-app flex items-center justify-center" aria-live="polite"><div className="text-white text-lg animate-pulse" role="status">Carregando...</div></div>);
   }
 
   return (
     <div className="min-h-screen bg-gradient-app">
-      {/* Header */}
       <header className="glass border-b border-white/5 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -105,15 +143,9 @@ export default function ProfessorPage() {
             <span className="text-white/30 text-sm ml-1">/ Professor</span>
           </div>
           <div className="flex items-center gap-2">
-            {profile?.email === 'carlostrindade@me.com' && (
-              <Link href="/admin" className="px-3 py-1.5 rounded-lg text-sm text-purple-400 hover:bg-purple-500/10 transition-colors">
-                <Shield size={14} />
-              </Link>
-            )}
+            {profile?.email === 'carlostrindade@me.com' && (<Link href="/admin" className="px-3 py-1.5 rounded-lg text-sm text-purple-400 hover:bg-purple-500/10 transition-colors"><Shield size={14} /></Link>)}
             <span className="text-white/40 text-sm hidden sm:inline">{profile?.name}</span>
-            <button onClick={handleSignOut} className="px-3 py-2 rounded-lg text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-colors border border-red-500/10">
-              <LogOut size={14} />
-            </button>
+            <button onClick={handleSignOut} className="px-3 py-2 rounded-lg text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-colors border border-red-500/10"><LogOut size={14} /></button>
           </div>
         </div>
       </header>
@@ -121,14 +153,8 @@ export default function ProfessorPage() {
       <main className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-white text-xl font-bold">Minhas Turmas</h1>
-          <motion.button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-purple-600 text-white hover:bg-purple-500 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Plus size={16} />
-            Nova turma
+          <motion.button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-purple-600 text-white hover:bg-purple-500 transition-colors" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Plus size={16} />Nova turma
           </motion.button>
         </div>
 
@@ -136,21 +162,12 @@ export default function ProfessorPage() {
           <EmptyState onCreateClick={() => setShowCreateModal(true)} />
         ) : (
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
-            {/* Sidebar: classroom list */}
             <div className="space-y-2">
               {classrooms.map((c) => {
                 const sub = getSubjectById(c.subject);
                 const isSelected = selectedClassroom?.id === c.id;
                 return (
-                  <button
-                    key={c.id}
-                    onClick={() => setSelectedClassroom(c)}
-                    className={`w-full text-left rounded-xl p-3.5 transition-all ${isSelected ? 'ring-1 ring-purple-500/50' : ''}`}
-                    style={{
-                      background: isSelected ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.02)',
-                      border: `1px solid ${isSelected ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.05)'}`,
-                    }}
-                  >
+                  <button key={c.id} onClick={() => setSelectedClassroom(c)} className={`w-full text-left rounded-xl p-3.5 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 ${isSelected ? 'ring-1 ring-purple-500/50' : ''}`} style={{ background: isSelected ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isSelected ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
                     <div className="flex items-center gap-3">
                       <span className="text-xl">{sub?.icon || '📚'}</span>
                       <div className="flex-1 min-w-0">
@@ -163,30 +180,17 @@ export default function ProfessorPage() {
               })}
             </div>
 
-            {/* Main: classroom detail */}
             {selectedClassroom && (
               <div className="space-y-6">
                 <ClassroomHeader classroom={selectedClassroom} memberCount={members.length} />
 
-                {/* Materials */}
                 <div className="glass rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-white font-semibold text-sm flex items-center gap-2">
-                      <FileText size={16} className="text-purple-400" />
-                      Materiais ({materials.length})
-                    </h3>
-                    <button
-                      onClick={() => setShowUploadModal(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-600/20 text-purple-300 hover:bg-purple-600/30 transition-colors"
-                    >
-                      <Upload size={12} />
-                      Enviar material
-                    </button>
+                    <h3 className="text-white font-semibold text-sm flex items-center gap-2"><FileText size={16} className="text-purple-400" />Materiais ({materials.length})</h3>
+                    <button onClick={() => setShowUploadModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-600/20 text-purple-300 hover:bg-purple-600/30 transition-colors"><Upload size={12} />Enviar material</button>
                   </div>
                   {materials.length === 0 ? (
-                    <p className="text-white/30 text-sm text-center py-8">
-                      Nenhum material ainda. Envie PDFs, imagens ou textos.
-                    </p>
+                    <p className="text-white/30 text-sm text-center py-8">Nenhum material ainda. Envie PDFs, imagens ou textos.</p>
                   ) : (
                     <div className="space-y-2">
                       {materials.map((m) => (
@@ -196,42 +200,23 @@ export default function ProfessorPage() {
                             <p className="text-white text-sm font-medium truncate">{m.title}</p>
                             {m.description && <p className="text-white/30 text-xs truncate">{m.description}</p>}
                           </div>
-                          <span className="text-white/20 text-xs shrink-0">
-                            {new Date(m.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
-                          </span>
+                          <span className="text-white/20 text-xs shrink-0">{new Date(m.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</span>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                {/* Students */}
+                {classroomStats && members.length > 0 && (<ClassroomStatsSummary stats={classroomStats} totalStudents={members.length} />)}
+
                 <div className="glass rounded-2xl p-5">
-                  <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4">
-                    <Users size={16} className="text-blue-400" />
-                    Alunos ({members.length})
-                  </h3>
+                  <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4"><Users size={16} className="text-blue-400" />Alunos ({members.length})</h3>
                   {members.length === 0 ? (
-                    <p className="text-white/30 text-sm text-center py-8">
-                      Nenhum aluno ainda. Compartilhe o codigo da turma.
-                    </p>
+                    <p className="text-white/30 text-sm text-center py-8">Nenhum aluno ainda. Compartilhe o codigo da turma.</p>
+                  ) : analyticsLoading ? (
+                    <div className="flex items-center justify-center py-8 gap-2"><Loader2 size={16} className="animate-spin text-purple-400" /><span className="text-white/40 text-sm">Carregando analytics...</span></div>
                   ) : (
-                    <div className="space-y-2">
-                      {members.map((m) => (
-                        <div key={m.id} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                            {(m.profiles?.name || '?').charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-white text-sm font-medium truncate">{m.profiles?.name || 'Aluno'}</p>
-                            <p className="text-white/30 text-xs truncate">{m.profiles?.email || ''}</p>
-                          </div>
-                          <span className="text-white/20 text-xs shrink-0">
-                            {new Date(m.joined_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                    <StudentListSection members={members} analytics={studentAnalytics} classroomCode={selectedClassroom.code} />
                   )}
                 </div>
               </div>
@@ -240,28 +225,8 @@ export default function ProfessorPage() {
         )}
       </main>
 
-      {/* Create Classroom Modal */}
-      <AnimatePresence>
-        {showCreateModal && (
-          <CreateClassroomModal
-            profileId={profile?.id || ''}
-            onCreated={() => { setShowCreateModal(false); loadClassrooms(); }}
-            onClose={() => setShowCreateModal(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Upload Material Modal */}
-      <AnimatePresence>
-        {showUploadModal && selectedClassroom && (
-          <UploadMaterialModal
-            classroomId={selectedClassroom.id}
-            onUploaded={() => { setShowUploadModal(false); loadClassroomData(selectedClassroom.id); }}
-            onClose={() => setShowUploadModal(false)}
-          />
-        )}
-      </AnimatePresence>
-
+      <AnimatePresence>{showCreateModal && (<CreateClassroomModal profileId={profile?.id || ''} onCreated={() => { setShowCreateModal(false); loadClassrooms(); }} onClose={() => setShowCreateModal(false)} />)}</AnimatePresence>
+      <AnimatePresence>{showUploadModal && selectedClassroom && (<UploadMaterialModal classroomId={selectedClassroom.id} onUploaded={() => { setShowUploadModal(false); loadClassroomData(selectedClassroom.id); }} onClose={() => setShowUploadModal(false)} />)}</AnimatePresence>
       <FeedbackButton />
     </div>
   );
@@ -272,18 +237,8 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
     <div className="max-w-md mx-auto text-center py-16">
       <div className="text-5xl mb-4">🏫</div>
       <h2 className="text-white text-xl font-bold mb-2">Crie sua primeira turma</h2>
-      <p className="text-sm mb-6" style={{ color: 'rgba(240,244,248,0.5)' }}>
-        Adicione materiais e compartilhe o codigo com seus alunos
-      </p>
-      <motion.button
-        onClick={onCreateClick}
-        className="px-6 py-3 rounded-xl font-bold text-sm bg-purple-600 text-white"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        <Plus size={16} className="inline mr-2" />
-        Criar turma
-      </motion.button>
+      <p className="text-sm mb-6" style={{ color: 'rgba(240,244,248,0.5)' }}>Adicione materiais e compartilhe o codigo com seus alunos</p>
+      <motion.button onClick={onCreateClick} className="px-6 py-3 rounded-xl font-bold text-sm bg-purple-600 text-white" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}><Plus size={16} className="inline mr-2" />Criar turma</motion.button>
     </div>
   );
 }
@@ -291,37 +246,84 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
 function ClassroomHeader({ classroom, memberCount }: { classroom: Classroom; memberCount: number }) {
   const [copied, setCopied] = useState(false);
   const sub = getSubjectById(classroom.subject);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(classroom.code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
+  const handleCopy = async () => { await navigator.clipboard.writeText(classroom.code); setCopied(true); setTimeout(() => setCopied(false), 2000); };
   return (
     <div className="glass rounded-2xl p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ background: `${sub?.color || '#8B5CF6'}15` }}>
-            {sub?.icon || '📚'}
-          </div>
-          <div>
-            <h2 className="text-white font-bold text-lg">{classroom.name}</h2>
-            <p className="text-white/40 text-xs">{sub?.name || classroom.subject} · {memberCount} aluno{memberCount !== 1 ? 's' : ''}</p>
-          </div>
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ background: `${sub?.color || '#8B5CF6'}15` }}>{sub?.icon || '📚'}</div>
+          <div><h2 className="text-white font-bold text-lg">{classroom.name}</h2><p className="text-white/40 text-xs">{sub?.name || classroom.subject} · {memberCount} aluno{memberCount !== 1 ? 's' : ''}</p></div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="rounded-xl px-4 py-2 text-center" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
-            <p className="text-white/40 text-[10px] uppercase tracking-wider">Codigo</p>
-            <div className="flex items-center gap-2">
-              <span className="text-white font-mono font-bold text-sm tracking-widest">{classroom.code}</span>
-              <button onClick={handleCopy} className="text-white/30 hover:text-white transition-colors">
-                {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
-              </button>
-            </div>
-          </div>
+        <div className="rounded-xl px-4 py-2 text-center" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
+          <p className="text-white/40 text-[10px] uppercase tracking-wider">Codigo</p>
+          <div className="flex items-center gap-2"><span className="text-white font-mono font-bold text-sm tracking-widest">{classroom.code}</span><button onClick={handleCopy} className="text-white/30 hover:text-white transition-colors">{copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}</button></div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ClassroomStatsSummary({ stats, totalStudents }: { stats: ClassroomStatsResult; totalStudents: number }) {
+  const sub = stats.mostStudiedSubject ? getSubjectById(stats.mostStudiedSubject) : null;
+  const activePercent = totalStudents > 0 ? Math.round((stats.studentsActiveThisWeek / totalStudents) * 100) : 0;
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="rounded-xl p-3.5" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
+        <div className="flex items-center gap-2 mb-1"><BarChart3 size={14} className="text-purple-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Sessoes</span></div>
+        <p className="text-white font-bold text-lg">{stats.totalSessions}</p><p className="text-white/30 text-[10px]">total da turma</p>
+      </div>
+      <div className="rounded-xl p-3.5" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)' }}>
+        <div className="flex items-center gap-2 mb-1"><Zap size={14} className="text-blue-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">XP medio</span></div>
+        <p className="text-white font-bold text-lg">{stats.averageXP}</p><p className="text-white/30 text-[10px]">por aluno</p>
+      </div>
+      <div className="rounded-xl p-3.5" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)' }}>
+        <div className="flex items-center gap-2 mb-1"><Activity size={14} className="text-emerald-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Ativos</span></div>
+        <p className="text-white font-bold text-lg">{activePercent}%</p><p className="text-white/30 text-[10px]">{stats.studentsActiveThisWeek} esta semana</p>
+      </div>
+      <div className="rounded-xl p-3.5" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.15)' }}>
+        <div className="flex items-center gap-2 mb-1"><Star size={14} className="text-yellow-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Materia top</span></div>
+        <p className="text-white font-bold text-sm truncate">{sub ? `${sub.icon} ${sub.name}` : '--'}</p><p className="text-white/30 text-[10px]">mais estudada</p>
+      </div>
+    </motion.div>
+  );
+}
+
+function StudentListSection({ members, analytics, classroomCode }: { members: ClassroomMember[]; analytics: Record<string, StudentAnalytics>; classroomCode: string }) {
+  const hasAnySessions = Object.values(analytics).some((a) => a.totalSessions > 0);
+  if (!hasAnySessions && members.length > 0) {
+    return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8 px-4"><div className="text-3xl mb-3">📖</div><p className="text-white/50 text-sm mb-1">Seus alunos ainda nao iniciaram sessoes de estudo.</p><p className="text-white/30 text-xs">Compartilhe o codigo <span className="font-mono text-purple-400">{classroomCode}</span> para eles comecarem!</p></motion.div>);
+  }
+  return (
+    <div className="space-y-2">
+      {members.map((m, i) => {
+        const a = analytics[m.student_id];
+        const status = getActivityStatus(a?.lastSessionDate || null);
+        const favSub = a?.favoriteSubject ? getSubjectById(a.favoriteSubject) : null;
+        return (
+          <motion.div key={m.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: i * 0.03 }} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+            <div className="relative shrink-0">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">{(m.profiles?.name || '?').charAt(0).toUpperCase()}</div>
+              <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 ${ACTIVITY_DOT_COLORS[status]}`} style={{ borderColor: '#0F1D2E' }} title={status === 'green' ? 'Ativo hoje' : status === 'yellow' ? 'Ativo esta semana' : 'Inativo 7+ dias'} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-white text-sm font-medium truncate">{m.profiles?.name || 'Aluno'}</p>
+                {a && a.totalSessions > 0 && (<span className="shrink-0 px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-purple-500/20 text-purple-300">{a.totalSessions} {a.totalSessions === 1 ? 'sessao' : 'sessoes'}</span>)}
+              </div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-white/30 text-xs">{a?.lastSessionDate ? formatRelativeDate(a.lastSessionDate) : 'Sem atividade'}</span>
+                {favSub && <span className="text-white/20 text-[10px]">{favSub.icon} {favSub.name}</span>}
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              {a && a.totalXP > 0 ? (<>
+                <div className="flex items-center gap-1 justify-end"><Zap size={12} className={a.totalXP >= 500 ? 'text-yellow-400' : a.totalXP >= 200 ? 'text-blue-400' : 'text-white/30'} /><span className={`text-xs font-semibold ${a.totalXP >= 500 ? 'text-yellow-400' : a.totalXP >= 200 ? 'text-blue-400' : 'text-white/40'}`}>{a.totalXP} XP</span></div>
+                {a.totalMinutes > 0 && (<div className="flex items-center gap-1 justify-end mt-0.5"><Clock size={10} className="text-white/20" /><span className="text-white/20 text-[10px]">{a.totalMinutes}min</span></div>)}
+              </>) : (<span className="text-white/15 text-xs">--</span>)}
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
@@ -330,83 +332,28 @@ function CreateClassroomModal({ profileId, onCreated, onClose }: { profileId: st
   const [name, setName] = useState('');
   const [subject, setSubject] = useState('math');
   const [creating, setCreating] = useState(false);
-
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   const handleCreate = async () => {
     if (!name.trim()) return;
     setCreating(true);
-    const supabase = createClient();
-    const { data: code } = await supabase.rpc('generate_classroom_code');
-    await supabase.from('classrooms').insert({
-      teacher_id: profileId,
-      name: name.trim(),
-      subject,
-      code,
-    });
+    const sb = createClient();
+    const { data: code } = await sb.rpc('generate_classroom_code');
+    await sb.from('classrooms').insert({ teacher_id: profileId, name: name.trim(), subject, code });
     setCreating(false);
     onCreated();
   };
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-        className="w-full max-w-md rounded-2xl p-6"
-        style={{ background: '#0F1D2E', border: '1px solid rgba(255,255,255,0.1)' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-white font-bold text-lg">Nova turma</h2>
-          <button onClick={onClose} className="text-white/30 hover:text-white"><X size={18} /></button>
-        </div>
-
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="create-modal-title">
+      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md rounded-2xl p-6" style={{ background: '#0F1D2E', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5"><h2 id="create-modal-title" className="text-white font-bold text-lg">Nova turma</h2><button onClick={onClose} className="text-white/30 hover:text-white" aria-label="Fechar"><X size={18} /></button></div>
         <div className="space-y-4">
-          <div>
-            <label className="text-white/50 text-xs font-medium block mb-1.5">Nome da turma</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Ex: 5o Ano A - Matematica"
-              className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="text-white/50 text-xs font-medium block mb-1.5">Materia principal</label>
-            <div className="grid grid-cols-4 gap-2">
-              {subjects.filter(s => s.id !== 'other').map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setSubject(s.id)}
-                  className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${
-                    subject === s.id ? 'ring-1 ring-purple-500' : ''
-                  }`}
-                  style={{
-                    background: subject === s.id ? `${s.color}15` : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${subject === s.id ? `${s.color}30` : 'rgba(255,255,255,0.05)'}`,
-                  }}
-                >
-                  <span className="text-lg">{s.icon}</span>
-                  <span className="text-white/60 truncate w-full text-center" style={{ fontSize: 10 }}>{s.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <motion.button
-            onClick={handleCreate}
-            disabled={!name.trim() || creating}
-            className="w-full py-3 rounded-xl font-bold text-sm bg-purple-600 text-white disabled:opacity-30 flex items-center justify-center gap-2"
-            whileHover={name.trim() ? { scale: 1.02 } : {}}
-            whileTap={{ scale: 0.98 }}
-          >
-            {creating ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-            {creating ? 'Criando...' : 'Criar turma'}
-          </motion.button>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Nome da turma</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex: 5o Ano A - Matematica" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Materia principal</label><div className="grid grid-cols-4 gap-2">{subjects.filter(s => s.id !== 'other').map((s) => (<button key={s.id} onClick={() => setSubject(s.id)} className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${subject === s.id ? 'ring-1 ring-purple-500' : ''}`} style={{ background: subject === s.id ? `${s.color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${subject === s.id ? `${s.color}30` : 'rgba(255,255,255,0.05)'}` }}><span className="text-lg">{s.icon}</span><span className="text-white/60 truncate w-full text-center" style={{ fontSize: 10 }}>{s.name}</span></button>))}</div></div>
+          <motion.button onClick={handleCreate} disabled={!name.trim() || creating} className="w-full py-3 rounded-xl font-bold text-sm bg-purple-600 text-white disabled:opacity-30 flex items-center justify-center gap-2" whileHover={name.trim() ? { scale: 1.02 } : {}} whileTap={{ scale: 0.98 }}>{creating ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}{creating ? 'Criando...' : 'Criar turma'}</motion.button>
         </div>
       </motion.div>
     </motion.div>
@@ -416,132 +363,38 @@ function CreateClassroomModal({ profileId, onCreated, onClose }: { profileId: st
 function UploadMaterialModal({ classroomId, onUploaded, onClose }: { classroomId: string; onUploaded: () => void; onClose: () => void }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   const [contentText, setContentText] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-
   const handleUpload = async () => {
     if (!title.trim()) return;
     setUploading(true);
-
-    const supabase = createClient();
-    let fileUrl = null;
-    let fileType = null;
-    let extractedText = contentText;
-
-    // Upload file if provided
+    const sb = createClient();
+    let fileUrl = null; let fileType = null; let extractedText = contentText;
     if (file) {
-      fileType = file.type;
-      const ext = file.name.split('.').pop();
-      const path = `materials/${classroomId}/${Date.now()}.${ext}`;
-      const { data: uploadData } = await supabase.storage.from('materials').upload(path, file);
-      if (uploadData) {
-        const { data: urlData } = supabase.storage.from('materials').getPublicUrl(path);
-        fileUrl = urlData.publicUrl;
-      }
-
-      // OCR for images
-      if (file.type.startsWith('image/') && !contentText) {
-        try {
-          const formData = new FormData();
-          formData.append('file', file);
-          const res = await fetch('/api/ocr', { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.text) extractedText = data.text;
-        } catch { /* non-critical */ }
-      }
+      fileType = file.type; const ext = file.name.split('.').pop(); const path = `materials/${classroomId}/${Date.now()}.${ext}`;
+      const { data: uploadData } = await sb.storage.from('materials').upload(path, file);
+      if (uploadData) { const { data: urlData } = sb.storage.from('materials').getPublicUrl(path); fileUrl = urlData.publicUrl; }
+      if (file.type.startsWith('image/') && !contentText) { try { const formData = new FormData(); formData.append('file', file); const res = await fetch('/api/ocr', { method: 'POST', body: formData }); const data = await res.json(); if (data.text) extractedText = data.text; } catch { /* non-critical */ } }
     }
-
-    await supabase.from('classroom_materials').insert({
-      classroom_id: classroomId,
-      title: title.trim(),
-      description: description.trim() || null,
-      file_url: fileUrl,
-      file_type: fileType,
-      content_text: extractedText || null,
-    });
-
-    setUploading(false);
-    onUploaded();
+    await sb.from('classroom_materials').insert({ classroom_id: classroomId, title: title.trim(), description: description.trim() || null, file_url: fileUrl, file_type: fileType, content_text: extractedText || null });
+    setUploading(false); onUploaded();
   };
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-        className="w-full max-w-md rounded-2xl p-6"
-        style={{ background: '#0F1D2E', border: '1px solid rgba(255,255,255,0.1)' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-white font-bold text-lg">Enviar material</h2>
-          <button onClick={onClose} className="text-white/30 hover:text-white"><X size={18} /></button>
-        </div>
-
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md rounded-2xl p-6" style={{ background: '#0F1D2E', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5"><h2 id="upload-modal-title" className="text-white font-bold text-lg">Enviar material</h2><button onClick={onClose} className="text-white/30 hover:text-white" aria-label="Fechar"><X size={18} /></button></div>
         <div className="space-y-4">
-          <div>
-            <label className="text-white/50 text-xs font-medium block mb-1.5">Titulo *</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ex: Lista de exercicios - Cap. 5"
-              className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="text-white/50 text-xs font-medium block mb-1.5">Descricao</label>
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Instrucoes para o aluno (opcional)"
-              className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="text-white/50 text-xs font-medium block mb-1.5">Arquivo (PDF ou imagem)</label>
-            <label
-              className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/30 cursor-pointer transition-colors"
-            >
-              <Upload size={16} className="text-white/30" />
-              <span className="text-white/40 text-sm">{file ? file.name : 'Clique para selecionar'}</span>
-              <input
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg,.webp"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="hidden"
-              />
-            </label>
-          </div>
-
-          <div>
-            <label className="text-white/50 text-xs font-medium block mb-1.5">Ou cole o texto aqui</label>
-            <textarea
-              value={contentText}
-              onChange={(e) => setContentText(e.target.value)}
-              placeholder="Cole o conteudo da tarefa, exercicio ou texto de estudo..."
-              rows={4}
-              className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm resize-none"
-            />
-          </div>
-
-          <motion.button
-            onClick={handleUpload}
-            disabled={!title.trim() || uploading}
-            className="w-full py-3 rounded-xl font-bold text-sm bg-purple-600 text-white disabled:opacity-30 flex items-center justify-center gap-2"
-            whileHover={title.trim() ? { scale: 1.02 } : {}}
-            whileTap={{ scale: 0.98 }}
-          >
-            {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-            {uploading ? 'Enviando...' : 'Enviar material'}
-          </motion.button>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Titulo *</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Lista de exercicios - Cap. 5" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Descricao</label><input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Instrucoes para o aluno (opcional)" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Arquivo (PDF ou imagem)</label><label className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/30 cursor-pointer transition-colors"><Upload size={16} className="text-white/30" /><span className="text-white/40 text-sm">{file ? file.name : 'Clique para selecionar'}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" onChange={(e) => setFile(e.target.files?.[0] || null)} className="hidden" /></label></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Ou cole o texto aqui</label><textarea value={contentText} onChange={(e) => setContentText(e.target.value)} placeholder="Cole o conteudo da tarefa, exercicio ou texto de estudo..." rows={4} className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm resize-none" /></div>
+          <motion.button onClick={handleUpload} disabled={!title.trim() || uploading} className="w-full py-3 rounded-xl font-bold text-sm bg-purple-600 text-white disabled:opacity-30 flex items-center justify-center gap-2" whileHover={title.trim() ? { scale: 1.02 } : {}} whileTap={{ scale: 0.98 }}>{uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}{uploading ? 'Enviando...' : 'Enviar material'}</motion.button>
         </div>
       </motion.div>
     </motion.div>

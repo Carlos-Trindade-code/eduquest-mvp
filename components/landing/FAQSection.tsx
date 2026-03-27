@@ -145,7 +145,7 @@ export function FAQSection() {
       setSuggestion('');
       setSuggName('');
       setSuggEmail('');
-      setTimeout(() => setSuggSent(false), 5000);
+      setTimeout(() => setSuggSent(false), 8000);
     } catch {
       // Silent fail for MVP
     } finally {
@@ -301,7 +301,7 @@ export function FAQSection() {
                   className="flex items-center gap-2 text-green-400 text-sm"
                 >
                   <Check size={16} />
-                  Obrigado pela sugestao!
+                  Obrigado pela sugestao! Vamos analisa-la com carinho. 💜
                 </motion.div>
               )}
             </AnimatePresence>

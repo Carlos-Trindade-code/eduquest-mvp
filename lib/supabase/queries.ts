@@ -222,7 +222,41 @@ export async function redeemInviteCode(
     code: code.toUpperCase(),
   });
 
-  if (error) return { data: null, error };
+  if (error) {
+    const msg = error.message?.toLowerCase() || '';
+    if (msg.includes('not found') || msg.includes('invalid')) {
+      return {
+        data: { success: false, error: 'Codigo nao encontrado. Verifique se digitou corretamente.' } as {
+          success: boolean; error?: string; parent_name?: string; already_linked?: boolean;
+        },
+        error: null,
+      };
+    }
+    return {
+      data: { success: false, error: 'Algo deu errado. Tente novamente.' } as {
+        success: boolean; error?: string; parent_name?: string; already_linked?: boolean;
+      },
+      error: null,
+    };
+  }
+
+  // Handle RPC-level error responses
+  if (data && !data.success) {
+    const rpcError = (data.error || '').toLowerCase();
+    let friendlyError = 'Algo deu errado. Tente novamente.';
+    if (rpcError.includes('not found') || rpcError.includes('invalid') || rpcError.includes('nao encontr')) {
+      friendlyError = 'Codigo nao encontrado. Verifique se digitou corretamente.';
+    } else if (rpcError.includes('already') || rpcError.includes('ja') || data.already_linked) {
+      friendlyError = 'Voce ja esta conectado a este pai/mae!';
+    }
+    return {
+      data: { ...data, error: friendlyError } as {
+        success: boolean; error?: string; parent_name?: string; already_linked?: boolean;
+      },
+      error: null,
+    };
+  }
+
   return {
     data: data as {
       success: boolean;
@@ -616,4 +650,133 @@ export async function deleteParentTask(
     .delete()
     .eq('id', taskId);
   return { error };
+}
+
+// ==========================================
+// TEACHER / PROFESSOR ANALYTICS
+// ==========================================
+
+export interface StudentAnalytics {
+  kidId: string;
+  totalSessions: number;
+  totalXP: number;
+  lastSessionDate: string | null;
+  totalMinutes: number;
+  favoriteSubject: string | null;
+}
+
+export interface ClassroomStatsResult {
+  totalSessions: number;
+  averageXP: number;
+  mostActiveStudent: { id: string; name: string; sessions: number } | null;
+  mostStudiedSubject: string | null;
+  studentsActiveThisWeek: number;
+}
+
+export async function getStudentAnalytics(
+  supabase: SupabaseClient,
+  kidIds: string[]
+): Promise<StudentAnalytics[]> {
+  if (kidIds.length === 0) return [];
+
+  const { data: sessions } = await supabase
+    .from('sessions')
+    .select('kid_id, subject, duration_minutes, xp_earned, created_at')
+    .in('kid_id', kidIds);
+
+  const allSessions = (sessions || []) as Array<{
+    kid_id: string;
+    subject: string;
+    duration_minutes: number | null;
+    xp_earned: number;
+    created_at: string;
+  }>;
+
+  const byKid: Record<string, typeof allSessions> = {};
+  for (const s of allSessions) {
+    if (!byKid[s.kid_id]) byKid[s.kid_id] = [];
+    byKid[s.kid_id].push(s);
+  }
+
+  return kidIds.map((kidId) => {
+    const kidSessions = byKid[kidId] || [];
+    const totalSessions = kidSessions.length;
+    const totalXP = kidSessions.reduce((sum, s) => sum + (s.xp_earned || 0), 0);
+    const totalMinutes = kidSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
+
+    let lastSessionDate: string | null = null;
+    if (kidSessions.length > 0) {
+      lastSessionDate = kidSessions.reduce((latest, s) =>
+        s.created_at > latest ? s.created_at : latest, kidSessions[0].created_at);
+    }
+
+    const subjectCount: Record<string, number> = {};
+    for (const s of kidSessions) {
+      subjectCount[s.subject] = (subjectCount[s.subject] || 0) + 1;
+    }
+    let favoriteSubject: string | null = null;
+    let maxCount = 0;
+    for (const [sub, count] of Object.entries(subjectCount)) {
+      if (count > maxCount) { maxCount = count; favoriteSubject = sub; }
+    }
+
+    return { kidId, totalSessions, totalXP, lastSessionDate, totalMinutes, favoriteSubject };
+  });
+}
+
+export async function getClassroomStats(
+  supabase: SupabaseClient,
+  studentIds: string[],
+  studentNames: Record<string, string>
+): Promise<ClassroomStatsResult> {
+  if (studentIds.length === 0) {
+    return { totalSessions: 0, averageXP: 0, mostActiveStudent: null, mostStudiedSubject: null, studentsActiveThisWeek: 0 };
+  }
+
+  const { data: sessions } = await supabase
+    .from('sessions')
+    .select('kid_id, subject, xp_earned, created_at')
+    .in('kid_id', studentIds);
+
+  const allSessions = (sessions || []) as Array<{
+    kid_id: string;
+    subject: string;
+    xp_earned: number;
+    created_at: string;
+  }>;
+
+  const totalSessions = allSessions.length;
+  const totalXP = allSessions.reduce((sum, s) => sum + (s.xp_earned || 0), 0);
+  const averageXP = studentIds.length > 0 ? Math.round(totalXP / studentIds.length) : 0;
+
+  const sessionsByKid: Record<string, number> = {};
+  for (const s of allSessions) {
+    sessionsByKid[s.kid_id] = (sessionsByKid[s.kid_id] || 0) + 1;
+  }
+  let mostActiveStudent: ClassroomStatsResult['mostActiveStudent'] = null;
+  let maxSessions = 0;
+  for (const [kidId, count] of Object.entries(sessionsByKid)) {
+    if (count > maxSessions) {
+      maxSessions = count;
+      mostActiveStudent = { id: kidId, name: studentNames[kidId] || 'Aluno', sessions: count };
+    }
+  }
+
+  const subjectCount: Record<string, number> = {};
+  for (const s of allSessions) {
+    subjectCount[s.subject] = (subjectCount[s.subject] || 0) + 1;
+  }
+  let mostStudiedSubject: string | null = null;
+  let maxSubjectCount = 0;
+  for (const [sub, count] of Object.entries(subjectCount)) {
+    if (count > maxSubjectCount) { maxSubjectCount = count; mostStudiedSubject = sub; }
+  }
+
+  const oneWeekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const activeThisWeek = new Set(
+    allSessions.filter((s) => s.created_at >= oneWeekAgo).map((s) => s.kid_id)
+  );
+  const studentsActiveThisWeek = activeThisWeek.size;
+
+  return { totalSessions, averageXP, mostActiveStudent, mostStudiedSubject, studentsActiveThisWeek };
 }

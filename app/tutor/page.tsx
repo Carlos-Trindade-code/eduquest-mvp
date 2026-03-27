@@ -5,11 +5,46 @@ import { Coffee, X } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { ChatInterface } from '@/components/tutor/ChatInterface';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
+import { MascotOwl } from '@/components/illustrations/MascotOwl';
+import { useAuth } from '@/hooks/useAuth';
+
+function TutorLoadingSkeleton() {
+  return (
+    <motion.div
+      className="flex-1 flex flex-col items-center justify-center gap-5 py-12"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <MascotOwl expression="thinking" size="lg" animated />
+      <div className="text-center">
+        <p className="text-white font-bold text-lg mb-1">Preparando sua sessao...</p>
+        <p className="text-sm" style={{ color: 'rgba(240,244,248,0.4)' }}>
+          O Edu ja esta quase pronto!
+        </p>
+      </div>
+      {/* Skeleton cards */}
+      <div className="w-full max-w-md space-y-3 mt-4">
+        {[1, 2, 3].map((i) => (
+          <motion.div
+            key={i}
+            className="h-14 rounded-xl"
+            style={{ background: 'rgba(255,255,255,0.04)' }}
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 export default function TutorPage() {
   const [showBreak, setShowBreak] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
   const finishRef = useRef<(() => void) | null>(null);
+  const { loading: authLoading } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-app flex flex-col">
@@ -52,11 +87,25 @@ export default function TutorPage() {
       </AnimatePresence>
 
       <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 py-5 overflow-hidden">
-        <ChatInterface
-          onSessionStart={() => setSessionActive(true)}
-          onSessionEnd={() => setSessionActive(false)}
-          finishRef={finishRef}
-        />
+        <AnimatePresence mode="wait">
+          {authLoading ? (
+            <TutorLoadingSkeleton key="loading" />
+          ) : (
+            <motion.div
+              key="content"
+              className="flex-1 flex flex-col overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ChatInterface
+                onSessionStart={() => setSessionActive(true)}
+                onSessionEnd={() => setSessionActive(false)}
+                finishRef={finishRef}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
       <FeedbackButton />
     </div>

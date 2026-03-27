@@ -40,7 +40,7 @@ export function AgeGroupSelector({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className={cn(
-                'relative flex items-center gap-2 px-4 py-2.5 rounded-[var(--eq-radius-sm)] text-sm transition-all',
+                'relative flex items-center gap-2 px-4 py-2.5 rounded-[var(--eq-radius-sm)] text-sm transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900',
                 isSelected
                   ? 'text-white font-semibold'
                   : 'bg-[var(--eq-surface)] text-[var(--eq-text-muted)] hover:bg-[var(--eq-surface-hover)] hover:text-[var(--eq-text)]'

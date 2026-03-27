@@ -29,7 +29,7 @@ export function SubjectSelector({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                'relative flex items-center gap-3 px-3.5 py-3 rounded-[var(--eq-radius-sm)] text-left text-sm transition-all',
+                'relative flex items-center gap-3 px-3.5 py-3 rounded-[var(--eq-radius-sm)] text-left text-sm transition-all focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 outline-none',
                 isSelected
                   ? 'text-white border-2 shadow-lg'
                   : 'bg-[var(--eq-surface)] text-[var(--eq-text-muted)] border-2 border-transparent hover:bg-[var(--eq-surface-hover)] hover:text-[var(--eq-text)]'
