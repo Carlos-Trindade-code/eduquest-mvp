@@ -85,12 +85,12 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
 
         {/* Topic */}
         <div>
-          <label className="text-white/50 text-xs font-medium block mb-2">Tema do quiz</label>
+          <label className="text-white/50 text-xs font-medium block mb-2">Tema do quiz <span className="text-white/30">(opcional)</span></label>
           <input
             type="text"
             value={topic}
             onChange={(e) => { setTopic(e.target.value); setError(''); }}
-            placeholder="Ex: Fracoes, Verbos no passado, Sistema solar..."
+            placeholder="Deixe vazio para tema geral, ou digite: Frações, Verbos..."
             className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
           />
         </div>
