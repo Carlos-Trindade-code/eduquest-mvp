@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Loader2 } from 'lucide-react';
+import { Zap, Loader2, Home } from 'lucide-react';
+import Link from 'next/link';
 import { SubjectSelector } from '@/components/tutor/SubjectSelector';
 import { AgeGroupSelector } from '@/components/tutor/AgeGroupSelector';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
@@ -91,7 +92,7 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
             value={topic}
             onChange={(e) => { setTopic(e.target.value); setError(''); }}
             placeholder="Deixe vazio para tema geral, ou digite: Frações, Verbos..."
-            className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+            className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
           />
         </div>
 
@@ -141,6 +142,14 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
             </>
           )}
         </motion.button>
+
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-1.5 text-white/40 hover:text-white/70 text-xs transition-colors py-1"
+        >
+          <Home size={12} />
+          Voltar ao inicio
+        </Link>
       </motion.div>
     </motion.div>
   );
