@@ -25,6 +25,15 @@ const sizeMap = {
   xl: 180,
 };
 
+const ariaLabels: Record<MascotExpression, string> = {
+  neutral: 'Edu, a coruja mascote do Studdo',
+  thinking: 'Edu esta pensando',
+  encouraging: 'Edu esta te incentivando',
+  celebrating: 'Edu esta comemorando',
+  waving: 'Edu esta acenando para voce',
+  reading: 'Edu esta lendo',
+};
+
 const eyeExpressions: Record<MascotExpression, { leftPupilY: number; rightPupilY: number; leftEyeScale: number; rightEyeScale: number; blinkRate: number }> = {
   neutral: { leftPupilY: 0, rightPupilY: 0, leftEyeScale: 1, rightEyeScale: 1, blinkRate: 4 },
   thinking: { leftPupilY: -2, rightPupilY: -2, leftEyeScale: 0.9, rightEyeScale: 1.1, blinkRate: 6 },
@@ -54,7 +63,7 @@ export function MascotOwl({
       xmlns="http://www.w3.org/2000/svg"
       className={cn('select-none', className)}
       role="img"
-      aria-label="Edu, a coruja mascote do Studdo"
+      aria-label={ariaLabels[expression]}
       animate={
         isAnimated
           ? {

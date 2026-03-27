@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, X, Send, Eye, Trash2 } from 'lucide-react';
+import { Plus, X, Send, Trash2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { createParentTask, deleteParentTask } from '@/lib/supabase/queries';
 import { subjects, getSubjectById } from '@/lib/subjects/config';
@@ -57,6 +57,7 @@ export function TasksTab({ kidId, parentId, tasks, summaries, onTaskCreated, onT
   };
 
   const handleDelete = async (taskId: string) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta tarefa?')) return;
     setDeletingId(taskId);
     const supabase = createClient();
     await deleteParentTask(supabase, taskId);
@@ -120,7 +121,7 @@ export function TasksTab({ kidId, parentId, tasks, summaries, onTaskCreated, onT
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Descreva a tarefa para seu filho..."
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-xl text-sm text-white bg-white/5 border border-white/10 focus:border-purple-500/50 focus:outline-none transition-colors resize-none placeholder:text-white/20"
+                className="w-full px-4 py-2.5 rounded-xl text-sm text-white bg-white/5 border border-white/10 focus:border-purple-500/50 focus:outline-none transition-colors resize-none placeholder:text-white/40"
               />
             </div>
             <div className="flex gap-2">
@@ -214,9 +215,8 @@ export function TasksTab({ kidId, parentId, tasks, summaries, onTaskCreated, onT
                 <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/5">
                   <span className="text-white/20 text-[10px]">{relativeDate(task.created_at)}</span>
                   {task.status === 'completed' && matchingSummary && (
-                    <span className="flex items-center gap-1 text-emerald-400/70 text-[10px] font-medium">
-                      <Eye size={10} />
-                      Ver sessão
+                    <span className="flex items-center gap-1 text-emerald-400/40 text-[10px] font-medium">
+                      Sessao concluida
                     </span>
                   )}
                 </div>

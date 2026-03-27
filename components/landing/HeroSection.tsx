@@ -154,7 +154,7 @@ function ChatPreview() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Pergunte algo ao Edu..."
-              className="flex-1 bg-white/5 text-white placeholder-white/25 rounded-xl px-3 py-2 text-xs border border-white/10 focus:outline-none focus:border-purple-500/50"
+              className="flex-1 bg-white/5 text-white placeholder-white/40 rounded-xl px-3 py-2 text-xs border border-white/10 focus:outline-none focus:border-purple-500/50"
             />
             <motion.button
               onClick={handleSend}
@@ -299,7 +299,7 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT: chat preview */}
+          {/* RIGHT: chat preview — desktop: interactive, mobile: static animated */}
           <motion.div
             className="hidden lg:flex items-center justify-center"
             initial={{ opacity: 0, x: 40 }}
@@ -307,6 +307,65 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
           >
             <ChatPreview />
+          </motion.div>
+
+          {/* Mobile-only: static chat demo */}
+          <motion.div
+            className="lg:hidden mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <div
+              className="relative rounded-2xl overflow-hidden mx-auto max-w-sm"
+              style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <div
+                className="flex items-center gap-3 px-4 py-2.5"
+                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+              >
+                <MascotOwl expression="waving" size="sm" animated={false} />
+                <div>
+                  <div className="text-sm font-semibold text-white">Edu</div>
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-[10px]" style={{ color: 'rgba(240,244,248,0.45)' }}>online</span>
+                  </div>
+                </div>
+              </div>
+              <div className="px-4 py-3 space-y-2">
+                {chatMessages.map((msg, i) => (
+                  <motion.div
+                    key={i}
+                    className={`flex ${msg.role === 'kid' ? 'justify-end' : 'justify-start'} items-end gap-2`}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: msg.delay }}
+                  >
+                    {msg.role === 'edu' && (
+                      <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
+                        <MascotOwl expression="encouraging" size="sm" animated={false} className="w-5 h-5" />
+                      </div>
+                    )}
+                    <div
+                      className="max-w-[80%] px-3 py-2 rounded-2xl text-xs leading-snug"
+                      style={
+                        msg.role === 'kid'
+                          ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
+                          : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
+                      }
+                    >
+                      {msg.text}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <p className="text-[10px] text-center" style={{ color: 'rgba(240,244,248,0.4)' }}>
+                  Teste ao vivo — clique em "Testar tutor gratis"
+                </p>
+              </div>
+            </div>
           </motion.div>
 
         </div>

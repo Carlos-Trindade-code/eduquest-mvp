@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, RotateCcw, Sparkles, ClipboardList } from 'lucide-react';
+import { BookOpen, RotateCcw, Sparkles, ClipboardList, UserPlus } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -145,7 +145,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   const handleXPEarned = useCallback(async (xp: number) => {
     setTotalXp((prev) => prev + xp);
     setXpGained(xp);
-    setTimeout(() => setXpGained(null), 2000);
+    setTimeout(() => setXpGained(null), 3500);
 
     // Increment build pieces
     setSessionPieces((prev) => {
@@ -340,6 +340,22 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   if (!homeworkSet) {
     return (
       <AgeThemeProvider ageGroup={ageGroup}>
+        {/* Guest trial banner */}
+        {isGuest && (
+          <div
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl mb-4 text-xs"
+            style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}
+          >
+            <UserPlus size={14} className="text-purple-400 shrink-0" />
+            <span style={{ color: 'rgba(240,244,248,0.6)' }}>
+              Sessao gratuita de teste —{' '}
+              <a href="/register?redirect=/tutor" className="text-purple-400 font-semibold hover:underline">
+                crie uma conta
+              </a>{' '}
+              para continuar estudando
+            </span>
+          </div>
+        )}
         {pendingTasks.length > 0 && (
           <div className="mb-4 space-y-3">
             <p className="text-amber-400 text-xs font-bold flex items-center gap-1.5">

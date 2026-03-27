@@ -434,27 +434,37 @@ export default function ParentDashboard() {
               <div className="text-5xl mb-3">👋</div>
               <h2 className="text-white text-xl font-bold mb-1">Ola, {profile?.name?.split(' ')[0]}!</h2>
               <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                Vincule seu filho para acompanhar o progresso dele
+                3 passos para vincular seu filho
               </p>
             </div>
 
             {/* Step 1: invite code with share */}
-            {inviteCode && <InviteCodeCard code={inviteCode} />}
+            <div>
+              <p className="text-white/50 text-xs font-bold mb-2 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-purple-600 text-white text-[10px] font-bold flex items-center justify-center">1</span>
+                Copie seu codigo de convite
+              </p>
+              {inviteCode && <InviteCodeCard code={inviteCode} />}
+            </div>
 
             {/* Steps 2 & 3 */}
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl p-4" style={{ background: 'rgba(0,180,216,0.06)', border: '1px solid rgba(0,180,216,0.12)' }}>
-                <div className="text-2xl mb-2">📱</div>
-                <p className="text-white text-sm font-semibold mb-1">Passo 2</p>
+                <p className="text-white text-sm font-semibold mb-1 flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-cyan-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+                  Filho cria conta
+                </p>
                 <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Seu filho acessa <strong className="text-white/70">studdo.com.br</strong>, cria a conta e digita o codigo
+                  Acessa <strong className="text-white/70">studdo.com.br</strong> e digita o codigo
                 </p>
               </div>
               <div className="rounded-2xl p-4" style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.12)' }}>
-                <div className="text-2xl mb-2">🎉</div>
-                <p className="text-white text-sm font-semibold mb-1">Passo 3</p>
+                <p className="text-white text-sm font-semibold mb-1 flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
+                  Pronto!
+                </p>
                 <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Ele aparece aqui automaticamente e voce acompanha tudo em tempo real
+                  Ele aparece aqui e voce acompanha tudo em tempo real
                 </p>
               </div>
             </div>
@@ -462,45 +472,23 @@ export default function ParentDashboard() {
             {/* CTA: see how tutor works */}
             <Link
               href="/tutorial"
-              className="block w-full rounded-2xl p-5 text-center transition-all hover:scale-[1.01]"
-              style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.15))', border: '1px solid rgba(139,92,246,0.25)' }}
+              className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
-              <GraduationCap size={28} className="text-purple-400 mx-auto mb-2" />
-              <p className="text-white font-bold text-sm mb-1">Veja como o tutor funciona</p>
-              <p className="text-xs mb-3" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                Conheça o método socrático do Edu e como seu filho vai aprender
-              </p>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-purple-600 text-white">
-                <GraduationCap size={15} />
-                Ver tutorial interativo
-              </span>
+              <GraduationCap size={18} className="text-purple-400 shrink-0" />
+              <span>Veja como o tutor funciona</span>
             </Link>
 
-            {/* Quick links */}
-            <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="flex flex-col gap-2">
-                <Link
-                  href="/tutorial"
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
-                  style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-                >
-                  <BookOpen size={16} className="text-blue-400" />
-                  Veja como o tutor funciona
-                </Link>
-                <Link
-                  href="/"
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
-                  style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-                >
-                  <Home size={16} className="text-green-400" />
-                  Voltar para a pagina inicial
-                </Link>
-              </div>
-            </div>
-
             {/* Auto-refresh hint */}
-            <p className="text-center text-xs" style={{ color: 'rgba(240,244,248,0.25)' }}>
-              Esta pagina atualiza automaticamente quando seu filho criar a conta
+            <p className="text-center text-xs flex items-center justify-center gap-1.5" style={{ color: 'rgba(240,244,248,0.4)' }}>
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                className="inline-block"
+              >
+                ↻
+              </motion.span>
+              Atualiza automaticamente quando seu filho criar a conta
             </p>
           </div>
         )}

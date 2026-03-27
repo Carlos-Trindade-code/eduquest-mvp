@@ -410,7 +410,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                             }}
                             placeholder="EQ-XXXX"
                             maxLength={7}
-                            className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
+                            className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
                           />
                         </div>
                         <p className="text-white/50 text-xs pl-1">Se nao tiver agora, pode vincular depois no app</p>

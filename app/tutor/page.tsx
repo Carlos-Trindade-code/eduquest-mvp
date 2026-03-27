@@ -29,15 +29,21 @@ export default function TutorPage() {
             className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-emerald-600/95 backdrop-blur-xl text-white px-6 py-4 rounded-2xl shadow-2xl shadow-emerald-900/50 flex items-center gap-4 max-w-sm"
           >
             <Coffee size={24} className="shrink-0" />
-            <div>
+            <div className="flex-1">
               <p className="font-bold text-sm">Hora da pausa!</p>
               <p className="text-emerald-100 text-xs mt-0.5">
-                Voce estudou 25 minutos. Descanse 5 minutos e volte!
+                Voce estudou 25 minutos. Descanse 5 minutos!
               </p>
+              <button
+                onClick={() => setShowBreak(false)}
+                className="mt-2 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold transition-colors"
+              >
+                Continuar estudando
+              </button>
             </div>
             <button
               onClick={() => setShowBreak(false)}
-              className="shrink-0 text-white/60 hover:text-white"
+              className="shrink-0 text-white/60 hover:text-white self-start"
             >
               <X size={18} />
             </button>

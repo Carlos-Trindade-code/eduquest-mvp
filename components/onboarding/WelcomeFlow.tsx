@@ -302,7 +302,7 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
             onChange={(e) => handleChange(e.target.value)}
             placeholder="EQ-XXXX"
             maxLength={7}
-            className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm uppercase tracking-widest font-mono text-center"
+            className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm uppercase tracking-widest font-mono text-center"
           />
         </div>
         {status === 'error' && (

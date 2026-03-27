@@ -85,14 +85,14 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
         </p>
       </motion.div>
 
-      {/* Subject */}
+      {/* Step 1: Subject */}
       <motion.div variants={fadeInUp('medium')}>
-        <SubjectSelector selected={subject} onSelect={setSubject} label="Qual matéria?" />
+        <SubjectSelector selected={subject} onSelect={setSubject} label="1. Qual matéria?" />
       </motion.div>
 
-      {/* Age Group */}
+      {/* Step 2: Age Group */}
       <motion.div variants={fadeInUp('medium')}>
-        <AgeGroupSelector selected={ageGroup} onSelect={setAgeGroup} label="Qual sua idade?" />
+        <AgeGroupSelector selected={ageGroup} onSelect={setAgeGroup} label="2. Qual sua idade?" />
       </motion.div>
 
       {/* Classroom materials */}
@@ -136,7 +136,7 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
       {/* Photo Upload — optional */}
       <motion.div variants={fadeInUp('medium')} className="mb-1">
         <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">
-          Tem foto da tarefa? (opcional)
+          3. Tem foto da tarefa? (opcional)
         </p>
         <PhotoUpload onTextExtracted={setPhotoText} />
         {photoText && (

@@ -16,7 +16,7 @@ export function BuildProgress({ subject, pieces, milestoneMessage }: BuildProgre
   return (
     <div className="flex flex-col gap-1 mb-3 px-1">
       <div className="flex items-center gap-2">
-        <span className="text-base leading-none shrink-0">{build.emoji}</span>
+        <span className="text-base leading-none shrink-0" title={`Construindo: ${build.name}`}>{build.emoji}</span>
         <div className="flex gap-1 flex-1">
           {Array.from({ length: TOTAL_PIECES }).map((_, i) => (
             <motion.div
@@ -37,6 +37,7 @@ export function BuildProgress({ subject, pieces, milestoneMessage }: BuildProgre
         <span
           className="text-xs shrink-0 tabular-nums"
           style={{ color: 'rgba(240,244,248,0.35)' }}
+          title={pieces >= TOTAL_PIECES ? 'Completo!' : `Complete ${TOTAL_PIECES} pecas para ganhar um badge`}
         >
           {pieces}/{TOTAL_PIECES}
         </span>
