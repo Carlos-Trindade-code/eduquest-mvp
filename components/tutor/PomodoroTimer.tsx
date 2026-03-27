@@ -29,7 +29,7 @@ export function PomodoroTimer({ onComplete, labels }: PomodoroTimerProps) {
             className="absolute -bottom-12 right-0 bg-emerald-600/90 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-2 shadow-lg"
           >
             Use o timer para focar 25min!
-            <button onClick={() => setShowHint(false)} className="text-white/60 hover:text-white">
+            <button onClick={() => setShowHint(false)} className="text-white/60 hover:text-white" aria-label="Fechar dica">
               <X size={10} />
             </button>
           </motion.div>

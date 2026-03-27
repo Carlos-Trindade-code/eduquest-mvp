@@ -53,7 +53,7 @@ export function BadgeUnlockModal({ badgeIds, onClose }: BadgeUnlockModalProps) {
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
-          <button onClick={onClose} className="absolute top-4 right-4 text-white/30 hover:text-white">
+          <button onClick={onClose} className="absolute top-4 right-4 text-white/30 hover:text-white" aria-label="Fechar">
             <X size={16} />
           </button>
 

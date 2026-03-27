@@ -24,7 +24,7 @@ export function MessageList({ messages, loading }: MessageListProps) {
     <div className="flex-1 overflow-y-auto space-y-3 pr-1 min-h-0">
       <AnimatePresence mode="popLayout">
         {messages.map((msg, i) => (
-          <ChatMessage key={i} message={msg} />
+          <ChatMessage key={`${msg.role}-${i}`} message={msg} />
         ))}
       </AnimatePresence>
 

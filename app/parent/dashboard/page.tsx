@@ -114,7 +114,7 @@ export default function ParentDashboard() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gradient-app flex items-center justify-center">
-        <div className="text-white text-lg animate-pulse">Carregando...</div>
+        <div className="text-white text-lg animate-pulse">Carregando dashboard...</div>
       </div>
     );
   }

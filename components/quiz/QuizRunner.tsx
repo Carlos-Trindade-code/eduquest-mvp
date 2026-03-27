@@ -187,7 +187,22 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
     );
   }
 
-  if (!question) return null;
+  if (!question) {
+    return (
+      <div className="flex flex-col items-center justify-center flex-1 gap-4 py-12 px-4 text-center">
+        <BookOpen size={40} className="text-white/20" />
+        <p className="text-white/50 text-sm">Nenhuma questão disponível para este quiz.</p>
+        <button
+          onClick={onRestart}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all"
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(240,244,248,0.7)' }}
+        >
+          <RotateCcw size={15} />
+          Gerar novo quiz
+        </button>
+      </div>
+    );
+  }
 
   const progress = ((currentIndex + 1) / total) * 100;
 
