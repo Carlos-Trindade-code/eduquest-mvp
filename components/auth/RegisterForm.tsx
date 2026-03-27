@@ -343,6 +343,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         id="register-email"
                         name="email"
                         type="email"
+                        inputMode="email"
                         autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -457,10 +458,17 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Digite a senha novamente"
-                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className={`w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border focus:outline-none focus:bg-white/8 text-sm transition-all ${
+                          confirmPassword && password !== confirmPassword
+                            ? 'border-red-500/50 focus:border-red-500/50'
+                            : 'border-white/10 focus:border-purple-500/50'
+                        }`}
                         required
                       />
                     </div>
+                    {confirmPassword && password !== confirmPassword && (
+                      <p className="text-red-400 text-xs mt-1">As senhas nao conferem</p>
+                    )}
                   </div>
 
                   <motion.button

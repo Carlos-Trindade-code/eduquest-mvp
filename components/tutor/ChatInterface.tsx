@@ -1,9 +1,9 @@
 // components/tutor/ChatInterface.tsx
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, RotateCcw, Sparkles, ClipboardList, UserPlus } from 'lucide-react';
+import { BookOpen, RotateCcw, Sparkles, ClipboardList, UserPlus, Clock } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -109,6 +109,8 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   } | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [sessionDuration, setSessionDuration] = useState(0);
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const [elapsedMinutes, setElapsedMinutes] = useState(0);
   const finishCalledRef = useRef(false);
   const { profile, loading: authLoading } = useAuth();
   const isGuest = !profile;
@@ -139,6 +141,15 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
       });
     }
   }, [profile, homeworkSet]);
+
+  // Track elapsed session time
+  useEffect(() => {
+    if (!sessionStartTime || showSummary) return;
+    const interval = setInterval(() => {
+      setElapsedMinutes(Math.floor((Date.now() - sessionStartTime) / 60000));
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [sessionStartTime, showSummary]);
 
   const handleCloseBadgeModal = useCallback(() => setNewBadgeIds([]), []);
 
@@ -196,6 +207,8 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     setHomeworkSet(true);
     setSessionPieces(0);
     setSuggestions([]);
+    setSessionStartTime(Date.now());
+    setElapsedMinutes(0);
     finishCalledRef.current = false;
     onSessionStart?.();
 
@@ -453,6 +466,12 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
             <p className="text-[var(--eq-text-secondary)] text-xs flex-1 line-clamp-2">
               {subjectInfo?.name ?? subject}
             </p>
+            {elapsedMinutes > 0 && (
+              <span className="text-[var(--eq-text-muted)] text-xs flex items-center gap-1 shrink-0">
+                <Clock size={10} />
+                {elapsedMinutes}min
+              </span>
+            )}
             <button
               onClick={handleReset}
               className="text-[var(--eq-text-muted)] hover:text-[var(--eq-text)] text-xs shrink-0 transition-colors flex items-center gap-1"

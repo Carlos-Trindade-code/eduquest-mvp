@@ -196,6 +196,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
                   id="login-email"
                   name="email"
                   type="email"
+                  inputMode="email"
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

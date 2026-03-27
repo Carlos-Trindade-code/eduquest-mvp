@@ -25,6 +25,7 @@ export function StreakDisplay({
         <motion.span
           className={cn('text-base', !shouldReduceMotion && currentStreak >= 3 && 'animate-flame')}
           style={{ display: 'inline-block', transformOrigin: 'bottom center' }}
+          title={currentStreak >= 3 ? `${currentStreak} dias seguidos!` : 'Estude 3 dias seguidos para acender o fogo!'}
         >
           {currentStreak >= 3 ? '🔥' : '✨'}
         </motion.span>
@@ -51,6 +52,7 @@ export function StreakDisplay({
             }
             transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
             style={{ transformOrigin: 'bottom center' }}
+            title={currentStreak >= 7 ? 'Sequencia em chamas!' : currentStreak >= 3 ? 'Sequencia ativa — 7+ dias para chamas maiores!' : 'Estude 3 dias seguidos para acender o fogo!'}
           >
             {currentStreak >= 7 ? '🔥' : currentStreak >= 3 ? '🔥' : '✨'}
           </motion.div>
