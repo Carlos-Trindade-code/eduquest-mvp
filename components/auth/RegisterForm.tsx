@@ -47,6 +47,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
   const [grade, setGrade] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmTouched, setConfirmTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -457,16 +458,17 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         autoComplete="new-password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        onBlur={() => setConfirmTouched(true)}
                         placeholder="Digite a senha novamente"
                         className={`w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border focus:outline-none focus:bg-white/8 text-sm transition-all ${
-                          confirmPassword && password !== confirmPassword
+                          confirmTouched && confirmPassword && password !== confirmPassword
                             ? 'border-red-500/50 focus:border-red-500/50'
                             : 'border-white/10 focus:border-purple-500/50'
                         }`}
                         required
                       />
                     </div>
-                    {confirmPassword && password !== confirmPassword && (
+                    {confirmTouched && confirmPassword && password !== confirmPassword && (
                       <p className="text-red-400 text-xs mt-1">As senhas nao conferem</p>
                     )}
                   </div>

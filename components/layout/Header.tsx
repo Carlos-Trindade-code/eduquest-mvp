@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square } from 'lucide-react';
+import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
@@ -152,6 +152,14 @@ export function Header({
                 >
                   <BookOpen size={16} />
                   Como Usar
+                </button>
+
+                <button
+                  onClick={() => navigate('/ajuda')}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-white/70 hover:text-white hover:bg-white/5 text-sm transition-colors"
+                >
+                  <HelpCircle size={16} />
+                  Ajuda e FAQ
                 </button>
               </div>
 

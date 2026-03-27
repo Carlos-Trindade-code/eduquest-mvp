@@ -88,14 +88,14 @@ export function FeedbackModal({ isOpen, onClose, source, subjectContext }: Feedb
                 </div>
 
                 {/* Stars */}
-                <div className="flex gap-1 mb-4">
+                <div className="flex gap-1 mb-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       onMouseEnter={() => setHovered(star)}
                       onMouseLeave={() => setHovered(0)}
                       onClick={() => setRating(star)}
-                      className="transition-transform hover:scale-110"
+                      className="transition-transform hover:scale-110 active:scale-95"
                     >
                       <Star
                         size={28}
@@ -108,12 +108,38 @@ export function FeedbackModal({ isOpen, onClose, source, subjectContext }: Feedb
                     </button>
                   ))}
                 </div>
+                {/* Rating label */}
+                <p className="text-xs mb-3" style={{ color: 'rgba(240,244,248,0.35)', minHeight: '1rem' }}>
+                  {(hovered || rating) === 1 && 'Muito ruim'}
+                  {(hovered || rating) === 2 && 'Pode melhorar'}
+                  {(hovered || rating) === 3 && 'Ok'}
+                  {(hovered || rating) === 4 && 'Bom!'}
+                  {(hovered || rating) === 5 && 'Excelente!'}
+                </p>
+
+                {/* Low rating quick options */}
+                {rating > 0 && rating <= 2 && (
+                  <div className="mb-3">
+                    <p className="text-white/50 text-xs mb-2">O que nao funcionou?</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {['Confuso', 'Lento', 'Bug', 'Dificil', 'Outro'].map((opt) => (
+                        <button
+                          key={opt}
+                          onClick={() => setComment((prev) => prev ? `${prev}, ${opt}` : opt)}
+                          className="px-2.5 py-1 rounded-full text-xs bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10 transition-colors"
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Comment */}
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value.slice(0, 500))}
-                  placeholder="Comentário opcional..."
+                  placeholder={rating <= 2 && rating > 0 ? 'Conta mais — queremos melhorar!' : 'Comentário opcional...'}
                   rows={3}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white/80 text-sm placeholder:text-white/30 resize-none focus:outline-none focus:border-purple-500/50 mb-4"
                 />

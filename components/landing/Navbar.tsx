@@ -22,6 +22,7 @@ export function Navbar() {
     { href: '/#ages', label: 'Idades' },
     { href: '/quiz', label: 'Quiz' },
     { href: '/escolas', label: 'Para Escolas' },
+    { href: '/ajuda', label: 'Ajuda' },
   ];
 
   return (
