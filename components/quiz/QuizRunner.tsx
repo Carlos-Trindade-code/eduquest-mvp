@@ -199,9 +199,17 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
           <span className="text-white/40 text-xs font-medium">
             Questao {currentIndex + 1} de {total}
           </span>
-          <span className="text-white/40 text-xs">
-            {score} acerto{score !== 1 ? 's' : ''}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-white/40 text-xs">
+              {score} acerto{score !== 1 ? 's' : ''}
+            </span>
+            <button
+              onClick={onRestart}
+              className="text-white/30 hover:text-white/60 text-xs transition-colors"
+            >
+              Sair
+            </button>
+          </div>
         </div>
         <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
           <motion.div

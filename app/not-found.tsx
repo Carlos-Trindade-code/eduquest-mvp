@@ -1,6 +1,7 @@
-import { Home, ArrowLeft } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import Link from 'next/link';
+import { NotFoundActions } from '@/components/layout/NotFoundActions';
 
 export default function NotFound() {
   return (
@@ -25,13 +26,7 @@ export default function NotFound() {
             Ir para o inicio
           </Link>
 
-          <Link
-            href="/login"
-            className="flex items-center gap-2 px-5 py-3 bg-white/5 text-white/70 hover:text-white font-semibold rounded-xl text-sm border border-white/10 transition-colors"
-          >
-            <ArrowLeft size={16} />
-            Fazer login
-          </Link>
+          <NotFoundActions />
         </div>
       </div>
     </div>

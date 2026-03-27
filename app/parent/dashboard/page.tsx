@@ -134,12 +134,12 @@ export default function ParentDashboard() {
           </div>
           <div className="flex items-center gap-1">
             <Link
-              href="/tutor"
+              href="/tutorial"
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:opacity-90 transition-all shadow-lg shadow-purple-600/20"
             >
               <GraduationCap size={15} />
-              <span className="hidden sm:inline">Modo Estudo</span>
-              <span className="sm:hidden">Estudar</span>
+              <span className="hidden sm:inline">Ver como funciona</span>
+              <span className="sm:hidden">Tutorial</span>
             </Link>
             {profile?.email === 'carlostrindade@me.com' && (
               <Link
@@ -459,20 +459,20 @@ export default function ParentDashboard() {
               </div>
             </div>
 
-            {/* CTA: use tutor now */}
+            {/* CTA: see how tutor works */}
             <Link
-              href="/tutor"
+              href="/tutorial"
               className="block w-full rounded-2xl p-5 text-center transition-all hover:scale-[1.01]"
               style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.15))', border: '1px solid rgba(139,92,246,0.25)' }}
             >
               <GraduationCap size={28} className="text-purple-400 mx-auto mb-2" />
-              <p className="text-white font-bold text-sm mb-1">Seu filho quer estudar agora?</p>
+              <p className="text-white font-bold text-sm mb-1">Veja como o tutor funciona</p>
               <p className="text-xs mb-3" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                Clique aqui para abrir o tutor IA direto — sem precisar de conta separada
+                Conheça o método socrático do Edu e como seu filho vai aprender
               </p>
               <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-purple-600 text-white">
                 <GraduationCap size={15} />
-                Abrir Modo Estudo
+                Ver tutorial interativo
               </span>
             </Link>
 
