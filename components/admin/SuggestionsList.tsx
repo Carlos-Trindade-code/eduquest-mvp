@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Eye, Clock, MessageSquare, Filter } from 'lucide-react';
+import { Check, Eye, Clock, MessageSquare, Filter, CheckSquare, Square } from 'lucide-react';
 import type { Suggestion } from '@/lib/auth/types';
 
 interface SuggestionsListProps {
@@ -19,10 +19,37 @@ const statusConfig = {
 export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsListProps) {
   const [filter, setFilter] = useState<'all' | 'pending' | 'read' | 'done'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   const filtered = filter === 'all'
     ? suggestions
     : suggestions.filter((s) => s.status === filter);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map((s) => s.id)));
+    }
+  };
+
+  const handleBulkAction = async (status: 'read' | 'done') => {
+    setBulkLoading(true);
+    for (const id of selectedIds) {
+      await onUpdateStatus(id, status);
+    }
+    setSelectedIds(new Set());
+    setBulkLoading(false);
+  };
 
   return (
     <div>
@@ -49,8 +76,46 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
         ))}
       </div>
 
+      {/* Bulk actions toolbar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
+          <span className="text-purple-300 text-xs font-medium">{selectedIds.size} selecionada{selectedIds.size > 1 ? 's' : ''}</span>
+          <button
+            onClick={() => handleBulkAction('read')}
+            disabled={bulkLoading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium hover:bg-blue-500/20 transition-colors disabled:opacity-50"
+          >
+            <Eye size={12} />
+            Marcar como lidas
+          </button>
+          <button
+            onClick={() => handleBulkAction('done')}
+            disabled={bulkLoading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 text-xs font-medium hover:bg-green-500/20 transition-colors disabled:opacity-50"
+          >
+            <Check size={12} />
+            Marcar como concluidas
+          </button>
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="text-white/40 text-xs hover:text-white ml-auto"
+          >
+            Limpar
+          </button>
+        </div>
+      )}
+
       {/* List */}
       <div className="space-y-3">
+        {filtered.length > 0 && (
+          <button
+            onClick={toggleSelectAll}
+            className="flex items-center gap-2 text-white/40 hover:text-white/70 text-xs transition-colors mb-1"
+          >
+            {selectedIds.size === filtered.length ? <CheckSquare size={14} /> : <Square size={14} />}
+            {selectedIds.size === filtered.length ? 'Desmarcar todas' : 'Selecionar todas'}
+          </button>
+        )}
         {filtered.length === 0 ? (
           <div className="glass rounded-xl p-8 text-center">
             <MessageSquare size={32} className="text-white/20 mx-auto mb-3" />
@@ -75,6 +140,13 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
                   onClick={() => setExpandedId(isExpanded ? null : suggestion.id)}
                 >
                   <div className="flex items-start gap-3">
+                    {/* Checkbox */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleSelect(suggestion.id); }}
+                      className="mt-0.5 shrink-0 text-white/30 hover:text-white/60 transition-colors"
+                    >
+                      {selectedIds.has(suggestion.id) ? <CheckSquare size={16} className="text-purple-400" /> : <Square size={16} />}
+                    </button>
                     {/* Status badge */}
                     <div
                       className="px-2 py-0.5 rounded-full text-xs font-medium shrink-0 mt-0.5"

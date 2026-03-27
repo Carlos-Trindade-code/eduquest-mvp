@@ -261,11 +261,11 @@ export function AdminDashboard() {
                           <p className="text-white/50 text-xs">{lead.contact_name} · {lead.role}</p>
                         </div>
                         <span className="text-xs px-2 py-0.5 rounded-full" style={{
-                          background: lead.status === 'new' ? 'rgba(245,166,35,0.1)' : 'rgba(16,185,129,0.1)',
-                          color: lead.status === 'new' ? '#F5A623' : '#10B981',
-                          border: `1px solid ${lead.status === 'new' ? 'rgba(245,166,35,0.2)' : 'rgba(16,185,129,0.2)'}`,
+                          background: lead.status === 'new' ? 'rgba(245,166,35,0.1)' : lead.status === 'contacted' ? 'rgba(59,130,246,0.1)' : lead.status === 'closed' ? 'rgba(255,255,255,0.05)' : 'rgba(16,185,129,0.1)',
+                          color: lead.status === 'new' ? '#F5A623' : lead.status === 'contacted' ? '#3B82F6' : lead.status === 'closed' ? 'rgba(255,255,255,0.3)' : '#10B981',
+                          border: `1px solid ${lead.status === 'new' ? 'rgba(245,166,35,0.2)' : lead.status === 'contacted' ? 'rgba(59,130,246,0.2)' : lead.status === 'closed' ? 'rgba(255,255,255,0.08)' : 'rgba(16,185,129,0.2)'}`,
                         }}>
-                          {lead.status}
+                          {lead.status === 'new' ? 'Novo' : lead.status === 'contacted' ? 'Contactado' : lead.status === 'closed' ? 'Fechado' : lead.status}
                         </span>
                       </div>
                       <div className="flex gap-4 text-xs text-white/40">
@@ -276,9 +276,35 @@ export function AdminDashboard() {
                       {lead.message && (
                         <p className="text-white/50 text-xs mt-2 italic">&ldquo;{lead.message}&rdquo;</p>
                       )}
-                      <p className="text-white/20 text-xs mt-2">
-                        {new Date(lead.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                      </p>
+                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/5">
+                        <p className="text-white/20 text-xs">
+                          {new Date(lead.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                        <div className="flex gap-2">
+                          {lead.status === 'new' && (
+                            <button
+                              onClick={async () => {
+                                await supabase.from('school_leads').update({ status: 'contacted' }).eq('id', lead.id);
+                                setSchoolLeads((prev) => prev.map((l) => l.id === lead.id ? { ...l, status: 'contacted' } : l));
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium hover:bg-blue-500/20 transition-colors"
+                            >
+                              Contactado
+                            </button>
+                          )}
+                          {lead.status !== 'closed' && (
+                            <button
+                              onClick={async () => {
+                                await supabase.from('school_leads').update({ status: 'closed' }).eq('id', lead.id);
+                                setSchoolLeads((prev) => prev.map((l) => l.id === lead.id ? { ...l, status: 'closed' } : l));
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-white/5 text-white/40 text-xs font-medium hover:bg-white/10 transition-colors"
+                            >
+                              Fechar
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>

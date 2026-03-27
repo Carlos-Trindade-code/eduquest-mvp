@@ -178,8 +178,38 @@ export default function ParentDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-app flex items-center justify-center">
-        <div className="text-white text-lg animate-pulse">Carregando dashboard...</div>
+      <div className="min-h-screen bg-gradient-app">
+        <header className="glass border-b border-white/5 px-4 py-3">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-white/10 animate-pulse" />
+              <div className="w-24 h-5 rounded bg-white/10 animate-pulse" />
+            </div>
+            <div className="w-20 h-8 rounded-lg bg-white/10 animate-pulse" />
+          </div>
+        </header>
+        <div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
+          {/* Tabs skeleton */}
+          <div className="flex gap-2">
+            {[80, 70, 90, 65].map((w, i) => (
+              <div key={i} className="h-9 rounded-lg bg-white/5 animate-pulse" style={{ width: w }} />
+            ))}
+          </div>
+          {/* Cards skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="glass rounded-xl p-5 space-y-3">
+                <div className="w-16 h-3 rounded bg-white/10 animate-pulse" />
+                <div className="w-12 h-7 rounded bg-white/10 animate-pulse" />
+              </div>
+            ))}
+          </div>
+          {/* Charts skeleton */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="glass rounded-xl p-5 h-56 animate-pulse" />
+            <div className="glass rounded-xl p-5 h-56 animate-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
