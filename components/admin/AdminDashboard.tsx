@@ -16,6 +16,7 @@ import {
   School,
   ArrowLeft,
   LogOut,
+  RefreshCw,
 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
@@ -43,30 +44,33 @@ export function AdminDashboard() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [schoolLeads, setSchoolLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const router = useRouter();
 
   const supabase = createSupabase();
 
+  const loadData = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else setLoading(true);
+    const [metricsData, suggestionsData, profilesData, feedbacksData, feedbackStatsData] = await Promise.all([
+      getAdminMetrics(supabase),
+      getAllSuggestions(supabase),
+      getAllProfiles(supabase),
+      getAllFeedback(supabase),
+      getFeedbackStats(supabase),
+    ]);
+    setMetrics(metricsData);
+    setSuggestions(suggestionsData);
+    setProfiles(profilesData);
+    setFeedbacks(feedbacksData);
+    setFeedbackStats(feedbackStatsData);
+    supabase.rpc('get_school_leads').then(({ data }) => setSchoolLeads(data || []));
+    setLoading(false);
+    setRefreshing(false);
+  };
+
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      const [metricsData, suggestionsData, profilesData, feedbacksData, feedbackStatsData] = await Promise.all([
-        getAdminMetrics(supabase),
-        getAllSuggestions(supabase),
-        getAllProfiles(supabase),
-        getAllFeedback(supabase),
-        getFeedbackStats(supabase),
-      ]);
-      setMetrics(metricsData);
-      setSuggestions(suggestionsData);
-      setProfiles(profilesData);
-      setFeedbacks(feedbacksData);
-      setFeedbackStats(feedbackStatsData);
-      // Load school leads
-      supabase.rpc('get_school_leads').then(({ data }) => setSchoolLeads(data || []));
-      setLoading(false);
-    }
     loadData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -113,6 +117,15 @@ export function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => loadData(true)}
+                disabled={refreshing}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/5 rounded-lg text-sm transition-colors disabled:opacity-50"
+                title="Atualizar dados"
+              >
+                <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
+                <span className="hidden sm:inline">{refreshing ? 'Atualizando...' : 'Atualizar'}</span>
+              </button>
               <span className="text-white/30 text-xs flex items-center gap-1">
                 <Clock size={12} />
                 {new Date().toLocaleDateString('pt-BR')}

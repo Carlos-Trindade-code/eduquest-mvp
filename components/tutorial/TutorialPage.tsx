@@ -503,6 +503,21 @@ export function TutorialPage() {
 
       {/* Bottom spacing */}
       <div className="h-8" />
+
+      {/* Sticky CTA — visible after scrolling past hero */}
+      <motion.div
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 3 }}
+      >
+        <Button variant="primary" size="lg" rounded="lg" asChild className="shadow-2xl shadow-purple-900/50">
+          <Link href="/register" className="gap-2">
+            <Sparkles className="w-4 h-4" />
+            Criar Conta Gratis
+          </Link>
+        </Button>
+      </motion.div>
     </div>
   );
 }

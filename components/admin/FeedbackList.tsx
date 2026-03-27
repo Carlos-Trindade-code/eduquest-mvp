@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, MessageSquare, Filter } from 'lucide-react';
+import { Star, MessageSquare, Filter, ArrowUpDown } from 'lucide-react';
 import type { UserFeedback, FeedbackStats } from '@/lib/auth/types';
 
 interface FeedbackListProps {
@@ -23,15 +23,27 @@ function StarDisplay({ rating }: { rating: number }) {
   );
 }
 
+type SortOption = 'newest' | 'oldest' | 'lowest' | 'highest';
+
 export function FeedbackList({ feedbacks, stats }: FeedbackListProps) {
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [filterSource, setFilterSource] = useState<string | null>(null);
+  const [sort, setSort] = useState<SortOption>('newest');
 
-  const filtered = feedbacks.filter((f) => {
-    if (filterRating !== null && f.rating !== filterRating) return false;
-    if (filterSource !== null && f.source !== filterSource) return false;
-    return true;
-  });
+  const filtered = feedbacks
+    .filter((f) => {
+      if (filterRating !== null && f.rating !== filterRating) return false;
+      if (filterSource !== null && f.source !== filterSource) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sort) {
+        case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'oldest': return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'lowest': return a.rating - b.rating;
+        case 'highest': return b.rating - a.rating;
+      }
+    });
 
   return (
     <div className="space-y-6">
@@ -96,6 +108,27 @@ export function FeedbackList({ feedbacks, stats }: FeedbackListProps) {
         >
           Pós-sessão
         </button>
+
+        <span className="w-px h-4 bg-white/10 mx-1" />
+        <ArrowUpDown size={14} className="text-white/40" />
+        {([
+          ['newest', 'Recentes'],
+          ['oldest', 'Antigos'],
+          ['lowest', 'Pior nota'],
+          ['highest', 'Melhor nota'],
+        ] as [SortOption, string][]).map(([value, label]) => (
+          <button
+            key={value}
+            onClick={() => setSort(value)}
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+              sort === value
+                ? 'bg-white/15 text-white border border-white/20'
+                : 'bg-white/5 text-white/40 hover:text-white'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Table */}

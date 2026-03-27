@@ -28,11 +28,76 @@ import { TasksTab } from '@/components/parent/TasksTab';
 import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats, ParentTask } from '@/lib/auth/types';
+import { AlertCard } from '@/components/parent/AlertCard';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
+import type { AlertSeverity } from '@/lib/auth/types';
+
+interface SimpleAlert {
+  type: string;
+  title: string;
+  description: string;
+  recommended_action: string;
+  severity: AlertSeverity;
+}
+
+function generateAlerts(
+  stats: UserStats | null,
+  sessionsThisWeek: number,
+  totalSessions: number,
+  kidName: string,
+): SimpleAlert[] {
+  const alerts: SimpleAlert[] = [];
+
+  // Great streak
+  if (stats && stats.current_streak >= 7) {
+    alerts.push({
+      type: 'great_streak',
+      title: 'Sequencia incrivel de estudo!',
+      description: `${kidName} esta estudando ha ${stats.current_streak} dias seguidos — essa regularidade e o maior preditor de sucesso academico.`,
+      recommended_action: 'Celebre esse esforco! Uma recompensa simbolica ou elogio especifico ("estou orgulhoso da sua disciplina") reforca o habito.',
+      severity: 'positive',
+    });
+  }
+
+  // Low engagement this week
+  if (sessionsThisWeek < 2 && totalSessions > 5) {
+    alerts.push({
+      type: 'low_engagement',
+      title: 'Poucas sessoes esta semana',
+      description: `${kidName} estudou menos que o habitual esta semana.`,
+      recommended_action: 'Convide para uma sessao rapida de 10 minutos — sem pressao. Sessoes curtas sao melhores que nenhuma.',
+      severity: 'info',
+    });
+  }
+
+  // First sessions milestone
+  if (totalSessions >= 1 && totalSessions <= 3) {
+    alerts.push({
+      type: 'first_sessions',
+      title: 'Primeiros passos!',
+      description: `${kidName} ja completou ${totalSessions} ${totalSessions === 1 ? 'sessao' : 'sessoes'} de estudo. O comeco e o mais importante!`,
+      recommended_action: 'Pergunte o que achou do Edu e se teve alguma dificuldade. O interesse inicial e precioso — incentive sem pressionar.',
+      severity: 'positive',
+    });
+  }
+
+  // No sessions yet
+  if (totalSessions === 0) {
+    alerts.push({
+      type: 'no_sessions',
+      title: `${kidName} ainda nao comecou`,
+      description: 'Nenhuma sessao de estudo foi registrada ainda.',
+      recommended_action: 'Sente junto e faca uma primeira sessao com o Edu. Mostrar que voce tambem acha interessante motiva a crianca.',
+      severity: 'info',
+    });
+  }
+
+  return alerts;
+}
 
 export default function ParentDashboard() {
   const { profile, loading: authLoading, signOut } = useAuth();
@@ -238,6 +303,15 @@ export default function ParentDashboard() {
                   )}
                 </span>
               </Tabs.Trigger>
+              <Tabs.Trigger
+                value="alerts"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <Bell size={15} />
+                  Alertas
+                </span>
+              </Tabs.Trigger>
             </Tabs.List>
 
             {/* Tab 1: Visao Geral */}
@@ -423,6 +497,51 @@ export default function ParentDashboard() {
                 onTaskCreated={() => loadKidData(selectedKid.id)}
                 onTaskDeleted={() => loadKidData(selectedKid.id)}
               />
+            </Tabs.Content>
+
+            {/* Tab 5: Alertas */}
+            <Tabs.Content value="alerts">
+              <motion.div
+                className="space-y-4"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
+                {(() => {
+                  const sessionsThisWeek = analytics?.byDay
+                    ? Object.entries(analytics.byDay)
+                        .filter(([date]) => {
+                          const d = new Date(`2026-${date}`);
+                          const now = new Date();
+                          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                          return d >= weekAgo;
+                        })
+                        .reduce((sum, [, count]) => sum + count, 0)
+                    : 0;
+                  const alerts = generateAlerts(kidStats, sessionsThisWeek, analytics?.totalSessions ?? 0, selectedKid.name);
+                  if (alerts.length === 0) {
+                    return (
+                      <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-8 text-center">
+                        <div className="text-5xl mb-3">🔔</div>
+                        <h3 className="text-[var(--eq-text)] font-semibold mb-2">Tudo tranquilo!</h3>
+                        <p className="text-[var(--eq-text-secondary)] text-sm">
+                          Nenhum alerta no momento. Quando detectarmos algo relevante, avisamos aqui.
+                        </p>
+                      </motion.div>
+                    );
+                  }
+                  return alerts.map((alert) => (
+                    <motion.div key={alert.type} variants={fadeInUp('medium')}>
+                      <AlertCard
+                        title={alert.title}
+                        description={alert.description}
+                        recommended_action={alert.recommended_action}
+                        severity={alert.severity}
+                      />
+                    </motion.div>
+                  ));
+                })()}
+              </motion.div>
             </Tabs.Content>
           </Tabs.Root>
         )}
