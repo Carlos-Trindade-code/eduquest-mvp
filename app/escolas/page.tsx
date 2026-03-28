@@ -43,8 +43,8 @@ const benefits = [
   },
   {
     icon: Shield,
-    title: 'Seguro e privado',
-    description: 'Dados protegidos, sem anuncios, ambiente 100% pedagogico.',
+    title: 'LGPD e privacidade',
+    description: 'Em conformidade com a LGPD. Dados criptografados, sem compartilhamento com terceiros, sem anuncios.',
     color: '#06B6D4',
   },
 ];
@@ -253,13 +253,67 @@ export default function EscolasPage() {
               'Adapta a linguagem de 4 a 18 anos',
               'Professor acompanha tudo em tempo real',
               'Funciona com qualquer materia e curriculo',
-              'Gratuito para familias — plano escola sob consulta',
+              'Em conformidade com a LGPD — dados nunca compartilhados',
             ].map((text) => (
               <div key={text} className="flex items-center gap-3">
                 <CheckCircle size={16} className="text-green-400 shrink-0" />
                 <span className="text-sm" style={{ color: 'rgba(240,244,248,0.7)' }}>{text}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-extrabold text-white text-center mb-3">Planos</h2>
+          <p className="text-sm text-center mb-10" style={{ color: 'rgba(240,244,248,0.4)' }}>
+            Gratuito para familias. Para escolas, planos flexiveis por numero de alunos.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-5">
+            {/* Free */}
+            <div className="rounded-2xl p-6 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="text-2xl mb-2">🎓</div>
+              <h3 className="text-white font-bold text-sm mb-1">Familia</h3>
+              <div className="text-2xl font-extrabold text-white mb-1">Gratis</div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>Para sempre</p>
+              <ul className="text-xs text-left space-y-2" style={{ color: 'rgba(240,244,248,0.6)' }}>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tutor IA ilimitado</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Todas as materias</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Dashboard de pais</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Quiz e gamificacao</li>
+              </ul>
+            </div>
+            {/* School */}
+            <div className="rounded-2xl p-6 text-center relative" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.2)' }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-bold" style={{ background: '#8B5CF6', color: 'white' }}>Popular</div>
+              <div className="text-2xl mb-2">🏫</div>
+              <h3 className="text-white font-bold text-sm mb-1">Escola</h3>
+              <div className="text-2xl font-extrabold text-white mb-1">Sob consulta</div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>Por aluno/mes</p>
+              <ul className="text-xs text-left space-y-2" style={{ color: 'rgba(240,244,248,0.6)' }}>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tudo do plano Familia</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Upload de materiais</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Dashboard por turma</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Quizzes personalizados</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Suporte prioritario</li>
+              </ul>
+            </div>
+            {/* Enterprise */}
+            <div className="rounded-2xl p-6 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="text-2xl mb-2">🏛️</div>
+              <h3 className="text-white font-bold text-sm mb-1">Rede de Ensino</h3>
+              <div className="text-2xl font-extrabold text-white mb-1">Personalizado</div>
+              <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>500+ alunos</p>
+              <ul className="text-xs text-left space-y-2" style={{ color: 'rgba(240,244,248,0.6)' }}>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tudo do plano Escola</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Integracao com LMS</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Relatorios avancados</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Gerente de conta dedicado</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />SLA garantido</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -415,10 +469,17 @@ export default function EscolasPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8 px-4 text-center">
-        <Link href="/" className="text-white/30 text-xs hover:text-white/50 transition-colors">
-          www.studdo.com.br
-        </Link>
+      <footer className="border-t border-white/5 py-8 px-4">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Link href="/" className="text-white/30 text-xs hover:text-white/50 transition-colors">
+            www.studdo.com.br
+          </Link>
+          <div className="flex items-center gap-4 text-xs" style={{ color: 'rgba(240,244,248,0.3)' }}>
+            <a href="mailto:contato@studdo.com.br" className="hover:text-white/50 transition-colors">contato@studdo.com.br</a>
+            <Link href="/ajuda" className="hover:text-white/50 transition-colors">Ajuda</Link>
+            <Link href="/privacidade" className="hover:text-white/50 transition-colors">Privacidade</Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
