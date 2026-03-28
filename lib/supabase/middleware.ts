@@ -73,6 +73,12 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/tutor';
       return NextResponse.redirect(url);
     }
+    // Teachers cannot access kid/parent pages; kids/parents cannot access teacher pages
+    if (pathname.startsWith('/professor') && userType !== 'teacher') {
+      const url = request.nextUrl.clone();
+      url.pathname = userType === 'parent' ? '/parent/dashboard' : '/tutor';
+      return NextResponse.redirect(url);
+    }
   }
 
   // --- Auth pages: redirect already-authenticated users by role ---

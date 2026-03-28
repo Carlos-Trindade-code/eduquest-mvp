@@ -281,9 +281,27 @@ export default function EscolasPage() {
             >
               <div className="text-5xl mb-3">✅</div>
               <h3 className="text-white font-bold text-lg mb-1">Recebemos seu contato!</h3>
-              <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
+              <p className="text-sm mb-6" style={{ color: 'rgba(240,244,248,0.5)' }}>
                 Entraremos em contato em ate 24 horas para agendar uma demonstracao.
               </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  href="/tutor"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+                  style={{ background: 'linear-gradient(135deg, #8B5CF6, #4F46E5)', color: 'white' }}
+                >
+                  <BookOpen size={16} />
+                  Testar como aluno
+                </Link>
+                <Link
+                  href="/register?type=teacher"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-white/10"
+                  style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
+                >
+                  <GraduationCap size={16} />
+                  Criar conta de professor
+                </Link>
+              </div>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">

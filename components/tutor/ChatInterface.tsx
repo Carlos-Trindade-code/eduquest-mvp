@@ -312,7 +312,13 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
         }
       }
     } catch {
-      // Fallback — show summary without AI
+      setSummaryResult({
+        topics_covered: [],
+        strengths: [],
+        difficulties: [],
+        ai_suggestion: 'Nao foi possivel gerar o resumo automatico.',
+        parent_tip: '',
+      });
     }
 
     // Complete parent task if session was started from one

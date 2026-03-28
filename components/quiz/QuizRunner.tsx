@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, ArrowRight, Trophy, RotateCcw, Sparkles, BookOpen, Share2 } from 'lucide-react';
+import { CheckCircle, XCircle, ArrowRight, Trophy, RotateCcw, Sparkles, BookOpen, Share2, LogOut } from 'lucide-react';
 import type { ExamData } from '@/components/exam/ExamGenerator';
 import { getSubjectById } from '@/lib/subjects/config';
 
@@ -21,6 +21,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [answers, setAnswers] = useState<{ selected: string; correct: boolean }[]>([]);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const mcQuestions = exam.questions.filter((q) => q.type === 'multiple_choice');
   const question = mcQuestions[currentIndex];
@@ -219,9 +220,10 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
               {score} acerto{score !== 1 ? 's' : ''}
             </span>
             <button
-              onClick={onRestart}
-              className="text-white/30 hover:text-white/60 text-xs transition-colors"
+              onClick={() => setShowExitConfirm(true)}
+              className="text-white/30 hover:text-red-400/70 text-xs transition-colors flex items-center gap-1"
             >
+              <LogOut size={12} />
               Sair
             </button>
           </div>
@@ -325,6 +327,50 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
             )}
           </AnimatePresence>
         </motion.div>
+      </AnimatePresence>
+
+      {/* Exit confirmation dialog */}
+      <AnimatePresence>
+        {showExitConfirm && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowExitConfirm(false)}
+          >
+            <motion.div
+              className="rounded-2xl p-6 max-w-sm w-full text-center"
+              style={{ background: '#1A1A2E', border: '1px solid rgba(255,255,255,0.1)' }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-3xl mb-3">🚪</div>
+              <h3 className="text-white font-bold text-base mb-1">Sair do quiz?</h3>
+              <p className="text-xs mb-5" style={{ color: 'rgba(240,244,248,0.5)' }}>
+                Seu progresso neste quiz sera perdido.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowExitConfirm(false)}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(240,244,248,0.7)' }}
+                >
+                  Continuar quiz
+                </button>
+                <button
+                  onClick={onRestart}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+                  style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#EF4444' }}
+                >
+                  Sair
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Action button */}

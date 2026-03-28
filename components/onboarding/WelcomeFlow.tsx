@@ -201,7 +201,10 @@ function AgeSelector({ profileId, onSelected }: { profileId?: string; onSelected
         const supabase = createClient();
         await updateProfile(supabase, profileId, { age: option.age, grade: option.grade });
       } catch {
-        // non-critical
+        alert('Nao foi possivel salvar sua idade. Tente novamente.');
+        setSelected(null);
+        setSaving(false);
+        return;
       }
       setSaving(false);
     }
@@ -425,9 +428,11 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
 
   return (
     <div className="min-h-screen bg-gradient-app flex items-center justify-center px-4 py-8">
-      {inviteError && currentStep === 0 && (
+      {inviteError && (currentStep === 0 || isInviteStep) && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm rounded-xl px-4 py-3 max-w-md text-center shadow-lg">
-          Nao conseguimos vincular o codigo do seu pai/mae. Voce pode tentar novamente depois nas configuracoes.
+          {isInviteStep
+            ? 'O codigo informado no registro nao funcionou. Tente digitar novamente abaixo.'
+            : 'Nao conseguimos vincular o codigo do seu pai/mae. Voce pode tentar novamente depois nas configuracoes.'}
         </div>
       )}
       <div className="w-full max-w-lg">
