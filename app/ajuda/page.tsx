@@ -59,6 +59,38 @@ const faqItems = [
     answer:
       'Sim! Usamos criptografia e controle de acesso em todas as tabelas. Cada usuario so acessa seus proprios dados. Pais so veem dados dos filhos vinculados.',
   },
+  // FAQs para pais
+  {
+    question: 'Como conecto minha conta ao meu filho?',
+    answer:
+      'Ao criar sua conta como pai/mae, voce recebe automaticamente um codigo de convite (ex: EQ-A1B2). Compartilhe esse codigo com seu filho — ele digita ao criar a conta dele, e pronto! Voces ficam conectados. Voce tambem encontra o codigo no seu dashboard a qualquer momento.',
+  },
+  {
+    question: 'O que vejo no dashboard de pais?',
+    answer:
+      'Voce ve todas as sessoes do seu filho, quanto tempo estudou, XP acumulado, streak de dias seguidos, badges conquistados e quais materias mais praticou. Tudo atualizado em tempo real.',
+  },
+  {
+    question: 'Posso acompanhar mais de um filho?',
+    answer:
+      'Sim! Seu codigo de convite funciona para todos os seus filhos. Cada um cria sua conta com o mesmo codigo e todos aparecem no seu dashboard.',
+  },
+  // FAQs para escolas
+  {
+    question: 'Como funciona o Studdo para escolas?',
+    answer:
+      'Professores podem criar turmas, enviar materiais e acompanhar o progresso de cada aluno. Os alunos usam o tutor IA para estudar e o professor ve tudo pelo dashboard. Visite a pagina Para Escolas para saber mais.',
+  },
+  {
+    question: 'Quanto custa o plano para escolas?',
+    answer:
+      'O Studdo e gratuito para familias. Para escolas, oferecemos planos personalizados conforme o numero de alunos. Entre em contato pela pagina Para Escolas para receber uma proposta.',
+  },
+  {
+    question: 'O Studdo esta em conformidade com a LGPD?',
+    answer:
+      'Sim. Todos os dados sao armazenados com criptografia, controle de acesso por perfil (RLS) e nunca compartilhados com terceiros. Alunos menores so tem dados visiveis para pais vinculados e professores da turma.',
+  },
 ];
 
 function FAQItem({ item, isOpen, onClick }: {

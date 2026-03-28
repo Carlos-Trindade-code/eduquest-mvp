@@ -27,6 +27,13 @@ const steps = [
   },
   {
     number: '04',
+    emoji: '🔗',
+    title: 'Conecte a família',
+    description: 'Pai cria conta e recebe um código. O filho digita o código e pronto — tudo conectado.',
+    color: '#F59E0B',
+  },
+  {
+    number: '05',
     emoji: '📊',
     title: 'Você acompanha',
     description: 'Dashboard com sessões, XP, streak e matérias. Tudo em tempo real.',
@@ -84,12 +91,12 @@ export function HowItWorks() {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Como funciona</h2>
-          <p className="mt-3 text-base" style={{ color: 'rgba(240,244,248,0.45)' }}>4 passos, resultado em minutos</p>
+          <p className="mt-3 text-base" style={{ color: 'rgba(240,244,248,0.45)' }}>5 passos, resultado em minutos</p>
         </motion.div>
 
         {/* Steps */}
         <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
