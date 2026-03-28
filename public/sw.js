@@ -1,4 +1,5 @@
-const CACHE_NAME = 'studdo-v1';
+const CACHE_NAME = 'studdo-v2';
+const OFFLINE_URL = '/offline.html';
 const STATIC_ASSETS = [
   '/',
   '/tutor',
@@ -6,6 +7,7 @@ const STATIC_ASSETS = [
   '/register',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  OFFLINE_URL,
 ];
 
 // Install: cache static assets
@@ -37,7 +39,7 @@ self.addEventListener('fetch', (event) => {
   // API routes: network only (don't cache)
   if (url.pathname.startsWith('/api/')) return;
 
-  // Static assets and pages: stale-while-revalidate
+  // Static assets and pages: stale-while-revalidate with offline fallback
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
       const cached = await cache.match(request);
@@ -45,7 +47,7 @@ self.addEventListener('fetch', (event) => {
         if (response.ok) cache.put(request, response.clone());
         return response;
       }).catch(() => cached);
-      return cached || fetched;
+      return cached || fetched || caches.match(OFFLINE_URL);
     })
   );
 });
