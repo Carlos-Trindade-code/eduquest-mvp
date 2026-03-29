@@ -19,41 +19,41 @@ const benefits = [
   },
   {
     icon: Brain,
-    title: 'Metodo socratico',
-    description: 'Nunca da respostas prontas. O aluno desenvolve raciocinio critico de verdade.',
+    title: 'Método socrático',
+    description: 'Nunca dá respostas prontas. O aluno desenvolve raciocínio crítico de verdade.',
     color: '#3B82F6',
   },
   {
     icon: BarChart3,
     title: 'Dashboard por turma',
-    description: 'Veja o progresso de cada aluno: sessoes, acertos, tempo de estudo, materias.',
+    description: 'Veja o progresso de cada aluno: sessões, acertos, tempo de estudo, matérias.',
     color: '#10B981',
   },
   {
     icon: Zap,
-    title: 'Quizzes automaticos',
+    title: 'Quizzes automáticos',
     description: 'Gere provas e simulados baseados no seu material com um clique.',
     color: '#F59E0B',
   },
   {
     icon: Users,
-    title: 'Turmas com codigo',
-    description: 'Crie turmas e compartilhe um codigo. Alunos entram em segundos.',
+    title: 'Turmas com código',
+    description: 'Crie turmas e compartilhe um código. Alunos entram em segundos.',
     color: '#EC4899',
   },
   {
     icon: Shield,
     title: 'LGPD e privacidade',
-    description: 'Em conformidade com a LGPD. Dados criptografados, sem compartilhamento com terceiros, sem anuncios.',
+    description: 'Em conformidade com a LGPD. Dados criptografados, sem compartilhamento com terceiros, sem anúncios.',
     color: '#06B6D4',
   },
 ];
 
 const useCases = [
-  { emoji: '📚', title: 'Para casa', desc: 'Aluno fotografa a tarefa e o Edu guia a resolucao passo a passo' },
-  { emoji: '📝', title: 'Revisao para prova', desc: 'Professor envia o conteudo, a IA gera quiz personalizado' },
-  { emoji: '🔬', title: 'Reforco escolar', desc: 'Alunos com dificuldade recebem atendimento adaptado ao nivel deles' },
-  { emoji: '🏆', title: 'Gamificacao', desc: 'XP, badges e ranking motivam o estudo sem perder o foco no aprendizado' },
+  { emoji: '📚', title: 'Para casa', desc: 'Aluno fotografa a tarefa e o Edu guia a resolução passo a passo' },
+  { emoji: '📝', title: 'Revisão para prova', desc: 'Professor envia o conteúdo, a IA gera quiz personalizado' },
+  { emoji: '🔬', title: 'Reforço escolar', desc: 'Alunos com dificuldade recebem atendimento adaptado ao nível deles' },
+  { emoji: '🏆', title: 'Gamificação', desc: 'XP, badges e ranking motivam o estudo sem perder o foco no aprendizado' },
 ];
 
 export default function EscolasPage() {
@@ -133,7 +133,7 @@ export default function EscolasPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            Seu material didatico +{' '}
+            Seu material didático +{' '}
             <span style={{ background: 'linear-gradient(135deg, #8B5CF6, #F5A623)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               tutor IA
             </span>
@@ -146,8 +146,8 @@ export default function EscolasPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            Envie apostilas, tarefas e provas. O Studdo transforma em sessoes de estudo
-            interativas com metodo socratico — sem dar respostas prontas.
+            Envie apostilas, tarefas e provas. O Studdo transforma em sessões de estudo
+            interativas com método socrático — sem dar respostas prontas.
           </motion.p>
 
           <motion.div
@@ -161,7 +161,7 @@ export default function EscolasPage() {
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90"
               style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 32px rgba(245,166,35,0.35)' }}
             >
-              Agendar demonstracao
+              Agendar demonstração
               <ArrowRight size={18} />
             </a>
             <Link
@@ -222,7 +222,7 @@ export default function EscolasPage() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-extrabold text-white text-center mb-4">Como escolas usam o Studdo</h2>
           <p className="text-sm text-center mb-10" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            Cenarios reais de uso em sala de aula e em casa
+            Cenários reais de uso em sala de aula e em casa
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {useCases.map((uc) => (
@@ -246,13 +246,13 @@ export default function EscolasPage() {
       <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <MascotOwl expression="encouraging" size="lg" animated />
-          <h2 className="text-2xl font-extrabold text-white mt-4 mb-3">Por que o Studdo e diferente?</h2>
+          <h2 className="text-2xl font-extrabold text-white mt-4 mb-3">Por que o Studdo é diferente?</h2>
           <div className="space-y-3 text-left max-w-md mx-auto">
             {[
-              'Nao da respostas prontas — o aluno pensa',
+              'Não dá respostas prontas — o aluno pensa',
               'Adapta a linguagem de 4 a 18 anos',
               'Professor acompanha tudo em tempo real',
-              'Funciona com qualquer materia e curriculo',
+              'Funciona com qualquer matéria e currículo',
               'Em conformidade com a LGPD — dados nunca compartilhados',
             ].map((text) => (
               <div key={text} className="flex items-center gap-3">
@@ -269,20 +269,20 @@ export default function EscolasPage() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-extrabold text-white text-center mb-3">Planos</h2>
           <p className="text-sm text-center mb-10" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            Gratuito para familias. Para escolas, planos flexiveis por numero de alunos.
+            Gratuito para famílias. Para escolas, planos flexíveis por número de alunos.
           </p>
           <div className="grid sm:grid-cols-3 gap-5">
             {/* Free */}
             <div className="rounded-2xl p-6 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="text-2xl mb-2">🎓</div>
-              <h3 className="text-white font-bold text-sm mb-1">Familia</h3>
-              <div className="text-2xl font-extrabold text-white mb-1">Gratis</div>
+              <h3 className="text-white font-bold text-sm mb-1">Família</h3>
+              <div className="text-2xl font-extrabold text-white mb-1">Grátis</div>
               <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>Para sempre</p>
               <ul className="text-xs text-left space-y-2" style={{ color: 'rgba(240,244,248,0.6)' }}>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tutor IA ilimitado</li>
-                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Todas as materias</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Todas as matérias</li>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Dashboard de pais</li>
-                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Quiz e gamificacao</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Quiz e gamificação</li>
               </ul>
             </div>
             {/* School */}
@@ -291,13 +291,13 @@ export default function EscolasPage() {
               <div className="text-2xl mb-2">🏫</div>
               <h3 className="text-white font-bold text-sm mb-1">Escola</h3>
               <div className="text-2xl font-extrabold text-white mb-1">Sob consulta</div>
-              <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>Por aluno/mes</p>
+              <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>Por aluno/mês</p>
               <ul className="text-xs text-left space-y-2" style={{ color: 'rgba(240,244,248,0.6)' }}>
-                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tudo do plano Familia</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tudo do plano Família</li>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Upload de materiais</li>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Dashboard por turma</li>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Quizzes personalizados</li>
-                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Suporte prioritario</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Suporte prioritário</li>
               </ul>
             </div>
             {/* Enterprise */}
@@ -308,8 +308,8 @@ export default function EscolasPage() {
               <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>500+ alunos</p>
               <ul className="text-xs text-left space-y-2" style={{ color: 'rgba(240,244,248,0.6)' }}>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Tudo do plano Escola</li>
-                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Integracao com LMS</li>
-                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Relatorios avancados</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Integração com LMS</li>
+                <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Relatórios avançados</li>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />Gerente de conta dedicado</li>
                 <li className="flex items-start gap-2"><CheckCircle size={13} className="text-green-400 shrink-0 mt-0.5" />SLA garantido</li>
               </ul>
@@ -318,12 +318,53 @@ export default function EscolasPage() {
         </div>
       </section>
 
+      {/* Integrations roadmap */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-extrabold text-white text-center mb-3">Integrações</h2>
+          <p className="text-sm text-center mb-10" style={{ color: 'rgba(240,244,248,0.4)' }}>
+            Conectamos com as ferramentas que sua escola já usa
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { name: 'Google Classroom', icon: '🎓', status: 'Em breve', desc: 'Importe turmas e sincronize tarefas' },
+              { name: 'Microsoft Teams', icon: '💼', status: 'Em breve', desc: 'Envie atividades pelo Teams' },
+              { name: 'API aberta', icon: '🔗', status: 'Disponível', desc: 'Integre com seu sistema via API REST' },
+              { name: 'Exportar dados', icon: '📊', status: 'Disponível', desc: 'Exporte relatórios da turma em texto' },
+            ].map((item) => (
+              <div
+                key={item.name}
+                className="rounded-2xl p-5 text-center"
+                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                <div className="text-3xl mb-3">{item.icon}</div>
+                <h3 className="text-white font-bold text-sm mb-1">{item.name}</h3>
+                <span
+                  className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mb-2"
+                  style={{
+                    background: item.status === 'Disponível' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
+                    color: item.status === 'Disponível' ? '#10B981' : '#F59E0B',
+                    border: `1px solid ${item.status === 'Disponível' ? 'rgba(16,185,129,0.3)' : 'rgba(245,158,11,0.3)'}`,
+                  }}
+                >
+                  {item.status}
+                </span>
+                <p className="text-xs" style={{ color: 'rgba(240,244,248,0.4)' }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xs mt-6" style={{ color: 'rgba(240,244,248,0.25)' }}>
+            Precisa de uma integração específica? <a href="#contato" className="text-purple-400 hover:text-purple-300">Fale conosco</a>
+          </p>
+        </div>
+      </section>
+
       {/* Contact form */}
       <section id="contato" className="py-16 px-4" style={{ background: 'rgba(139,92,246,0.03)' }}>
         <div className="max-w-lg mx-auto">
           <h2 className="text-2xl font-extrabold text-white text-center mb-2">Fale com a gente</h2>
           <p className="text-sm text-center mb-8" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            Preencha o formulario e entraremos em contato para agendar uma demonstracao
+            Preencha o formulário e entraremos em contato para agendar uma demonstração
           </p>
 
           {sent ? (
@@ -336,7 +377,7 @@ export default function EscolasPage() {
               <div className="text-5xl mb-3">✅</div>
               <h3 className="text-white font-bold text-lg mb-1">Recebemos seu contato!</h3>
               <p className="text-sm mb-6" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                Entraremos em contato em ate 24 horas para agendar uma demonstracao.
+                Entraremos em contato em até 24 horas para agendar uma demonstração.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
@@ -366,7 +407,7 @@ export default function EscolasPage() {
                     type="text"
                     value={form.schoolName}
                     onChange={(e) => updateField('schoolName', e.target.value)}
-                    placeholder="Colegio Exemplo"
+                    placeholder="Colégio Exemplo"
                     className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
                   />
                 </div>
@@ -407,7 +448,7 @@ export default function EscolasPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-white/50 text-xs font-medium block mb-1.5">Voce e</label>
+                  <label className="text-white/50 text-xs font-medium block mb-1.5">Você é</label>
                   <select
                     value={form.role}
                     onChange={(e) => updateField('role', e.target.value)}
@@ -420,7 +461,7 @@ export default function EscolasPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-white/50 text-xs font-medium block mb-1.5">Numero de alunos</label>
+                  <label className="text-white/50 text-xs font-medium block mb-1.5">Número de alunos</label>
                   <select
                     value={form.studentCount}
                     onChange={(e) => updateField('studentCount', e.target.value)}
@@ -459,7 +500,7 @@ export default function EscolasPage() {
                 {sending ? 'Enviando...' : (
                   <>
                     <Send size={16} />
-                    Solicitar demonstracao
+                    Solicitar demonstração
                   </>
                 )}
               </motion.button>
