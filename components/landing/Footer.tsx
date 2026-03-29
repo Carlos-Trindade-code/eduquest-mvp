@@ -25,9 +25,12 @@ export function Footer() {
             Criar conta gratuita
             <ArrowRight size={20} />
           </Link>
-          <p className="mt-4 text-xs" style={{ color: 'rgba(240,244,248,0.3)' }}>
-            Já são famílias estudando com o Studdo 🚀
-          </p>
+          <div className="mt-6 flex items-center justify-center gap-6 text-xs" style={{ color: 'rgba(240,244,248,0.35)' }}>
+            <span>🧠 Metodo socratico</span>
+            <span>🎮 Gamificacao</span>
+            <span>👨‍👩‍👧 Dashboard pais</span>
+            <span>🏫 Para escolas</span>
+          </div>
         </div>
       </div>
 

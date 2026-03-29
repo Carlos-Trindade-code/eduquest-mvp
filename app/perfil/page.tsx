@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/client';
 import { getUserStats, getUserBadges } from '@/lib/supabase/queries';
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakDisplay } from '@/components/gamification/StreakDisplay';
+import { ClassmateLeaderboard } from '@/components/gamification/ClassmateLeaderboard';
 import { BadgeCard } from '@/components/gamification/BadgeCard';
 import { AgeThemeProvider } from '@/components/providers/AgeThemeProvider';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
@@ -219,6 +220,11 @@ export default function PerfilPage() {
                 })}
               </div>
             </motion.div>
+          )}
+
+          {/* Classroom Leaderboard */}
+          {profile?.id && (
+            <ClassmateLeaderboard kidId={profile.id} />
           )}
 
           {/* Badges */}
