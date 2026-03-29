@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ExamGenerator, type ExamData } from '@/components/exam/ExamGenerator';
 import { ExamPreview } from '@/components/exam/ExamPreview';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ArrowLeft } from 'lucide-react';
 
 export default function ExamPage() {
   const [exam, setExam] = useState<ExamData | null>(null);
@@ -12,11 +12,16 @@ export default function ExamPage() {
   return (
     <div className="min-h-screen bg-gradient-app">
       {/* Simple header */}
-      <header className="flex items-center justify-between px-6 py-4 bg-black/20">
-        <Link href="/" className="flex items-center gap-2">
-          <Sparkles className="text-yellow-400" size={22} />
-          <span className="text-white font-bold text-xl">Studdo</span>
+      <header className="flex items-center justify-between px-4 sm:px-6 py-3 bg-black/20 border-b border-white/5">
+        <Link href="/tutor" className="flex items-center gap-1.5 text-white/50 hover:text-white text-sm transition-colors">
+          <ArrowLeft size={16} />
+          <span className="hidden sm:inline">Voltar</span>
         </Link>
+        <Link href="/" className="flex items-center gap-2">
+          <Sparkles className="text-yellow-400" size={20} />
+          <span className="text-white font-bold text-lg">Studdo</span>
+        </Link>
+        <div className="w-14" />
       </header>
 
       <main className="px-4 py-6 sm:py-10">

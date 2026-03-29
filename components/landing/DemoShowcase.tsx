@@ -70,7 +70,7 @@ const scenes: { id: SceneId; label: string; icon: React.ElementType }[] = [
 // ============================================================
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative mx-auto" style={{ maxWidth: 340 }}>
+    <div className="relative mx-auto max-w-[340px] w-full">
       {/* Glow effect */}
       <div className="absolute -inset-4 bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 rounded-[3rem] blur-2xl" />
 
@@ -561,7 +561,7 @@ export function DemoShowcase() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="min-h-[460px]"
+                  className="min-h-[380px] sm:min-h-[460px]"
                 >
                   {renderScene()}
                 </motion.div>

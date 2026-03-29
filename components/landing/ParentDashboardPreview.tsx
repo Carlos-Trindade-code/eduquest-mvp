@@ -52,14 +52,21 @@ export function ParentDashboardPreview() {
               ))}
             </motion.ul>
 
-            <motion.div variants={fadeInUp('medium')} className="mt-8">
+            <motion.div variants={fadeInUp('medium')} className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link
                 href="/register"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
                 style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 4px 20px rgba(245,166,35,0.3)' }}
               >
-                Criar conta gratuita para pais
+                Criar conta de pai/mae
                 <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/tutor"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-white/10"
+                style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
+              >
+                Testar como aluno
               </Link>
             </motion.div>
           </motion.div>

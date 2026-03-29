@@ -17,15 +17,24 @@ export function Footer() {
           <p className="text-lg mb-8" style={{ color: 'rgba(240,244,248,0.55)' }}>
             O Studdo está em beta aberto — todas as funcionalidades liberadas, sem limite.
           </p>
-          <Link
-            href="/register"
-            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl font-bold text-lg transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
-            style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 40px rgba(245,166,35,0.4)' }}
-          >
-            Criar conta gratuita
-            <ArrowRight size={20} />
-          </Link>
-          <div className="mt-6 flex items-center justify-center gap-6 text-xs" style={{ color: 'rgba(240,244,248,0.35)' }}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/tutor"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
+              style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 40px rgba(245,166,35,0.4)' }}
+            >
+              Testar tutor gratis
+              <ArrowRight size={18} />
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-medium text-base transition-all hover:bg-white/10"
+              style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.15)' }}
+            >
+              Criar conta
+            </Link>
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs" style={{ color: 'rgba(240,244,248,0.35)' }}>
             <span>🧠 Método socrático</span>
             <span>🎮 Gamificação</span>
             <span>👨‍👩‍👧 Dashboard pais</span>
