@@ -97,6 +97,7 @@ export function MaterialCard({ material, onStudy, onDelete, onView }: MaterialCa
         )}
         {onView && material.file_url && (
           <button
+            aria-label="Abrir material"
             onClick={() => onView(material)}
             className={`flex items-center justify-center bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded-xl transition-colors ${
               isYoungKid ? 'p-2.5' : 'p-1.5'
@@ -107,6 +108,7 @@ export function MaterialCard({ material, onStudy, onDelete, onView }: MaterialCa
         )}
         {onDelete && (
           <button
+            aria-label="Deletar material"
             onClick={() => onDelete(material)}
             className={`flex items-center justify-center bg-white/5 hover:bg-red-500/20 text-white/40 hover:text-red-400 rounded-xl transition-colors ${
               isYoungKid ? 'p-2.5' : 'p-1.5'

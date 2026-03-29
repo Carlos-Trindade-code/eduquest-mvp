@@ -118,6 +118,7 @@ export function StreakReminder() {
                 </p>
               </div>
               <button
+                aria-label="Fechar lembrete"
                 onClick={dismiss}
                 className="shrink-0 text-white/50 hover:text-white p-1 transition-colors"
               >

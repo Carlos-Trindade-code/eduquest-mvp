@@ -45,7 +45,7 @@ export function FloatingPomodoroTimer({ timerState }: FloatingPomodoroTimerProps
                 className="absolute -top-10 right-0 bg-emerald-600/90 text-white text-[10px] px-2.5 py-1 rounded-lg whitespace-nowrap flex items-center gap-1.5 shadow-lg"
               >
                 Timer ativo!
-                <button onClick={() => setShowHint(false)} className="text-white/60 hover:text-white">
+                <button aria-label="Fechar dica" onClick={() => setShowHint(false)} className="text-white/60 hover:text-white">
                   <X size={8} />
                 </button>
               </motion.div>

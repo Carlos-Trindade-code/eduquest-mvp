@@ -160,7 +160,7 @@ export function MaterialUpload({ onUploaded, kidId, ownerType = 'kid', compact =
                   {getFileIcon(entry.file.type)} {entry.name.slice(0, 20)}
                   {entry.status === 'uploading' && <Loader2 size={12} className="animate-spin" />}
                   {entry.status === 'done' && <CheckCircle size={12} className="text-green-400" />}
-                  {!uploading && <button onClick={() => removeFile(i)}><X size={12} /></button>}
+                  {!uploading && <button aria-label="Remover arquivo" onClick={() => removeFile(i)}><X size={12} /></button>}
                 </span>
               ))}
             </div>

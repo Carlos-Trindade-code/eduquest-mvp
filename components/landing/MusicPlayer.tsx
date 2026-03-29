@@ -71,7 +71,7 @@ export function MusicPlayer() {
             <div className="flex items-center gap-2">
               <Music size={16} className="text-purple-400 shrink-0" />
               <p className="text-white text-sm font-medium">Quer ouvir música ambiente enquanto navega?</p>
-              <button onClick={handleDecline} className="ml-auto text-white/30 hover:text-white">
+              <button aria-label="Fechar" onClick={handleDecline} className="ml-auto text-white/30 hover:text-white">
                 <X size={14} />
               </button>
             </div>
@@ -116,11 +116,11 @@ export function MusicPlayer() {
             <Music size={14} className="text-purple-400 shrink-0" />
             <span className="text-white/60 text-xs truncate max-w-[100px]">{playlist[current].title}</span>
 
-            <button onClick={togglePlay} className="text-purple-400 hover:text-white transition-colors">
+            <button aria-label={playing ? 'Pausar música' : 'Reproduzir música'} onClick={togglePlay} className="text-purple-400 hover:text-white transition-colors">
               {playing ? <Pause size={14} /> : <Play size={14} />}
             </button>
 
-            <button onClick={() => setMuted(m => !m)} className="text-purple-400 hover:text-white transition-colors">
+            <button aria-label={muted ? 'Ativar som' : 'Desativar som'} onClick={() => setMuted(m => !m)} className="text-purple-400 hover:text-white transition-colors">
               {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
             </button>
 
@@ -133,6 +133,7 @@ export function MusicPlayer() {
             </button>
 
             <button
+              aria-label="Fechar player"
               onClick={() => { setEnabled(false); localStorage.setItem('musicEnabled', 'false'); }}
               className="text-white/20 hover:text-white/60 transition-colors"
             >

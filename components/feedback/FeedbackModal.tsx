@@ -82,7 +82,7 @@ export function FeedbackModal({ isOpen, onClose, source, subjectContext }: Feedb
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <p className="text-white font-semibold text-sm leading-snug pr-2">{title}</p>
-                  <button onClick={onClose} className="text-white/40 hover:text-white shrink-0">
+                  <button aria-label="Fechar feedback" onClick={onClose} className="text-white/40 hover:text-white shrink-0">
                     <X size={16} />
                   </button>
                 </div>
