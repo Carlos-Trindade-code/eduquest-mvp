@@ -12,10 +12,10 @@ export function Footer() {
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <div className="text-5xl mb-6">🦉</div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
-            Comece grátis. Sem cartão.
+            100% gratuito. Sem cartao.
           </h2>
           <p className="text-lg mb-8" style={{ color: 'rgba(240,244,248,0.55)' }}>
-            Seu filho tem 7 dias para testar. Se não gostar, não paga nada.
+            O Studdo esta em beta aberto — todas as funcionalidades liberadas, sem limite.
           </p>
           <Link
             href="/register"

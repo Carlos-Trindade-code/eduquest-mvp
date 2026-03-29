@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square, HelpCircle } from 'lucide-react';
+import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square, HelpCircle, FolderOpen, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
@@ -117,13 +117,29 @@ export function Header({
                 </button>
 
                 {userType === 'kid' && (
-                  <button
-                    onClick={() => navigate('/tutor')}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-white/70 hover:text-white hover:bg-white/5 text-sm transition-colors"
-                  >
-                    <Sparkles size={16} />
-                    Tutor IA
-                  </button>
+                  <>
+                    <button
+                      onClick={() => navigate('/tutor')}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-white/70 hover:text-white hover:bg-white/5 text-sm transition-colors"
+                    >
+                      <Sparkles size={16} />
+                      Tutor IA
+                    </button>
+                    <button
+                      onClick={() => navigate('/materials')}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-white/70 hover:text-white hover:bg-white/5 text-sm transition-colors"
+                    >
+                      <FolderOpen size={16} />
+                      Meus Materiais
+                    </button>
+                    <button
+                      onClick={() => navigate('/exam')}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-white/70 hover:text-white hover:bg-white/5 text-sm transition-colors"
+                    >
+                      <FileText size={16} />
+                      Simulado
+                    </button>
+                  </>
                 )}
 
                 {userType === 'parent' && (

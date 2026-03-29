@@ -199,6 +199,19 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
         </motion.div>
       )}
 
+      {/* Link to materials library when kid has no materials yet */}
+      {personalMaterials.length === 0 && materials.length === 0 && profile && (
+        <motion.div variants={fadeInUp('medium')} className="mb-1">
+          <Link
+            href="/materials"
+            className="flex items-center gap-2 p-3 rounded-xl bg-white/3 border border-dashed border-white/10 hover:border-purple-400/40 text-white/40 hover:text-white/70 text-xs transition-all"
+          >
+            <FolderOpen size={14} />
+            <span>Adicione materiais de estudo na sua biblioteca</span>
+          </Link>
+        </motion.div>
+      )}
+
       {/* Photo Upload — optional */}
       <motion.div variants={fadeInUp('medium')} className="mb-1">
         <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">

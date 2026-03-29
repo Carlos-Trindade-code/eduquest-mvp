@@ -75,7 +75,6 @@ export default function MaterialsPage() {
 
           {/* Library */}
           <MaterialLibrary
-            kidId={profile?.user_type === 'kid' ? undefined : undefined}
             ownerType={profile?.user_type === 'parent' ? 'parent' : 'kid'}
             onStudy={handleStudy}
           />

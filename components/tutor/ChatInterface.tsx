@@ -121,7 +121,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
 
   // Check if guest trial is expired
   useEffect(() => {
-    if (!authLoading && isGuest && getTrialCount() >= 1) {
+    if (!authLoading && isGuest && getTrialCount() >= 3) {
       setTrialExpired(true);
     }
   }, [authLoading, isGuest]);
