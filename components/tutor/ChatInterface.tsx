@@ -21,6 +21,7 @@ import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
 import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask, getKidActivities, updateActivityStatus } from '@/lib/supabase/queries';
 import { ActivityCard } from '@/components/activities/ActivityCard';
+import { updateStreakTracking } from '@/components/gamification/StreakReminder';
 import { QuizPlayer } from '@/components/activities/QuizPlayer';
 import type { AgeGroup, BehavioralProfile, ParentTask, GuidedActivity } from '@/lib/auth/types';
 
@@ -177,10 +178,13 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
       return next;
     });
 
-    // Persist XP
+    // Persist XP + track streak locally
     if (profile?.id) {
       const supabase = createClient();
-      await addXP(supabase, profile.id, xp);
+      const result = await addXP(supabase, profile.id, xp);
+      if (result.data) {
+        updateStreakTracking(result.data.current_streak);
+      }
       const earnedBadgeIds = await checkAndAwardBadges(supabase, profile.id);
       if (earnedBadgeIds.length > 0) setNewBadgeIds(earnedBadgeIds);
     }

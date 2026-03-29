@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header';
 import { ChatInterface } from '@/components/tutor/ChatInterface';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
+import { StreakReminder } from '@/components/gamification/StreakReminder';
 import { useAuth } from '@/hooks/useAuth';
 
 function TutorLoadingSkeleton() {
@@ -48,6 +49,7 @@ export default function TutorPage() {
 
   return (
     <div className="min-h-screen bg-gradient-app flex flex-col">
+      <StreakReminder />
       <Header
         onTimerComplete={() => setShowBreak(true)}
         showFinish={sessionActive}

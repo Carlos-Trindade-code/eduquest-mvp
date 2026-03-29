@@ -59,10 +59,10 @@ function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteL
       >
         <p className="text-xs font-medium mb-3" style={{ color: 'rgba(240,244,248,0.5)' }}>Prévia de uma conversa real:</p>
         {[
-          { role: 'user', text: 'Quanto é 2 + 2?' },
-          { role: 'assistant', text: 'Boa pergunta! 🤔 Se você tiver 2 maçãs e ganhar mais 2, com quantas fica?' },
-          { role: 'user', text: 'Com 4?' },
-          { role: 'assistant', text: '🎉 Exatamente! Você acabou de descobrir que 2 + 2 = 4!' },
+          { role: 'user', text: 'Quais as causas da Revolução Francesa?' },
+          { role: 'assistant', text: 'Boa pergunta! 🤔 Como você acha que era a vida de um camponês na França em 1789?' },
+          { role: 'user', text: 'Difícil... trabalhavam muito e não tinham dinheiro?' },
+          { role: 'assistant', text: '🎉 Isso! E enquanto o povo passava fome, quem vivia em palácios? Pense nisso!' },
         ].map((msg, i) => (
           <motion.div
             key={i}
