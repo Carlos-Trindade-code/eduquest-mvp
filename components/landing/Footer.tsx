@@ -55,6 +55,8 @@ export function Footer() {
             </span>
           </Link>
           <div className="flex items-center gap-6 text-sm" style={{ color: 'rgba(240,244,248,0.3)' }}>
+            <Link href="/como-funciona" className="hover:text-white transition-colors">Como funciona</Link>
+            <Link href="/metodo-socratico" className="hover:text-white transition-colors">Método socrático</Link>
             <Link href="/escolas" className="hover:text-white transition-colors">Para Escolas</Link>
             <Link href="/termos" className="hover:text-white transition-colors">Termos</Link>
             <Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
