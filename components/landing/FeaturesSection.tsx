@@ -15,9 +15,9 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 const features = [
   {
     icon: MessageCircleQuestion,
-    title: 'Metodo Socratico',
+    title: 'Método Socrático',
     description:
-      'Nunca da respostas prontas. Guia o aluno com perguntas que desenvolvem o raciocinio critico.',
+      'Nunca dá respostas prontas. Guia o aluno com perguntas que desenvolvem o raciocínio crítico.',
     color: '#8B5CF6',
   },
   {
@@ -29,23 +29,23 @@ const features = [
   },
   {
     icon: Trophy,
-    title: 'Gamificacao',
+    title: 'Gamificação',
     description:
-      'XP, niveis, badges e streaks que motivam o estudo diario sem perder o foco no aprendizado.',
+      'XP, níveis, badges e streaks que motivam o estudo diário sem perder o foco no aprendizado.',
     color: '#F59E0B',
   },
   {
     icon: BarChart3,
     title: 'Dashboard para Pais',
     description:
-      'Acompanhe o progresso, receba alertas inteligentes e veja recomendacoes personalizadas.',
+      'Acompanhe o progresso, receba alertas inteligentes e veja recomendações personalizadas.',
     color: '#10B981',
   },
   {
     icon: Zap,
     title: 'Modo Quiz',
     description:
-      'Teste conhecimentos com quizzes gerados pela IA. Feedback instantaneo e XP por acerto.',
+      'Teste conhecimentos com quizzes gerados pela IA. Feedback instantâneo e XP por acerto.',
     color: '#EC4899',
   },
   {
@@ -85,8 +85,8 @@ export function FeaturesSection() {
             variants={fadeInUp('medium')}
             className="mt-4 text-white/50 text-lg"
           >
-            Combinamos ciencia cognitiva, gamificacao e inteligencia artificial para criar
-            a melhor experiencia de aprendizado.
+            Combinamos ciência cognitiva, gamificação e inteligência artificial para criar
+            a melhor experiência de aprendizado.
           </motion.p>
         </motion.div>
 

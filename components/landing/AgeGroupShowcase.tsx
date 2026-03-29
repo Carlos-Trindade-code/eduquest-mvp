@@ -10,9 +10,9 @@ const ageGroups = [
   {
     id: '4-6',
     label: '4-6 anos',
-    title: 'Pre-escola',
-    description: 'Linguagem simples com emojis, sessoes de 10 minutos, muito incentivo e celebracoes.',
-    features: ['Mascote interativo', 'Animacoes divertidas', 'Texto grande e colorido', 'Sessoes curtas'],
+    title: 'Pré-escola',
+    description: 'Linguagem simples com emojis, sessões de 10 minutos, muito incentivo e celebrações.',
+    features: ['Mascote interativo', 'Animações divertidas', 'Texto grande e colorido', 'Sessões curtas'],
     color: '#8B5CF6',
     bgGradient: 'from-purple-600/20 to-pink-600/20',
     expression: 'encouraging' as const,
@@ -21,8 +21,8 @@ const ageGroups = [
     id: '7-9',
     label: '7-9 anos',
     title: '1o ao 3o ano',
-    description: 'Desafios progressivos, vocabulario adequado e feedback positivo constante.',
-    features: ['Mascote guia', 'Gamificacao ativa', 'Perguntas adaptadas', 'Dicas visuais'],
+    description: 'Desafios progressivos, vocabulário adequado e feedback positivo constante.',
+    features: ['Mascote guia', 'Gamificação ativa', 'Perguntas adaptadas', 'Dicas visuais'],
     color: '#3B82F6',
     bgGradient: 'from-blue-600/20 to-cyan-600/20',
     expression: 'waving' as const,
@@ -31,8 +31,8 @@ const ageGroups = [
     id: '10-12',
     label: '10-12 anos',
     title: '4o e 5o ano',
-    description: 'Metodo Feynman, modo explorador e conexoes entre materias.',
-    features: ['Metodo Feynman', 'Modo explorador', 'Interface balanceada', 'Desafios extras'],
+    description: 'Método Feynman, modo explorador e conexões entre matérias.',
+    features: ['Método Feynman', 'Modo explorador', 'Interface balanceada', 'Desafios extras'],
     color: '#14B8A6',
     bgGradient: 'from-teal-600/20 to-emerald-600/20',
     expression: 'thinking' as const,
@@ -41,8 +41,8 @@ const ageGroups = [
     id: '13-15',
     label: '13-15 anos',
     title: '6o ao 8o ano',
-    description: 'Pensamento de alta ordem, debates e analise de produtividade.',
-    features: ['HOTS Questions', 'Debates socraticos', 'Interleaving', 'Analise de produtividade'],
+    description: 'Pensamento de alta ordem, debates e análise de produtividade.',
+    features: ['HOTS Questions', 'Debates socráticos', 'Interleaving', 'Análise de produtividade'],
     color: '#6366F1',
     bgGradient: 'from-indigo-600/20 to-violet-600/20',
     expression: 'neutral' as const,
@@ -50,9 +50,9 @@ const ageGroups = [
   {
     id: '16-18',
     label: '16-18 anos',
-    title: 'Ensino Medio',
-    description: 'Interface profissional, sessoes longas e auto-monitoramento.',
-    features: ['Auto-monitoramento', 'Sessoes de 45min', 'Interface minimalista', 'Analise completa'],
+    title: 'Ensino Médio',
+    description: 'Interface profissional, sessões longas e auto-monitoramento.',
+    features: ['Auto-monitoramento', 'Sessões de 45min', 'Interface minimalista', 'Análise completa'],
     color: '#6366F1',
     bgGradient: 'from-slate-600/20 to-zinc-600/20',
     expression: 'reading' as const,
@@ -84,7 +84,7 @@ export function AgeGroupShowcase() {
             variants={fadeInUp('medium')}
             className="mt-3 text-3xl sm:text-4xl font-bold text-white"
           >
-            Uma experiencia unica para cada faixa etaria
+            Uma experiência única para cada faixa etária
           </motion.h2>
         </motion.div>
 
@@ -92,7 +92,7 @@ export function AgeGroupShowcase() {
         <div className="relative mb-12">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#0D1B2A] to-transparent z-10 lg:hidden" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0D1B2A] to-transparent z-10 lg:hidden" />
-          <div className="flex justify-start lg:justify-center gap-2 overflow-x-auto flex-nowrap px-4 lg:px-0 lg:flex-wrap hide-scrollbar" role="tablist" aria-label="Faixas etarias">
+          <div className="flex justify-start lg:justify-center gap-2 overflow-x-auto flex-nowrap px-4 lg:px-0 lg:flex-wrap hide-scrollbar" role="tablist" aria-label="Faixas etárias">
             {ageGroups.map((ag, i) => (
               <button
                 key={ag.id}

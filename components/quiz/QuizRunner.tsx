@@ -65,7 +65,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
     const message =
       percentage >= 80 ? 'Excelente!' :
       percentage >= 60 ? 'Muito bom!' :
-      percentage >= 40 ? 'Bom esforco!' :
+      percentage >= 40 ? 'Bom esforço!' :
       'Continue praticando!';
 
     return (
@@ -155,7 +155,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
           <motion.button
             onClick={async () => {
               const subjectName = subjectInfo?.name || exam.subject;
-              const text = `${emoji} Acertei ${score}/${total} no quiz de ${subjectName} no Studdo! (${percentage}%)\n\nTeste voce tambem: www.studdo.com.br/quiz`;
+              const text = `${emoji} Acertei ${score}/${total} no quiz de ${subjectName} no Studdo! (${percentage}%)\n\nTeste você também: www.studdo.com.br/quiz`;
               if (navigator.share) {
                 try {
                   await navigator.share({ title: `Quiz Studdo — ${subjectName}`, text, url: 'https://www.studdo.com.br/quiz' });
@@ -213,7 +213,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-white/40 text-xs font-medium">
-            Questao {currentIndex + 1} de {total}
+            Questão {currentIndex + 1} de {total}
           </span>
           <div className="flex items-center gap-3">
             <span className="text-white/40 text-xs">
@@ -318,7 +318,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
                 }}
               >
                 <p className="text-xs font-semibold mb-1" style={{ color: questionState === 'correct' ? '#10B981' : '#F5A623' }}>
-                  {questionState === 'correct' ? '✅ Correto!' : '💡 Explicacao:'}
+                  {questionState === 'correct' ? '✅ Correto!' : '💡 Explicação:'}
                 </p>
                 <p className="text-xs leading-relaxed" style={{ color: 'rgba(240,244,248,0.6)' }}>
                   {question.explanation}
@@ -350,7 +350,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
               <div className="text-3xl mb-3">🚪</div>
               <h3 className="text-white font-bold text-base mb-1">Sair do quiz?</h3>
               <p className="text-xs mb-5" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                Seu progresso neste quiz sera perdido.
+                Seu progresso neste quiz será perdido.
               </p>
               <div className="flex gap-3">
                 <button
@@ -403,7 +403,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
               </>
             ) : (
               <>
-                Proxima
+                Próxima
                 <ArrowRight size={16} />
               </>
             )}

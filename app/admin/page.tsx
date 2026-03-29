@@ -38,7 +38,7 @@ export default function AdminPage() {
           <Shield size={40} className="text-red-400 mx-auto mb-4" />
           <h1 className="text-white font-bold text-xl mb-2">Acesso Negado</h1>
           <p className="text-white/50 text-sm">
-            Voce nao tem permissao para acessar esta pagina.
+            Você não tem permissão para acessar esta página.
           </p>
         </div>
       </div>

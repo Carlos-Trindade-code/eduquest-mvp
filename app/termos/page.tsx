@@ -16,21 +16,21 @@ export default function TermosPage() {
       </header>
       <main className="max-w-3xl mx-auto px-4 py-10">
         <h1 className="text-white text-3xl font-extrabold mb-2">Termos de Uso</h1>
-        <p className="text-white/30 text-sm mb-8">Ultima atualizacao: 25 de marco de 2026</p>
+        <p className="text-white/30 text-sm mb-8">Última atualização: 25 de março de 2026</p>
 
         <div className="prose-sm space-y-6 text-white/60 text-sm leading-relaxed">
           <section>
-            <h2 className="text-white font-bold text-lg mb-2">1. Aceitacao dos Termos</h2>
-            <p>Ao acessar e usar a plataforma Studdo (www.studdo.com.br), voce concorda com estes Termos de Uso. Se voce e menor de 18 anos, seu responsavel legal deve concordar com estes termos em seu nome.</p>
+            <h2 className="text-white font-bold text-lg mb-2">1. Aceitação dos Termos</h2>
+            <p>Ao acessar e usar a plataforma Studdo (www.studdo.com.br), você concorda com estes Termos de Uso. Se você é menor de 18 anos, seu responsável legal deve concordar com estes termos em seu nome.</p>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-lg mb-2">2. Descricao do Servico</h2>
-            <p>O Studdo e uma plataforma educacional que utiliza inteligencia artificial para auxiliar estudantes de 4 a 18 anos em seus estudos, atraves de:</p>
+            <h2 className="text-white font-bold text-lg mb-2">2. Descrição do Serviço</h2>
+            <p>O Studdo é uma plataforma educacional que utiliza inteligência artificial para auxiliar estudantes de 4 a 18 anos em seus estudos, através de:</p>
             <ul className="list-disc pl-6 space-y-1 mt-2">
-              <li>Tutor IA com metodo socratico</li>
+              <li>Tutor IA com método socrático</li>
               <li>Quizzes interativos gerados por IA</li>
-              <li>Sistema de gamificacao (XP, badges, streaks)</li>
+              <li>Sistema de gamificação (XP, badges, streaks)</li>
               <li>Dashboard para pais acompanharem o progresso</li>
               <li>Ferramentas para professores e escolas</li>
             </ul>
@@ -38,49 +38,49 @@ export default function TermosPage() {
 
           <section>
             <h2 className="text-white font-bold text-lg mb-2">3. Cadastro e Conta</h2>
-            <p>Para utilizar funcionalidades completas, e necessario criar uma conta. Voce e responsavel por manter a confidencialidade de suas credenciais. Pais e responsaveis podem criar contas para menores de idade sob sua supervisao.</p>
+            <p>Para utilizar funcionalidades completas, é necessário criar uma conta. Você é responsável por manter a confidencialidade de suas credenciais. Pais e responsáveis podem criar contas para menores de idade sob sua supervisão.</p>
           </section>
 
           <section>
             <h2 className="text-white font-bold text-lg mb-2">4. Uso Adequado</h2>
-            <p>Voce concorda em usar o Studdo apenas para fins educacionais legitimos. E proibido:</p>
+            <p>Você concorda em usar o Studdo apenas para fins educacionais legítimos. É proibido:</p>
             <ul className="list-disc pl-6 space-y-1 mt-2">
-              <li>Usar o servico para fins ilegais ou nao autorizados</li>
-              <li>Tentar acessar contas de outros usuarios</li>
-              <li>Enviar conteudo ofensivo, violento ou inapropriado</li>
-              <li>Usar a IA para gerar conteudo que viole direitos de terceiros</li>
+              <li>Usar o serviço para fins ilegais ou não autorizados</li>
+              <li>Tentar acessar contas de outros usuários</li>
+              <li>Enviar conteúdo ofensivo, violento ou inapropriado</li>
+              <li>Usar a IA para gerar conteúdo que viole direitos de terceiros</li>
               <li>Realizar engenharia reversa do sistema</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-lg mb-2">5. Conteudo Gerado por IA</h2>
-            <p>O tutor IA e uma ferramenta de apoio ao aprendizado. As respostas sao geradas automaticamente e podem conter imprecisoes. O Studdo nao substitui professores, tutores humanos ou materiais didaticos oficiais. Recomendamos que pais e educadores acompanhem o uso.</p>
+            <h2 className="text-white font-bold text-lg mb-2">5. Conteúdo Gerado por IA</h2>
+            <p>O tutor IA é uma ferramenta de apoio ao aprendizado. As respostas são geradas automaticamente e podem conter imprecisões. O Studdo não substitui professores, tutores humanos ou materiais didáticos oficiais. Recomendamos que pais e educadores acompanhem o uso.</p>
           </section>
 
           <section>
             <h2 className="text-white font-bold text-lg mb-2">6. Propriedade Intelectual</h2>
-            <p>Todo o conteudo da plataforma (design, codigo, textos, ilustracoes) e propriedade do Studdo. Materiais enviados por professores permanecem de propriedade dos mesmos.</p>
+            <p>Todo o conteúdo da plataforma (design, código, textos, ilustrações) é propriedade do Studdo. Materiais enviados por professores permanecem de propriedade dos mesmos.</p>
           </section>
 
           <section>
             <h2 className="text-white font-bold text-lg mb-2">7. Planos e Pagamento</h2>
-            <p>O Studdo oferece acesso gratuito para familias. Planos para escolas e instituicoes sao oferecidos sob consulta. Os termos especificos de cada plano serao apresentados no momento da contratacao.</p>
+            <p>O Studdo oferece acesso gratuito para famílias. Planos para escolas e instituições são oferecidos sob consulta. Os termos específicos de cada plano serão apresentados no momento da contratação.</p>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-lg mb-2">8. Limitacao de Responsabilidade</h2>
-            <p>O Studdo e fornecido &ldquo;como esta&rdquo;. Nao garantimos disponibilidade ininterrupta ou ausencia de erros. Nao somos responsaveis por decisoes tomadas com base no conteudo gerado pela IA.</p>
+            <h2 className="text-white font-bold text-lg mb-2">8. Limitação de Responsabilidade</h2>
+            <p>O Studdo é fornecido &ldquo;como está&rdquo;. Não garantimos disponibilidade ininterrupta ou ausência de erros. Não somos responsáveis por decisões tomadas com base no conteúdo gerado pela IA.</p>
           </section>
 
           <section>
-            <h2 className="text-white font-bold text-lg mb-2">9. Alteracoes nos Termos</h2>
-            <p>Podemos atualizar estes termos a qualquer momento. Alteracoes significativas serao comunicadas por email ou notificacao na plataforma.</p>
+            <h2 className="text-white font-bold text-lg mb-2">9. Alterações nos Termos</h2>
+            <p>Podemos atualizar estes termos a qualquer momento. Alterações significativas serão comunicadas por email ou notificação na plataforma.</p>
           </section>
 
           <section>
             <h2 className="text-white font-bold text-lg mb-2">10. Contato</h2>
-            <p>Para duvidas sobre estes termos, entre em contato pelo formulario em <Link href="/escolas#contato" className="text-purple-400 hover:text-purple-300">studdo.com.br/escolas</Link>.</p>
+            <p>Para dúvidas sobre estes termos, entre em contato pelo formulário em <Link href="/escolas#contato" className="text-purple-400 hover:text-purple-300">studdo.com.br/escolas</Link>.</p>
           </section>
         </div>
       </main>

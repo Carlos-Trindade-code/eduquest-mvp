@@ -52,7 +52,7 @@ function LoadingSkeleton() {
           <BookOpen size={20} className="text-purple-400" />
         </motion.div>
         <p className="text-sm text-purple-300 font-medium">
-          O Edu esta analisando sua sessao...
+          O Edu está analisando sua sessão...
         </p>
       </div>
       <SkeletonPulse className="h-10 w-full" />
@@ -86,10 +86,10 @@ export function SessionSummary({
   const subjectInfo = getSubjectById(subject);
 
   const suggestions = [
-    { id: 'math', name: 'Matematica', icon: '\uD83D\uDD22' },
-    { id: 'portuguese', name: 'Portugues', icon: '\uD83D\uDCDD' },
-    { id: 'science', name: 'Ciencias', icon: '\uD83D\uDD2C' },
-    { id: 'history', name: 'Historia', icon: '\uD83D\uDCDC' },
+    { id: 'math', name: 'Matemática', icon: '\uD83D\uDD22' },
+    { id: 'portuguese', name: 'Português', icon: '\uD83D\uDCDD' },
+    { id: 'science', name: 'Ciências', icon: '\uD83D\uDD2C' },
+    { id: 'history', name: 'História', icon: '\uD83D\uDCDC' },
   ].filter((s) => s.id !== subject).slice(0, 2);
 
   const durationText = durationMinutes
@@ -143,7 +143,7 @@ export function SessionSummary({
 
       <div className="text-center">
         <h2 className="text-white text-2xl font-extrabold mb-1">
-          Sessao incrivel!
+          Sessão incrível!
         </h2>
         <p
           className="text-sm"
@@ -229,7 +229,7 @@ export function SessionSummary({
                   className="text-xs font-semibold mb-2"
                   style={{ color: 'rgba(240,244,248,0.5)' }}
                 >
-                  Topicos estudados
+                  Tópicos estudados
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {summaryResult.topics_covered.map((topic, idx) => (
@@ -349,7 +349,7 @@ export function SessionSummary({
                     className="text-xs font-semibold"
                     style={{ color: '#8B5CF6' }}
                   >
-                    Sugestao do Edu
+                    Sugestão do Edu
                   </span>
                 </div>
                 <p
@@ -386,7 +386,7 @@ export function SessionSummary({
               className="text-xs mb-4"
               style={{ color: 'rgba(240,244,248,0.5)' }}
             >
-              Crie uma conta gratuita para sessoes ilimitadas, XP e conquistas
+              Crie uma conta gratuita para sessões ilimitadas, XP e conquistas
             </p>
             <a
               href="/register"
@@ -399,7 +399,7 @@ export function SessionSummary({
             href="/login"
             className="block w-full py-2.5 rounded-xl text-sm text-center font-medium text-white/40 hover:text-white/60 transition-all"
           >
-            Ja tenho conta
+            Já tenho conta
           </a>
         </motion.div>
       ) : (
@@ -457,7 +457,7 @@ export function SessionSummary({
             transition={{ delay: 0.7 }}
           >
             <RotateCcw size={15} />
-            Nova sessao
+            Nova sessão
           </motion.button>
         </>
       )}

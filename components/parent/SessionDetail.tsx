@@ -77,7 +77,7 @@ export function SessionDetail({ summary, onClose }: SessionDetailProps) {
       {/* Topics */}
       {summary.topics_covered && summary.topics_covered.length > 0 && (
         <div>
-          <p className="text-white/40 text-xs font-medium mb-2 uppercase tracking-wider">Topicos</p>
+          <p className="text-white/40 text-xs font-medium mb-2 uppercase tracking-wider">Tópicos</p>
           <div className="flex flex-wrap gap-1.5">
             {summary.topics_covered.map((topic, i) => (
               <span
@@ -139,7 +139,7 @@ export function SessionDetail({ summary, onClose }: SessionDetailProps) {
         >
           <div className="flex items-center gap-2 mb-2">
             <Sparkles size={14} className="text-purple-400" />
-            <p className="text-purple-400 text-xs font-semibold">Sugestao da IA</p>
+            <p className="text-purple-400 text-xs font-semibold">Sugestão da IA</p>
           </div>
           <p className="text-white/60 text-xs leading-relaxed">{summary.ai_suggestion}</p>
         </div>

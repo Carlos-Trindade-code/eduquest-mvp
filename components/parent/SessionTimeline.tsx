@@ -109,7 +109,7 @@ export function SessionTimeline({ summaries, onSelectSession, selectedSessionId 
       {filtered.length === 0 ? (
         <div className="glass rounded-[var(--eq-radius)] p-8 text-center">
           <div className="text-4xl mb-3">📭</div>
-          <p className="text-white/40 text-sm">Nenhuma sessao encontrada com estes filtros</p>
+          <p className="text-white/40 text-sm">Nenhuma sessão encontrada com estes filtros</p>
         </div>
       ) : (
         <motion.div

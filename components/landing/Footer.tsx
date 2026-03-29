@@ -12,10 +12,10 @@ export function Footer() {
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <div className="text-5xl mb-6">🦉</div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
-            100% gratuito. Sem cartao.
+            100% gratuito. Sem cartão.
           </h2>
           <p className="text-lg mb-8" style={{ color: 'rgba(240,244,248,0.55)' }}>
-            O Studdo esta em beta aberto — todas as funcionalidades liberadas, sem limite.
+            O Studdo está em beta aberto — todas as funcionalidades liberadas, sem limite.
           </p>
           <Link
             href="/register"
@@ -26,8 +26,8 @@ export function Footer() {
             <ArrowRight size={20} />
           </Link>
           <div className="mt-6 flex items-center justify-center gap-6 text-xs" style={{ color: 'rgba(240,244,248,0.35)' }}>
-            <span>🧠 Metodo socratico</span>
-            <span>🎮 Gamificacao</span>
+            <span>🧠 Método socrático</span>
+            <span>🎮 Gamificação</span>
             <span>👨‍👩‍👧 Dashboard pais</span>
             <span>🏫 Para escolas</span>
           </div>

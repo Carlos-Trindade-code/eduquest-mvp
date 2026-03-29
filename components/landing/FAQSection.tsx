@@ -19,34 +19,34 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 // ============================================================
 const faqItems = [
   {
-    question: 'O que e o Studdo?',
+    question: 'O que é o Studdo?',
     answer:
-      'O Studdo e uma plataforma educacional com tutor IA que usa o metodo socratico. Em vez de dar respostas prontas, o Edu (nosso tutor) faz perguntas que guiam seu filho a descobrir as respostas sozinho, construindo entendimento real.',
+      'O Studdo é uma plataforma educacional com tutor IA que usa o método socrático. Em vez de dar respostas prontas, o Edu (nosso tutor) faz perguntas que guiam seu filho a descobrir as respostas sozinho, construindo entendimento real.',
   },
   {
-    question: 'Como funciona o metodo socratico?',
+    question: 'Como funciona o método socrático?',
     answer:
-      'O metodo socratico e baseado em perguntas guiadas. Quando seu filho envia um exercicio, o Edu nao da a resposta direta — ele faz perguntas progressivas que ajudam a crianca a pensar, raciocinar e chegar na resposta por conta propria.',
+      'O método socrático é baseado em perguntas guiadas. Quando seu filho envia um exercício, o Edu não dá a resposta direta — ele faz perguntas progressivas que ajudam a criança a pensar, raciocinar e chegar na resposta por conta própria.',
   },
   {
     question: 'Quanto custa?',
     answer:
-      'O Studdo esta em fase beta e e totalmente gratis! Estamos testando com grupos de escolas para aperfeicoar a plataforma. No futuro, teremos planos acessiveis com funcionalidades premium.',
+      'O Studdo está em fase beta e é totalmente grátis! Estamos testando com grupos de escolas para aperfeiçoar a plataforma. No futuro, teremos planos acessíveis com funcionalidades premium.',
   },
   {
     question: 'Para que idade serve?',
     answer:
-      'O Studdo atende criancas e adolescentes de 4 a 18 anos, divididos em 5 faixas etarias (4-6, 7-9, 10-12, 13-15, 16-18). A linguagem, dificuldade e abordagem se adaptam automaticamente a cada faixa.',
+      'O Studdo atende crianças e adolescentes de 4 a 18 anos, divididos em 5 faixas etárias (4-6, 7-9, 10-12, 13-15, 16-18). A linguagem, dificuldade e abordagem se adaptam automaticamente a cada faixa.',
   },
   {
-    question: 'Como conecto meu filho a minha conta?',
+    question: 'Como conecto meu filho à minha conta?',
     answer:
-      'Ao se cadastrar como pai/mae, voce recebe um codigo de convite (EQ-XXXX). Compartilhe esse codigo com seu filho — ele digita ao criar a conta, e o vinculo e feito automaticamente. Voce acompanha o progresso pelo dashboard.',
+      'Ao se cadastrar como pai/mãe, você recebe um código de convite (EQ-XXXX). Compartilhe esse código com seu filho — ele digita ao criar a conta, e o vínculo é feito automaticamente. Você acompanha o progresso pelo dashboard.',
   },
   {
-    question: 'Meus dados estao seguros?',
+    question: 'Meus dados estão seguros?',
     answer:
-      'Sim! Usamos Supabase com Row Level Security (RLS) em todas as tabelas. Cada usuario so acessa seus proprios dados. Pais so veem dados dos filhos vinculados. Nao compartilhamos informacoes com terceiros.',
+      'Sim! Usamos Supabase com Row Level Security (RLS) em todas as tabelas. Cada usuário só acessa seus próprios dados. Pais só veem dados dos filhos vinculados. Não compartilhamos informações com terceiros.',
   },
 ];
 
@@ -122,7 +122,7 @@ export function FAQSection() {
       const data = await res.json();
       setAIAnswer(data.answer || data.error || 'Erro ao responder.');
     } catch {
-      setAIAnswer('Nao consegui responder. Tente novamente.');
+      setAIAnswer('Não consegui responder. Tente novamente.');
     } finally {
       setAILoading(false);
     }
@@ -167,7 +167,7 @@ export function FAQSection() {
           viewport={{ once: true, margin: '-80px' }}
         >
           <motion.span variants={fadeInUp('medium')} className="text-sm font-medium text-purple-400">
-            Duvidas & Sugestoes
+            Dúvidas & Sugestões
           </motion.span>
           <motion.h2 variants={fadeInUp('medium')} className="mt-3 text-3xl sm:text-4xl font-bold text-white">
             Perguntas Frequentes
@@ -207,7 +207,7 @@ export function FAQSection() {
                 <Sparkles size={16} className="text-purple-400" />
                 Pergunte ao Edu
               </h3>
-              <p className="text-white/40 text-xs">Nosso assistente IA responde suas duvidas</p>
+              <p className="text-white/40 text-xs">Nosso assistente IA responde suas dúvidas</p>
             </div>
           </div>
 
@@ -260,10 +260,10 @@ export function FAQSection() {
         >
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb size={20} className="text-amber-400" />
-            <h3 className="text-white font-bold text-lg">Envie uma Sugestao</h3>
+            <h3 className="text-white font-bold text-lg">Envie uma Sugestão</h3>
           </div>
           <p className="text-white/40 text-xs mb-4">
-            Sua opiniao nos ajuda a melhorar! Conte o que gostaria de ver no Studdo.
+            Sua opinião nos ajuda a melhorar! Conte o que gostaria de ver no Studdo.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-3 mb-3">
@@ -286,7 +286,7 @@ export function FAQSection() {
           <textarea
             value={suggestion}
             onChange={(e) => setSuggestion(e.target.value)}
-            placeholder="Descreva sua sugestao aqui..."
+            placeholder="Descreva sua sugestão aqui..."
             rows={3}
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-purple-500/50 resize-none mb-3"
           />
@@ -301,7 +301,7 @@ export function FAQSection() {
                   className="flex items-center gap-2 text-green-400 text-sm"
                 >
                   <Check size={16} />
-                  Obrigado pela sugestao! Vamos analisa-la com carinho. 💜
+                  Obrigado pela sugestão! Vamos analisá-la com carinho. 💜
                 </motion.div>
               )}
             </AnimatePresence>

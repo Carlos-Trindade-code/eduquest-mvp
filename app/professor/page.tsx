@@ -51,10 +51,10 @@ function formatRelativeDate(dateStr: string | null): string {
   const diffDays = Math.floor(diffMs / 86400000);
   if (diffDays === 0) return 'Hoje';
   if (diffDays === 1) return 'Ontem';
-  if (diffDays < 7) return `Ha ${diffDays} dias`;
-  if (diffDays < 14) return 'Ha 1 semana';
-  if (diffDays < 30) return `Ha ${Math.floor(diffDays / 7)} semanas`;
-  return `Ha ${Math.floor(diffDays / 30)} mes${Math.floor(diffDays / 30) > 1 ? 'es' : ''}`;
+  if (diffDays < 7) return `Há ${diffDays} dias`;
+  if (diffDays < 14) return 'Há 1 semana';
+  if (diffDays < 30) return `Há ${Math.floor(diffDays / 7)} semanas`;
+  return `Há ${Math.floor(diffDays / 30)} mês${Math.floor(diffDays / 30) > 1 ? 'es' : ''}`;
 }
 
 function getActivityStatus(lastSessionDate: string | null): 'green' | 'yellow' | 'red' {
@@ -221,12 +221,12 @@ export default function ProfessorPage() {
                       <button
                         onClick={() => {
                           const lines = [
-                            `📊 Relatorio — ${selectedClassroom.name}`,
-                            `Total: ${classroomStats?.totalSessions || 0} sessoes · XP medio: ${classroomStats?.averageXP || 0}`,
+                            `📊 Relatório — ${selectedClassroom.name}`,
+                            `Total: ${classroomStats?.totalSessions || 0} sessões · XP médio: ${classroomStats?.averageXP || 0}`,
                             '',
                             ...members.map((m) => {
                               const a = studentAnalytics[m.student_id];
-                              return `${m.profiles?.name || 'Aluno'}: ${a?.totalSessions || 0} sessoes, ${a?.totalXP || 0} XP, ${a?.totalMinutes || 0}min`;
+                              return `${m.profiles?.name || 'Aluno'}: ${a?.totalSessions || 0} sessões, ${a?.totalXP || 0} XP, ${a?.totalMinutes || 0}min`;
                             }),
                             '',
                             `Gerado pelo Studdo — studdo.com.br`,
@@ -235,12 +235,12 @@ export default function ProfessorPage() {
                         }}
                         className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
                       >
-                        <Copy size={12} />Copiar relatorio
+                        <Copy size={12} />Copiar relatório
                       </button>
                     )}
                   </div>
                   {members.length === 0 ? (
-                    <p className="text-white/30 text-sm text-center py-8">Nenhum aluno ainda. Compartilhe o codigo da turma.</p>
+                    <p className="text-white/30 text-sm text-center py-8">Nenhum aluno ainda. Compartilhe o código da turma.</p>
                   ) : analyticsLoading ? (
                     <div className="flex items-center justify-center py-8 gap-2"><Loader2 size={16} className="animate-spin text-purple-400" /><span className="text-white/40 text-sm">Carregando analytics...</span></div>
                   ) : (
@@ -296,7 +296,7 @@ function TopPerformers({ members, analytics }: { members: ClassroomMember[]; ana
             </div>
             <p className="text-white text-xs font-semibold truncate">{student.profiles?.name || 'Aluno'}</p>
             <p className="text-amber-400 text-[10px] font-bold">{student.xp} XP</p>
-            <p className="text-white/25 text-[10px]">{student.sessions} sessoes</p>
+            <p className="text-white/25 text-[10px]">{student.sessions} sessões</p>
           </div>
         ))}
       </div>
@@ -306,10 +306,10 @@ function TopPerformers({ members, analytics }: { members: ClassroomMember[]; ana
 
 function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   const steps = [
-    { icon: '1️⃣', title: 'Crie uma turma', desc: 'Escolha a materia e de um nome' },
+    { icon: '1️⃣', title: 'Crie uma turma', desc: 'Escolha a matéria e dê um nome' },
     { icon: '2️⃣', title: 'Envie materiais', desc: 'PDFs, imagens ou textos viram base para a IA' },
-    { icon: '3️⃣', title: 'Compartilhe o codigo', desc: 'Alunos entram com o codigo ST-XXXX' },
-    { icon: '4️⃣', title: 'Acompanhe o progresso', desc: 'Veja sessoes, XP e ranking dos alunos' },
+    { icon: '3️⃣', title: 'Compartilhe o código', desc: 'Alunos entram com o código ST-XXXX' },
+    { icon: '4️⃣', title: 'Acompanhe o progresso', desc: 'Veja sessões, XP e ranking dos alunos' },
   ];
   return (
     <div className="max-w-lg mx-auto py-12">
@@ -352,7 +352,7 @@ function ClassroomHeader({ classroom, memberCount }: { classroom: Classroom; mem
           <div><h2 className="text-white font-bold text-lg">{classroom.name}</h2><p className="text-white/40 text-xs">{sub?.name || classroom.subject} · {memberCount} aluno{memberCount !== 1 ? 's' : ''}</p></div>
         </div>
         <div className="rounded-xl px-4 py-2 text-center" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
-          <p className="text-white/40 text-[10px] uppercase tracking-wider">Codigo</p>
+          <p className="text-white/40 text-[10px] uppercase tracking-wider">Código</p>
           <div className="flex items-center gap-2"><span className="text-white font-mono font-bold text-sm tracking-widest">{classroom.code}</span><button onClick={handleCopy} className="text-white/30 hover:text-white transition-colors">{copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}</button></div>
         </div>
       </div>
@@ -366,11 +366,11 @@ function ClassroomStatsSummary({ stats, totalStudents }: { stats: ClassroomStats
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <div className="rounded-xl p-3.5" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
-        <div className="flex items-center gap-2 mb-1"><BarChart3 size={14} className="text-purple-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Sessoes</span></div>
+        <div className="flex items-center gap-2 mb-1"><BarChart3 size={14} className="text-purple-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Sessões</span></div>
         <p className="text-white font-bold text-lg">{stats.totalSessions}</p><p className="text-white/30 text-[10px]">total da turma</p>
       </div>
       <div className="rounded-xl p-3.5" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)' }}>
-        <div className="flex items-center gap-2 mb-1"><Zap size={14} className="text-blue-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">XP medio</span></div>
+        <div className="flex items-center gap-2 mb-1"><Zap size={14} className="text-blue-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">XP médio</span></div>
         <p className="text-white font-bold text-lg">{stats.averageXP}</p><p className="text-white/30 text-[10px]">por aluno</p>
       </div>
       <div className="rounded-xl p-3.5" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)' }}>
@@ -378,7 +378,7 @@ function ClassroomStatsSummary({ stats, totalStudents }: { stats: ClassroomStats
         <p className="text-white font-bold text-lg">{activePercent}%</p><p className="text-white/30 text-[10px]">{stats.studentsActiveThisWeek} esta semana</p>
       </div>
       <div className="rounded-xl p-3.5" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.15)' }}>
-        <div className="flex items-center gap-2 mb-1"><Star size={14} className="text-yellow-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Materia top</span></div>
+        <div className="flex items-center gap-2 mb-1"><Star size={14} className="text-yellow-400" /><span className="text-white/40 text-[10px] uppercase tracking-wider">Matéria top</span></div>
         <p className="text-white font-bold text-sm truncate">{sub ? `${sub.icon} ${sub.name}` : '--'}</p><p className="text-white/30 text-[10px]">mais estudada</p>
       </div>
     </motion.div>
@@ -388,7 +388,7 @@ function ClassroomStatsSummary({ stats, totalStudents }: { stats: ClassroomStats
 function StudentListSection({ members, analytics, classroomCode }: { members: ClassroomMember[]; analytics: Record<string, StudentAnalytics>; classroomCode: string }) {
   const hasAnySessions = Object.values(analytics).some((a) => a.totalSessions > 0);
   if (!hasAnySessions && members.length > 0) {
-    return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8 px-4"><div className="text-3xl mb-3">📖</div><p className="text-white/50 text-sm mb-1">Seus alunos ainda nao iniciaram sessoes de estudo.</p><p className="text-white/30 text-xs">Compartilhe o codigo <span className="font-mono text-purple-400">{classroomCode}</span> para eles comecarem!</p></motion.div>);
+    return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8 px-4"><div className="text-3xl mb-3">📖</div><p className="text-white/50 text-sm mb-1">Seus alunos ainda não iniciaram sessões de estudo.</p><p className="text-white/30 text-xs">Compartilhe o código <span className="font-mono text-purple-400">{classroomCode}</span> para eles começarem!</p></motion.div>);
   }
   return (
     <div className="space-y-2">
@@ -405,7 +405,7 @@ function StudentListSection({ members, analytics, classroomCode }: { members: Cl
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-white text-sm font-medium truncate">{m.profiles?.name || 'Aluno'}</p>
-                {a && a.totalSessions > 0 && (<span className="shrink-0 px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-purple-500/20 text-purple-300">{a.totalSessions} {a.totalSessions === 1 ? 'sessao' : 'sessoes'}</span>)}
+                {a && a.totalSessions > 0 && (<span className="shrink-0 px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-purple-500/20 text-purple-300">{a.totalSessions} {a.totalSessions === 1 ? 'sessão' : 'sessões'}</span>)}
               </div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="text-white/30 text-xs">{a?.lastSessionDate ? formatRelativeDate(a.lastSessionDate) : 'Sem atividade'}</span>
@@ -448,8 +448,8 @@ function CreateClassroomModal({ profileId, onCreated, onClose }: { profileId: st
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md rounded-2xl p-6" style={{ background: '#0F1D2E', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5"><h2 id="create-modal-title" className="text-white font-bold text-lg">Nova turma</h2><button onClick={onClose} className="text-white/30 hover:text-white" aria-label="Fechar"><X size={18} /></button></div>
         <div className="space-y-4">
-          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Nome da turma</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex: 5o Ano A - Matematica" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
-          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Materia principal</label><div className="grid grid-cols-4 gap-2">{subjects.filter(s => s.id !== 'other').map((s) => (<button key={s.id} onClick={() => setSubject(s.id)} className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${subject === s.id ? 'ring-1 ring-purple-500' : ''}`} style={{ background: subject === s.id ? `${s.color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${subject === s.id ? `${s.color}30` : 'rgba(255,255,255,0.05)'}` }}><span className="text-lg">{s.icon}</span><span className="text-white/60 truncate w-full text-center" style={{ fontSize: 10 }}>{s.name}</span></button>))}</div></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Nome da turma</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex: 5o Ano A - Matemática" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Matéria principal</label><div className="grid grid-cols-4 gap-2">{subjects.filter(s => s.id !== 'other').map((s) => (<button key={s.id} onClick={() => setSubject(s.id)} className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${subject === s.id ? 'ring-1 ring-purple-500' : ''}`} style={{ background: subject === s.id ? `${s.color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${subject === s.id ? `${s.color}30` : 'rgba(255,255,255,0.05)'}` }}><span className="text-lg">{s.icon}</span><span className="text-white/60 truncate w-full text-center" style={{ fontSize: 10 }}>{s.name}</span></button>))}</div></div>
           <motion.button onClick={handleCreate} disabled={!name.trim() || creating} className="w-full py-3 rounded-xl font-bold text-sm bg-purple-600 text-white disabled:opacity-30 flex items-center justify-center gap-2" whileHover={name.trim() ? { scale: 1.02 } : {}} whileTap={{ scale: 0.98 }}>{creating ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}{creating ? 'Criando...' : 'Criar turma'}</motion.button>
         </div>
       </motion.div>
@@ -487,10 +487,10 @@ function UploadMaterialModal({ classroomId, onUploaded, onClose }: { classroomId
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md rounded-2xl p-6" style={{ background: '#0F1D2E', border: '1px solid rgba(255,255,255,0.1)' }} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5"><h2 id="upload-modal-title" className="text-white font-bold text-lg">Enviar material</h2><button onClick={onClose} className="text-white/30 hover:text-white" aria-label="Fechar"><X size={18} /></button></div>
         <div className="space-y-4">
-          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Titulo *</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Lista de exercicios - Cap. 5" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
-          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Descricao</label><input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Instrucoes para o aluno (opcional)" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Título *</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Lista de exercícios - Cap. 5" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Descrição</label><input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Instruções para o aluno (opcional)" className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm" /></div>
           <div><label className="text-white/50 text-xs font-medium block mb-1.5">Arquivo (PDF ou imagem)</label><label className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/30 cursor-pointer transition-colors"><Upload size={16} className="text-white/30" /><span className="text-white/40 text-sm">{file ? file.name : 'Clique para selecionar'}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" onChange={(e) => setFile(e.target.files?.[0] || null)} className="hidden" /></label></div>
-          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Ou cole o texto aqui</label><textarea value={contentText} onChange={(e) => setContentText(e.target.value)} placeholder="Cole o conteudo da tarefa, exercicio ou texto de estudo..." rows={4} className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm resize-none" /></div>
+          <div><label className="text-white/50 text-xs font-medium block mb-1.5">Ou cole o texto aqui</label><textarea value={contentText} onChange={(e) => setContentText(e.target.value)} placeholder="Cole o conteúdo da tarefa, exercício ou texto de estudo..." rows={4} className="w-full bg-white/5 text-white placeholder-white/25 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm resize-none" /></div>
           <motion.button onClick={handleUpload} disabled={!title.trim() || uploading} className="w-full py-3 rounded-xl font-bold text-sm bg-purple-600 text-white disabled:opacity-30 flex items-center justify-center gap-2" whileHover={title.trim() ? { scale: 1.02 } : {}} whileTap={{ scale: 0.98 }}>{uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}{uploading ? 'Enviando...' : 'Enviar material'}</motion.button>
         </div>
       </motion.div>

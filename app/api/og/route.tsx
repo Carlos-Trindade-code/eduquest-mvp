@@ -123,7 +123,7 @@ export async function GET() {
           }}
         >
           <span style={{ display: 'flex' }}>4-18 anos</span>
-          <span style={{ display: 'flex' }}>Metodo Socratico</span>
+          <span style={{ display: 'flex' }}>Método Socrático</span>
           <span style={{ display: 'flex' }}>Gratuito</span>
         </div>
 

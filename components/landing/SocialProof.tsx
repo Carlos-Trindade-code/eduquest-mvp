@@ -7,41 +7,41 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 const methods = [
   {
     icon: Brain,
-    title: 'Metodo Socratico',
-    description: 'Tecnica milenar usada por Socrates, validada por Harvard Education Review como superior ao ensino direto.',
+    title: 'Método Socrático',
+    description: 'Técnica milenar usada por Sócrates, validada por Harvard Education Review como superior ao ensino direto.',
     badge: 'Validado cientificamente',
     color: '#8B5CF6',
   },
   {
     icon: GraduationCap,
-    title: 'Repeticao Espacada (SM-2)',
-    description: 'Algoritmo que otimiza a revisao de conteudo nos intervalos ideais, aumentando retencao em ate 90%.',
+    title: 'Repetição Espaçada (SM-2)',
+    description: 'Algoritmo que otimiza a revisão de conteúdo nos intervalos ideais, aumentando retenção em até 90%.',
     badge: 'Usado por +50M estudantes',
     color: '#3B82F6',
   },
   {
     icon: Sparkles,
-    title: 'IA de Ultima Geracao',
-    description: 'Google Gemini com raciocinio avancado, adaptando linguagem e dificuldade para cada faixa etaria.',
+    title: 'IA de Última Geração',
+    description: 'Google Gemini com raciocínio avançado, adaptando linguagem e dificuldade para cada faixa etária.',
     badge: 'Tecnologia de ponta',
     color: '#EC4899',
   },
   {
     icon: Shield,
     title: 'Privacidade Total',
-    description: 'Dados protegidos com criptografia e Row Level Security. Cada usuario so acessa o que e seu.',
+    description: 'Dados protegidos com criptografia e Row Level Security. Cada usuário só acessa o que é seu.',
     badge: 'Dados seguros',
     color: '#10B981',
   },
 ];
 
 const trustItems = [
-  'Metodo comprovado por mais de 2.400 anos de pratica',
+  'Método comprovado por mais de 2.400 anos de prática',
   'IA treinada para NUNCA dar respostas prontas',
-  'Adaptado para 5 faixas etarias (4-18 anos)',
+  'Adaptado para 5 faixas etárias (4-18 anos)',
   'Dashboard completo para pais acompanharem',
-  'Gamificacao baseada em psicologia motivacional',
-  'Funciona com qualquer materia escolar',
+  'Gamificação baseada em psicologia motivacional',
+  'Funciona com qualquer matéria escolar',
 ];
 
 export function SocialProof() {
@@ -71,7 +71,7 @@ export function SocialProof() {
           >
             Baseado em{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-              ciencia
+              ciência
             </span>
             , potencializado por{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
@@ -82,8 +82,8 @@ export function SocialProof() {
             variants={fadeInUp('medium')}
             className="mt-4 text-white/50 text-lg"
           >
-            Nao inventamos a roda. Combinamos os metodos de ensino mais eficazes
-            do mundo com inteligencia artificial de ultima geracao.
+            Não inventamos a roda. Combinamos os métodos de ensino mais eficazes
+            do mundo com inteligência artificial de última geração.
           </motion.p>
         </motion.div>
 
@@ -139,7 +139,7 @@ export function SocialProof() {
           viewport={{ once: true, margin: '-50px' }}
         >
           <motion.div variants={fadeInUp('medium')} className="text-center mb-8">
-            <h3 className="text-xl font-bold text-white">O que torna o Studdo unico</h3>
+            <h3 className="text-xl font-bold text-white">O que torna o Studdo único</h3>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 gap-3">

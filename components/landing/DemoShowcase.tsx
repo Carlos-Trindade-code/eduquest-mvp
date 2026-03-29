@@ -22,32 +22,32 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 const demoMessages = [
   {
     role: 'user' as const,
-    text: 'Quais foram as causas da Revolucao Francesa?',
+    text: 'Quais foram as causas da Revolução Francesa?',
     delay: 0,
   },
   {
     role: 'assistant' as const,
-    text: 'Boa pergunta! Antes de falar das causas, me conta: como voce acha que era a vida de um camponês na Franca em 1789?',
+    text: 'Boa pergunta! Antes de falar das causas, me conta: como você acha que era a vida de um camponês na França em 1789?',
     delay: 2000,
   },
   {
     role: 'user' as const,
-    text: 'Acho que era bem dificil... eles trabalhavam muito e nao tinham dinheiro?',
+    text: 'Acho que era bem difícil... eles trabalhavam muito e não tinham dinheiro?',
     delay: 4500,
   },
   {
     role: 'assistant' as const,
-    text: 'Exatamente! E enquanto o povo passava fome, quem voce acha que vivia em palacios luxuosos? Pense em quem governava...',
+    text: 'Exatamente! E enquanto o povo passava fome, quem você acha que vivia em palácios luxuosos? Pense em quem governava...',
     delay: 7000,
   },
   {
     role: 'user' as const,
-    text: 'O rei! O Rei Luis XVI vivia no Palacio de Versalhes!',
+    text: 'O rei! O Rei Luís XVI vivia no Palácio de Versalhes!',
     delay: 9500,
   },
   {
     role: 'assistant' as const,
-    text: 'Isso mesmo! Agora, se o povo passava fome e o rei vivia no luxo, o que voce acha que as pessoas sentiram? Isso ajuda a entender uma das causas!',
+    text: 'Isso mesmo! Agora, se o povo passava fome e o rei vivia no luxo, o que você acha que as pessoas sentiram? Isso ajuda a entender uma das causas!',
     delay: 11500,
     xpGain: true,
   },
@@ -61,7 +61,7 @@ type SceneId = 'photo' | 'chat' | 'gamification' | 'parent';
 const scenes: { id: SceneId; label: string; icon: React.ElementType }[] = [
   { id: 'photo', label: 'Envie a tarefa', icon: Camera },
   { id: 'chat', label: 'Tutor IA', icon: BookOpen },
-  { id: 'gamification', label: 'Gamificacao', icon: Trophy },
+  { id: 'gamification', label: 'Gamificação', icon: Trophy },
   { id: 'parent', label: 'Pais', icon: Star },
 ];
 
@@ -112,9 +112,9 @@ function PhotoScene() {
       </div>
 
       <div className="text-center mb-5">
-        <p className="text-white/60 text-xs mb-1">Escolha a materia</p>
+        <p className="text-white/60 text-xs mb-1">Escolha a matéria</p>
         <div className="flex justify-center gap-2 flex-wrap">
-          {['Historia', 'Matematica', 'Ciencias'].map((s, i) => (
+          {['História', 'Matemática', 'Ciências'].map((s, i) => (
             <motion.span
               key={s}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
@@ -147,7 +147,7 @@ function PhotoScene() {
           <Camera className="w-7 h-7 text-purple-400" />
         </motion.div>
         <p className="text-white/40 text-xs text-center px-4">
-          Tire uma foto da tarefa ou<br />digite o exercicio
+          Tire uma foto da tarefa ou<br />digite o exercício
         </p>
       </motion.div>
 
@@ -158,7 +158,7 @@ function PhotoScene() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
       >
-        <span className="text-white/30 text-xs flex-1">Causas da Revolucao Francesa...</span>
+        <span className="text-white/30 text-xs flex-1">Causas da Revolução Francesa...</span>
         <motion.div
           className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center"
           animate={{ scale: [1, 1.15, 1] }}
@@ -311,14 +311,14 @@ function GamificationScene() {
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mx-auto mb-2 flex items-center justify-center text-2xl">
           <MascotOwl expression="celebrating" size="sm" />
         </div>
-        <p className="text-white font-bold text-sm">Joao Pedro</p>
+        <p className="text-white font-bold text-sm">João Pedro</p>
         <p className="text-white/40 text-[10px]">10 anos - 5o ano</p>
       </motion.div>
 
       {/* XP Bar */}
       <div className="w-full mb-6">
         <div className="flex justify-between text-[10px] mb-1">
-          <span className="text-purple-400 font-bold">Nivel {level}</span>
+          <span className="text-purple-400 font-bold">Nível {level}</span>
           <span className="text-white/40">{xp}/100 XP</span>
         </div>
         <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
@@ -340,7 +340,7 @@ function GamificationScene() {
       <div className="grid grid-cols-3 gap-3 w-full mb-6">
         {[
           { label: 'Streak', value: '7 dias', icon: Zap, color: '#F59E0B' },
-          { label: 'Sessoes', value: '23', icon: BookOpen, color: '#8B5CF6' },
+          { label: 'Sessões', value: '23', icon: BookOpen, color: '#8B5CF6' },
           { label: 'Badges', value: '5', icon: Trophy, color: '#10B981' },
         ].map((stat, i) => (
           <motion.div
@@ -375,7 +375,7 @@ function GamificationScene() {
               <Trophy className="w-8 h-8 text-amber-400 mx-auto" />
             </motion.div>
             <p className="text-amber-400 font-bold text-sm">Novo Badge!</p>
-            <p className="text-white/50 text-[10px]">Explorador de Historia</p>
+            <p className="text-white/50 text-[10px]">Explorador de História</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -393,7 +393,7 @@ function ParentScene() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-white font-bold text-sm">Dashboard</p>
-          <p className="text-white/40 text-[10px]">Ola, Maria!</p>
+          <p className="text-white/40 text-[10px]">Olá, Maria!</p>
         </div>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-[10px] font-bold">
           M
@@ -412,8 +412,8 @@ function ParentScene() {
             <MascotOwl expression="waving" size="sm" />
           </div>
           <div>
-            <p className="text-white text-xs font-bold">Joao Pedro</p>
-            <p className="text-white/40 text-[9px]">Nivel 5 - 450 XP</p>
+            <p className="text-white text-xs font-bold">João Pedro</p>
+            <p className="text-white/40 text-[9px]">Nível 5 - 450 XP</p>
           </div>
           <div className="ml-auto flex items-center gap-1 text-green-400 text-[10px]">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
@@ -437,7 +437,7 @@ function ParentScene() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <p className="text-white/60 text-[10px] mb-2 font-medium">Sessoes esta semana</p>
+        <p className="text-white/60 text-[10px] mb-2 font-medium">Sessões esta semana</p>
         <div className="flex items-end gap-1 h-16">
           {[40, 65, 30, 80, 55, 90, 45].map((h, i) => (
             <motion.div
@@ -467,7 +467,7 @@ function ParentScene() {
           <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div>
             <p className="text-amber-400 text-[10px] font-bold">Alerta Inteligente</p>
-            <p className="text-white/50 text-[9px]">Joao completou 7 dias seguidos! Parabens!</p>
+            <p className="text-white/50 text-[9px]">João completou 7 dias seguidos! Parabéns!</p>
           </div>
         </div>
       </motion.div>
@@ -526,20 +526,20 @@ export function DemoShowcase() {
           <motion.div variants={fadeInUp('medium')} className="mb-3">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm">
               <Play className="w-3 h-3" />
-              Demonstracao ao vivo
+              Demonstração ao vivo
             </span>
           </motion.div>
           <motion.h2
             variants={fadeInUp('medium')}
             className="text-3xl sm:text-4xl font-bold text-white"
           >
-            Veja o Studdo em acao
+            Veja o Studdo em ação
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
             className="mt-4 text-white/50 text-lg"
           >
-            Uma experiencia fluida: envie a tarefa, converse com o tutor IA,
+            Uma experiência fluida: envie a tarefa, converse com o tutor IA,
             ganhe XP e os pais acompanham tudo.
           </motion.p>
         </motion.div>
@@ -609,10 +609,10 @@ export function DemoShowcase() {
                         {scene.label}
                       </p>
                       <p className="text-white/40 text-xs mt-0.5">
-                        {scene.id === 'photo' && 'Foto, upload ou digitacao — a IA extrai o texto'}
-                        {scene.id === 'chat' && 'Metodo socratico: perguntas que guiam o raciocinio'}
-                        {scene.id === 'gamification' && 'XP, niveis, streaks e badges que motivam'}
-                        {scene.id === 'parent' && 'Dashboard com graficos, alertas e recomendacoes'}
+                        {scene.id === 'photo' && 'Foto, upload ou digitação — a IA extrai o texto'}
+                        {scene.id === 'chat' && 'Método socrático: perguntas que guiam o raciocínio'}
+                        {scene.id === 'gamification' && 'XP, níveis, streaks e badges que motivam'}
+                        {scene.id === 'parent' && 'Dashboard com gráficos, alertas e recomendações'}
                       </p>
                     </div>
 

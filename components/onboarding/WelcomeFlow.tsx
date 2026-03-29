@@ -96,11 +96,11 @@ function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteL
   },
   {
     mascotExpression: 'encouraging',
-    title: 'Tem um codigo do seu pai/mae?',
+    title: 'Tem um código do seu pai/mãe?',
     subtitle: 'Vincule sua conta para eles acompanharem seu progresso',
     features: [
-      { icon: Link2, text: 'Seu pai/mae ve suas conquistas e XP', color: '#10B981' },
-      { icon: Shield, text: 'Conexao segura — so com o codigo', color: '#8B5CF6' },
+      { icon: Link2, text: 'Seu pai/mãe vê suas conquistas e XP', color: '#10B981' },
+      { icon: Shield, text: 'Conexão segura — só com o código', color: '#8B5CF6' },
     ],
     customContent: (
       <InviteCodeInput onLinked={() => onInviteLinked?.()} />
@@ -108,11 +108,11 @@ function buildKidSteps(profileId?: string, onAgeSelected?: () => void, onInviteL
   },
   {
     mascotExpression: 'thinking',
-    title: 'Tem codigo de turma?',
-    subtitle: 'Se seu professor te deu um codigo, digite aqui',
+    title: 'Tem código de turma?',
+    subtitle: 'Se seu professor te deu um código, digite aqui',
     features: [
       { icon: School, text: 'Acesse materiais enviados pelo professor', color: '#F59E0B' },
-      { icon: BookOpen, text: 'O tutor usa o conteudo da aula como base', color: '#3B82F6' },
+      { icon: BookOpen, text: 'O tutor usa o conteúdo da aula como base', color: '#3B82F6' },
     ],
     customContent: (
       <JoinClassroom mode="inline" onJoined={() => onClassroomJoined?.()} />
@@ -150,19 +150,19 @@ function buildParentSteps(inviteCode?: string | null): Step[] {
       title: 'Bem-vindo ao Studdo!',
       subtitle: 'Acompanhe o aprendizado do seu filho de perto',
       features: [
-        { icon: BarChart3, text: 'Dashboard com graficos de progresso e sessoes', color: '#3B82F6' },
-        { icon: Shield, text: 'Ambiente seguro e pedagogico para seu filho', color: '#10B981' },
-        { icon: Brain, text: 'Metodo socratico — sem dar respostas prontas', color: '#8B5CF6' },
+        { icon: BarChart3, text: 'Dashboard com gráficos de progresso e sessões', color: '#3B82F6' },
+        { icon: Shield, text: 'Ambiente seguro e pedagógico para seu filho', color: '#10B981' },
+        { icon: Brain, text: 'Método socrático — sem dar respostas prontas', color: '#8B5CF6' },
       ],
     },
     {
       mascotExpression: 'waving',
       title: 'Vincule seu filho',
-      subtitle: 'Compartilhe o codigo abaixo com seu filho',
+      subtitle: 'Compartilhe o código abaixo com seu filho',
       features: [
-        { icon: Users, text: 'Seu filho digita o codigo ao criar a conta', color: '#8B5CF6' },
-        { icon: Shield, text: 'Conexao segura — so quem tem o codigo vincula', color: '#10B981' },
-        { icon: BarChart3, text: 'Voce vera o progresso dele no dashboard', color: '#3B82F6' },
+        { icon: Users, text: 'Seu filho digita o código ao criar a conta', color: '#8B5CF6' },
+        { icon: Shield, text: 'Conexão segura — só quem tem o código vincula', color: '#10B981' },
+        { icon: BarChart3, text: 'Você verá o progresso dele no dashboard', color: '#3B82F6' },
       ],
       customContent: inviteCode ? (
         <InviteCodeDisplay code={inviteCode} />
@@ -173,9 +173,9 @@ function buildParentSteps(inviteCode?: string | null): Step[] {
       title: 'Tudo pronto!',
       subtitle: 'Vamos para o seu dashboard',
       features: [
-        { icon: BarChart3, text: 'Veja sessoes, XP e streak do seu filho', color: '#3B82F6' },
+        { icon: BarChart3, text: 'Veja sessões, XP e streak do seu filho', color: '#3B82F6' },
         { icon: Trophy, text: 'Acompanhe conquistas e badges desbloqueados', color: '#F59E0B' },
-        { icon: Sparkles, text: 'O codigo de convite tambem esta no dashboard', color: '#8B5CF6' },
+        { icon: Sparkles, text: 'O código de convite também está no dashboard', color: '#8B5CF6' },
       ],
     },
   ];
@@ -201,7 +201,7 @@ function AgeSelector({ profileId, onSelected }: { profileId?: string; onSelected
         const supabase = createClient();
         await updateProfile(supabase, profileId, { age: option.age, grade: option.grade });
       } catch {
-        alert('Nao foi possivel salvar sua idade. Tente novamente.');
+        alert('Não foi possível salvar sua idade. Tente novamente.');
         setSelected(null);
         setSaving(false);
         return;
@@ -285,7 +285,7 @@ function InviteCodeInput({ onLinked }: { onLinked: () => void }) {
       >
         <div className="text-4xl mb-2">✅</div>
         <p className="text-white font-bold text-sm">Vinculado{parentName ? ` com ${parentName}` : ''}!</p>
-        <p className="text-xs mt-1" style={{ color: 'rgba(240,244,248,0.5)' }}>Seu progresso sera compartilhado</p>
+        <p className="text-xs mt-1" style={{ color: 'rgba(240,244,248,0.5)' }}>Seu progresso será compartilhado</p>
       </motion.div>
     );
   }
@@ -365,7 +365,7 @@ function InviteCodeDisplay({ code }: { code: string }) {
     >
       <div className="glass rounded-2xl p-5 border border-purple-500/20">
         <p className="text-white/50 text-xs uppercase tracking-wider mb-2 font-medium">
-          Seu codigo de convite
+          Seu código de convite
         </p>
         <div className="flex items-center justify-center gap-3">
           <span className="text-white text-3xl font-mono font-bold tracking-[0.3em]">
@@ -390,7 +390,7 @@ function InviteCodeDisplay({ code }: { code: string }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-green-400 text-xs mt-2"
           >
-            Codigo copiado!
+            Código copiado!
           </motion.p>
         )}
       </div>
@@ -424,15 +424,15 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
     setCurrentStep((s) => s + 1);
   };
 
-  const lastButtonLabel = userType === 'parent' ? 'Ir para o Dashboard' : 'Comecar a estudar!';
+  const lastButtonLabel = userType === 'parent' ? 'Ir para o Dashboard' : 'Começar a estudar!';
 
   return (
     <div className="min-h-screen bg-gradient-app flex items-center justify-center px-4 py-8">
       {inviteError && (currentStep === 0 || isInviteStep) && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm rounded-xl px-4 py-3 max-w-md text-center shadow-lg">
           {isInviteStep
-            ? 'O codigo informado no registro nao funcionou. Tente digitar novamente abaixo.'
-            : 'Nao conseguimos vincular o codigo do seu pai/mae. Voce pode tentar novamente depois nas configuracoes.'}
+            ? 'O código informado no registro não funcionou. Tente digitar novamente abaixo.'
+            : 'Não conseguimos vincular o código do seu pai/mãe. Você pode tentar novamente depois nas configurações.'}
         </div>
       )}
       <div className="w-full max-w-lg">
@@ -515,7 +515,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
             whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.4)' }}
             whileTap={{ scale: 0.98 }}
           >
-            {isLast ? lastButtonLabel : 'Proximo'}
+            {isLast ? lastButtonLabel : 'Próximo'}
             <ArrowRight size={16} />
           </motion.button>
         )}
@@ -526,7 +526,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
             onClick={handleNext}
             className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
           >
-            Nao tenho codigo — pular
+            Não tenho código — pular
           </button>
         )}
 
@@ -536,7 +536,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
             onClick={handleNext}
             className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
           >
-            Nao tenho codigo de turma — pular
+            Não tenho código de turma — pular
           </button>
         )}
 
@@ -546,7 +546,7 @@ export function WelcomeFlow({ userName, userType = 'kid', inviteCode, profileId,
             onClick={onComplete}
             className="w-full py-2 text-white/30 hover:text-white/50 text-xs transition-colors mt-3"
           >
-            Pular introducao
+            Pular introdução
           </button>
         )}
       </div>

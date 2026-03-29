@@ -65,7 +65,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('As senhas nao conferem');
+      setError('As senhas não conferem');
       return;
     }
     if (password.length < 6) {
@@ -126,7 +126,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
               Comece sua jornada!
             </h2>
             <p className="text-white/50 text-sm max-w-xs mx-auto">
-              Milhares de estudantes ja aprendem de verdade com o Studdo.
+              Milhares de estudantes já aprendem de verdade com o Studdo.
             </p>
           </motion.div>
 
@@ -222,7 +222,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                   className="space-y-4"
                 >
-                  <p className="text-[var(--eq-text-secondary)] text-sm text-center mb-2">Quem e voce?</p>
+                  <p className="text-[var(--eq-text-secondary)] text-sm text-center mb-2">Quem é você?</p>
 
                   <motion.button
                     onClick={() => handleTypeSelect('kid')}
@@ -250,7 +250,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <Users size={24} className="text-blue-400" />
                     </div>
                     <div className="text-left flex-1">
-                      <p className="text-white font-semibold text-sm">Sou pai/mae</p>
+                      <p className="text-white font-semibold text-sm">Sou pai/mãe</p>
                       <p className="text-[var(--eq-text-muted)] text-xs">Quero acompanhar o progresso do meu filho</p>
                     </div>
                     <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
@@ -377,7 +377,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label htmlFor="register-grade" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Serie/Ano</label>
+                          <label htmlFor="register-grade" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Série/Ano</label>
                           <input
                             id="register-grade"
                             type="text"
@@ -391,7 +391,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
 
                       <div className="space-y-1.5 rounded-xl p-3" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.12)' }}>
                         <label htmlFor="register-invite-code" className="text-[var(--eq-text-secondary)] text-sm font-medium block">
-                          Codigo de convite do seu pai/mae
+                          Código de convite do seu pai/mãe
                         </label>
                         <div className="relative group">
                           <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
@@ -415,7 +415,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                             className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
                           />
                         </div>
-                        <p className="text-white/50 text-xs pl-1">Se nao tiver agora, pode vincular depois no app</p>
+                        <p className="text-white/50 text-xs pl-1">Se não tiver agora, pode vincular depois no app</p>
                       </div>
                     </motion.div>
                   )}
@@ -431,7 +431,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         autoComplete="new-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Minimo 6 caracteres"
+                        placeholder="Mínimo 6 caracteres"
                         className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                         minLength={6}
@@ -469,7 +469,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       />
                     </div>
                     {confirmTouched && confirmPassword && password !== confirmPassword && (
-                      <p className="text-red-400 text-xs mt-1" role="alert">As senhas nao conferem</p>
+                      <p className="text-red-400 text-xs mt-1" role="alert">As senhas não conferem</p>
                     )}
                   </div>
 
@@ -498,7 +498,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
             </AnimatePresence>
 
             <p className="text-center text-[var(--eq-text-secondary)] text-sm mt-5">
-              Ja tem conta?{' '}
+              Já tem conta?{' '}
               <Link href="/login" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
                 Entrar
               </Link>

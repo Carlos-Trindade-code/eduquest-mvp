@@ -98,8 +98,8 @@ function SessionHistoryPanel({ profileId, onClose }: { profileId: string; onClos
               ) : sessions.length === 0 ? (
                 <div className="text-center py-20">
                   <BookOpen size={32} className="text-white/20 mx-auto mb-3" />
-                  <p className="text-white/40 text-sm">Nenhuma sessao ainda</p>
-                  <p className="text-white/25 text-xs mt-1">Suas sessoes de estudo aparecerao aqui</p>
+                  <p className="text-white/40 text-sm">Nenhuma sessão ainda</p>
+                  <p className="text-white/25 text-xs mt-1">Suas sessões de estudo aparecerão aqui</p>
                 </div>
               ) : (
                 sessions.map((session, i) => {

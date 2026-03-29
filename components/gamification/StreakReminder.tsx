@@ -27,7 +27,7 @@ function sendStreakNotification(streakDays: number) {
 
   try {
     new Notification('🔥 Seu streak vai acabar!', {
-      body: `Voce estudou ${streakDays} dias seguidos. Estude hoje para nao perder!`,
+      body: `Você estudou ${streakDays} dias seguidos. Estude hoje para não perder!`,
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-192.png',
       tag: 'streak-reminder',
@@ -114,7 +114,7 @@ export function StreakReminder() {
                   Seu streak de {streakDays} dias vai acabar!
                 </p>
                 <p className="text-white/70 text-xs">
-                  Estude hoje para manter a sequencia
+                  Estude hoje para manter a sequência
                 </p>
               </div>
               <button
@@ -146,7 +146,7 @@ export function StreakReminder() {
                   onClick={() => setShowNotifPrompt(false)}
                   className="text-white/30 hover:text-white/60 text-[11px] transition-colors"
                 >
-                  Agora nao
+                  Agora não
                 </button>
               </motion.div>
             )}

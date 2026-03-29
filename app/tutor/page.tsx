@@ -20,9 +20,9 @@ function TutorLoadingSkeleton() {
     >
       <MascotOwl expression="thinking" size="lg" animated />
       <div className="text-center">
-        <p className="text-white font-bold text-lg mb-1">Preparando sua sessao...</p>
+        <p className="text-white font-bold text-lg mb-1">Preparando sua sessão...</p>
         <p className="text-sm" style={{ color: 'rgba(240,244,248,0.4)' }}>
-          O Edu ja esta quase pronto!
+          O Edu já está quase pronto!
         </p>
       </div>
       {/* Skeleton cards */}
@@ -69,7 +69,7 @@ export default function TutorPage() {
             <div className="flex-1">
               <p className="font-bold text-sm">Hora da pausa!</p>
               <p className="text-emerald-100 text-xs mt-0.5">
-                Voce estudou 25 minutos. Descanse 5 minutos!
+                Você estudou 25 minutos. Descanse 5 minutos!
               </p>
               <button
                 onClick={() => setShowBreak(false)}

@@ -12,13 +12,13 @@ interface ChatMsg {
 
 const demoConversation: ChatMsg[] = [
   { role: 'student', text: 'Edu, preciso resolver: 2x + 6 = 14', delay: 0 },
-  { role: 'tutor', text: 'Legal! Vamos pensar juntos. O que voce precisa descobrir nessa equacao?', delay: 1200 },
+  { role: 'tutor', text: 'Legal! Vamos pensar juntos. O que você precisa descobrir nessa equação?', delay: 1200 },
   { role: 'student', text: 'O valor de x?', delay: 2800 },
   { role: 'tutor', text: 'Isso! E qual seria o primeiro passo pra isolar o x? Olha pro +6...', delay: 4200 },
   { role: 'student', text: 'Tirar o 6 dos dois lados! 2x = 8', delay: 6000 },
   { role: 'tutor', text: 'Perfeito! Agora so falta um passo. O que fazer com o 2 na frente do x?', delay: 7400 },
   { role: 'student', text: 'Dividir! x = 4! 🎉', delay: 8800 },
-  { role: 'tutor', text: 'Voce descobriu sozinho! +15 XP! Quer tentar um mais desafiador?', delay: 10000 },
+  { role: 'tutor', text: 'Você descobriu sozinho! +15 XP! Quer tentar um mais desafiador?', delay: 10000 },
 ];
 
 export function DemoChatSimulation() {

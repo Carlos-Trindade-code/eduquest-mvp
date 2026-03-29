@@ -120,9 +120,9 @@ export function FeedbackModal({ isOpen, onClose, source, subjectContext }: Feedb
                 {/* Low rating quick options */}
                 {rating > 0 && rating <= 2 && (
                   <div className="mb-3">
-                    <p className="text-white/50 text-xs mb-2">O que nao funcionou?</p>
+                    <p className="text-white/50 text-xs mb-2">O que não funcionou?</p>
                     <div className="flex flex-wrap gap-1.5">
-                      {['Confuso', 'Lento', 'Bug', 'Dificil', 'Outro'].map((opt) => (
+                      {['Confuso', 'Lento', 'Bug', 'Difícil', 'Outro'].map((opt) => (
                         <button
                           key={opt}
                           onClick={() => setComment((prev) => prev ? `${prev}, ${opt}` : opt)}

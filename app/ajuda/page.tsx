@@ -20,76 +20,76 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 
 const faqItems = [
   {
-    question: 'O que e o Studdo?',
+    question: 'O que é o Studdo?',
     answer:
-      'O Studdo e uma plataforma educacional com tutor IA que usa o metodo socratico. Em vez de dar respostas prontas, o Edu (nosso tutor) faz perguntas que guiam voce a descobrir as respostas sozinho.',
+      'O Studdo é uma plataforma educacional com tutor IA que usa o método socrático. Em vez de dar respostas prontas, o Edu (nosso tutor) faz perguntas que guiam você a descobrir as respostas sozinho.',
   },
   {
-    question: 'Como funciona o metodo socratico?',
+    question: 'Como funciona o método socrático?',
     answer:
-      'Quando voce envia um exercicio, o Edu nao da a resposta direta — ele faz perguntas progressivas que te ajudam a pensar, raciocinar e chegar na resposta por conta propria.',
+      'Quando você envia um exercício, o Edu não dá a resposta direta — ele faz perguntas progressivas que te ajudam a pensar, raciocinar e chegar na resposta por conta própria.',
   },
   {
     question: 'Como ganho XP e badges?',
     answer:
-      'Voce ganha XP enviando mensagens (10 XP), completando sessoes (50 XP), acertando respostas rapidas (100 XP) e mantendo sua sequencia de estudo (25 XP/dia). Badges sao desbloqueados ao atingir marcos como 7 dias de streak ou 50 sessoes.',
+      'Você ganha XP enviando mensagens (10 XP), completando sessões (50 XP), acertando respostas rápidas (100 XP) e mantendo sua sequência de estudo (25 XP/dia). Badges são desbloqueados ao atingir marcos como 7 dias de streak ou 50 sessões.',
   },
   {
-    question: 'O que e o timer Pomodoro?',
+    question: 'O que é o timer Pomodoro?',
     answer:
-      'E um temporizador de 25 minutos de foco + 5 minutos de pausa, baseado na Tecnica Pomodoro. Estudar com intervalos melhora a memorizacao em ate 40%. Clique no relogio no topo da pagina do tutor para usar.',
+      'É um temporizador de 25 minutos de foco + 5 minutos de pausa, baseado na Técnica Pomodoro. Estudar com intervalos melhora a memorização em até 40%. Clique no relógio no topo da página do tutor para usar.',
   },
   {
-    question: 'Como meu pai/mae acompanha meu progresso?',
+    question: 'Como meu pai/mãe acompanha meu progresso?',
     answer:
-      'Seus pais recebem um codigo de convite ao criar a conta. Quando voce digita esse codigo, eles podem ver suas sessoes, XP, badges e progresso em tempo real pelo dashboard.',
+      'Seus pais recebem um código de convite ao criar a conta. Quando você digita esse código, eles podem ver suas sessões, XP, badges e progresso em tempo real pelo dashboard.',
   },
   {
     question: 'Posso enviar foto da tarefa?',
     answer:
-      'Sim! Na tela do tutor, clique em "Tirar foto" ou "Enviar foto" antes de comecar. A IA le o conteudo automaticamente e o Edu pergunta sobre ele.',
+      'Sim! Na tela do tutor, clique em "Tirar foto" ou "Enviar foto" antes de começar. A IA lê o conteúdo automaticamente e o Edu pergunta sobre ele.',
   },
   {
     question: 'Como funciona o quiz?',
     answer:
-      'O quiz gera perguntas automaticamente com IA. Escolha materia, faixa etaria e quantidade (5 ou 10). Voce ganha 20 XP por acerto. Acesse pelo menu ou pela pagina inicial.',
+      'O quiz gera perguntas automaticamente com IA. Escolha matéria, faixa etária e quantidade (5 ou 10). Você ganha 20 XP por acerto. Acesse pelo menu ou pela página inicial.',
   },
   {
     question: 'Meus dados estao seguros?',
     answer:
-      'Sim! Usamos criptografia e controle de acesso em todas as tabelas. Cada usuario so acessa seus proprios dados. Pais so veem dados dos filhos vinculados.',
+      'Sim! Usamos criptografia e controle de acesso em todas as tabelas. Cada usuário só acessa seus próprios dados. Pais só veem dados dos filhos vinculados.',
   },
   // FAQs para pais
   {
     question: 'Como conecto minha conta ao meu filho?',
     answer:
-      'Ao criar sua conta como pai/mae, voce recebe automaticamente um codigo de convite (ex: EQ-A1B2). Compartilhe esse codigo com seu filho — ele digita ao criar a conta dele, e pronto! Voces ficam conectados. Voce tambem encontra o codigo no seu dashboard a qualquer momento.',
+      'Ao criar sua conta como pai/mãe, você recebe automaticamente um código de convite (ex: EQ-A1B2). Compartilhe esse código com seu filho — ele digita ao criar a conta dele, e pronto! Vocês ficam conectados. Você também encontra o código no seu dashboard a qualquer momento.',
   },
   {
     question: 'O que vejo no dashboard de pais?',
     answer:
-      'Voce ve todas as sessoes do seu filho, quanto tempo estudou, XP acumulado, streak de dias seguidos, badges conquistados e quais materias mais praticou. Tudo atualizado em tempo real.',
+      'Você vê todas as sessões do seu filho, quanto tempo estudou, XP acumulado, streak de dias seguidos, badges conquistados e quais matérias mais praticou. Tudo atualizado em tempo real.',
   },
   {
     question: 'Posso acompanhar mais de um filho?',
     answer:
-      'Sim! Seu codigo de convite funciona para todos os seus filhos. Cada um cria sua conta com o mesmo codigo e todos aparecem no seu dashboard.',
+      'Sim! Seu código de convite funciona para todos os seus filhos. Cada um cria sua conta com o mesmo código e todos aparecem no seu dashboard.',
   },
   // FAQs para escolas
   {
     question: 'Como funciona o Studdo para escolas?',
     answer:
-      'Professores podem criar turmas, enviar materiais e acompanhar o progresso de cada aluno. Os alunos usam o tutor IA para estudar e o professor ve tudo pelo dashboard. Visite a pagina Para Escolas para saber mais.',
+      'Professores podem criar turmas, enviar materiais e acompanhar o progresso de cada aluno. Os alunos usam o tutor IA para estudar e o professor vê tudo pelo dashboard. Visite a página Para Escolas para saber mais.',
   },
   {
     question: 'Quanto custa o plano para escolas?',
     answer:
-      'O Studdo e gratuito para familias. Para escolas, oferecemos planos personalizados conforme o numero de alunos. Entre em contato pela pagina Para Escolas para receber uma proposta.',
+      'O Studdo é gratuito para famílias. Para escolas, oferecemos planos personalizados conforme o número de alunos. Entre em contato pela página Para Escolas para receber uma proposta.',
   },
   {
-    question: 'O Studdo esta em conformidade com a LGPD?',
+    question: 'O Studdo está em conformidade com a LGPD?',
     answer:
-      'Sim. Todos os dados sao armazenados com criptografia, controle de acesso por perfil (RLS) e nunca compartilhados com terceiros. Alunos menores so tem dados visiveis para pais vinculados e professores da turma.',
+      'Sim. Todos os dados são armazenados com criptografia, controle de acesso por perfil (RLS) e nunca compartilhados com terceiros. Alunos menores só tem dados visíveis para pais vinculados e professores da turma.',
   },
 ];
 
@@ -153,7 +153,7 @@ export default function AjudaPage() {
         body: JSON.stringify({ question: aiQuestion.trim() }),
       });
       const data = await res.json();
-      setAiAnswer(data.answer || 'Nao consegui responder. Tente reformular a pergunta.');
+      setAiAnswer(data.answer || 'Não consegui responder. Tente reformular a pergunta.');
     } catch {
       setAiAnswer('Erro ao conectar. Tente novamente.');
     }
@@ -215,7 +215,7 @@ export default function AjudaPage() {
             Como podemos ajudar?
           </motion.h1>
           <motion.p variants={fadeInUp('high')} className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
-            Encontre respostas, pergunte ao Edu ou envie uma sugestao
+            Encontre respostas, pergunte ao Edu ou envie uma sugestão
           </motion.p>
         </motion.div>
 
@@ -244,7 +244,7 @@ export default function AjudaPage() {
             Pergunte ao Edu
           </h2>
           <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            Nao encontrou sua duvida? Pergunte diretamente — o Edu responde na hora.
+            Não encontrou sua dúvida? Pergunte diretamente — o Edu responde na hora.
           </p>
           <div className="flex gap-2 mb-3">
             <input
@@ -286,15 +286,15 @@ export default function AjudaPage() {
         <section className="glass rounded-2xl p-6">
           <h2 className="text-white font-bold text-lg mb-1 flex items-center gap-2">
             <Lightbulb size={18} className="text-amber-400" />
-            Envie uma sugestao
+            Envie uma sugestão
           </h2>
           <p className="text-xs mb-4" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            Ideias, criticas, elogios — queremos ouvir voce!
+            Ideias, críticas, elogios — queremos ouvir você!
           </p>
           <textarea
             value={suggestion}
             onChange={(e) => setSuggestion(e.target.value)}
-            placeholder="O que voce gostaria de ver no Studdo?"
+            placeholder="O que você gostaria de ver no Studdo?"
             rows={3}
             className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-amber-500/50 text-sm resize-none mb-3"
           />

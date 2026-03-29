@@ -249,7 +249,7 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
           className="flex items-center justify-center gap-1.5 text-white/40 hover:text-white/70 text-xs transition-colors py-1"
         >
           <Home size={12} />
-          Voltar ao inicio
+          Voltar ao início
         </Link>
       </motion.div>
     </motion.div>

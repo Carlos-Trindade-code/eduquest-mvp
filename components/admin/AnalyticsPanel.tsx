@@ -37,8 +37,8 @@ function createSupabase() {
 const EVENT_LABELS: Record<string, { label: string; color: string }> = {
   login: { label: 'Login', color: '#3B82F6' },
   register: { label: 'Registro', color: '#10B981' },
-  session_started: { label: 'Sessao iniciada', color: '#8B5CF6' },
-  session_ended: { label: 'Sessao finalizada', color: '#6366F1' },
+  session_started: { label: 'Sessão iniciada', color: '#8B5CF6' },
+  session_ended: { label: 'Sessão finalizada', color: '#6366F1' },
   message_sent: { label: 'Mensagem enviada', color: '#06B6D4' },
   feedback_submitted: { label: 'Feedback enviado', color: '#F59E0B' },
   invite_code_redeemed: { label: 'Invite resgatado', color: '#EC4899' },
@@ -83,7 +83,7 @@ export function AnalyticsPanel() {
   if (!data) {
     return (
       <div className="text-center py-20 text-white/40">
-        Nenhum dado de analytics disponivel
+        Nenhum dado de analytics disponível
       </div>
     );
   }
@@ -101,7 +101,7 @@ export function AnalyticsPanel() {
           </div>
           <div>
             <h2 className="text-white font-bold text-lg">Analytics</h2>
-            <p className="text-white/40 text-xs">{data.total_events} eventos nos ultimos {daysBack} dias</p>
+            <p className="text-white/40 text-xs">{data.total_events} eventos nos últimos {daysBack} dias</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -172,7 +172,7 @@ export function AnalyticsPanel() {
       <div className="glass rounded-2xl p-5 border border-white/5">
         <div className="flex items-center gap-2 mb-4">
           <Calendar size={16} className="text-white/40" />
-          <h3 className="text-white font-semibold text-sm">Atividade diaria</h3>
+          <h3 className="text-white font-semibold text-sm">Atividade diária</h3>
         </div>
 
         {!data.daily_activity || data.daily_activity.length === 0 ? (

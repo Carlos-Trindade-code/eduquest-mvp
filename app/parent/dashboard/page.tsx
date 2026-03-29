@@ -49,10 +49,10 @@ function useRelativeTime(timestamp: number | null) {
   if (!timestamp) return null;
   const diff = Math.floor((Date.now() - timestamp) / 1000);
   if (diff < 10) return 'Atualizado agora';
-  if (diff < 60) return `Atualizado ha ${diff}s`;
+  if (diff < 60) return `Atualizado há ${diff}s`;
   const mins = Math.floor(diff / 60);
-  if (mins < 60) return `Atualizado ha ${mins}min`;
-  return `Atualizado ha ${Math.floor(mins / 60)}h`;
+  if (mins < 60) return `Atualizado há ${mins}min`;
+  return `Atualizado há ${Math.floor(mins / 60)}h`;
 }
 
 interface SimpleAlert {
@@ -75,9 +75,9 @@ function generateAlerts(
   if (stats && stats.current_streak >= 7) {
     alerts.push({
       type: 'great_streak',
-      title: 'Sequencia incrivel de estudo!',
-      description: `${kidName} esta estudando ha ${stats.current_streak} dias seguidos — essa regularidade e o maior preditor de sucesso academico.`,
-      recommended_action: 'Celebre esse esforco! Uma recompensa simbolica ou elogio especifico ("estou orgulhoso da sua disciplina") reforca o habito.',
+      title: 'Sequência incrível de estudo!',
+      description: `${kidName} está estudando há ${stats.current_streak} dias seguidos — essa regularidade é o maior preditor de sucesso acadêmico.`,
+      recommended_action: 'Celebre esse esforço! Uma recompensa simbólica ou elogio específico ("estou orgulhoso da sua disciplina") reforça o hábito.',
       severity: 'positive',
     });
   }
@@ -86,9 +86,9 @@ function generateAlerts(
   if (sessionsThisWeek < 2 && totalSessions > 5) {
     alerts.push({
       type: 'low_engagement',
-      title: 'Poucas sessoes esta semana',
+      title: 'Poucas sessões esta semana',
       description: `${kidName} estudou menos que o habitual esta semana.`,
-      recommended_action: 'Convide para uma sessao rapida de 10 minutos — sem pressao. Sessoes curtas sao melhores que nenhuma.',
+      recommended_action: 'Convide para uma sessão rápida de 10 minutos — sem pressão. Sessões curtas são melhores que nenhuma.',
       severity: 'info',
     });
   }
@@ -98,8 +98,8 @@ function generateAlerts(
     alerts.push({
       type: 'first_sessions',
       title: 'Primeiros passos!',
-      description: `${kidName} ja completou ${totalSessions} ${totalSessions === 1 ? 'sessao' : 'sessoes'} de estudo. O comeco e o mais importante!`,
-      recommended_action: 'Pergunte o que achou do Edu e se teve alguma dificuldade. O interesse inicial e precioso — incentive sem pressionar.',
+      description: `${kidName} já completou ${totalSessions} ${totalSessions === 1 ? 'sessão' : 'sessões'} de estudo. O começo é o mais importante!`,
+      recommended_action: 'Pergunte o que achou do Edu e se teve alguma dificuldade. O interesse inicial é precioso — incentive sem pressionar.',
       severity: 'positive',
     });
   }
@@ -108,9 +108,9 @@ function generateAlerts(
   if (totalSessions === 0) {
     alerts.push({
       type: 'no_sessions',
-      title: `${kidName} ainda nao comecou`,
-      description: 'Nenhuma sessao de estudo foi registrada ainda.',
-      recommended_action: 'Sente junto e faca uma primeira sessao com o Edu. Mostrar que voce tambem acha interessante motiva a crianca.',
+      title: `${kidName} ainda não começou`,
+      description: 'Nenhuma sessão de estudo foi registrada ainda.',
+      recommended_action: 'Sente junto e faça uma primeira sessão com o Edu. Mostrar que você também acha interessante motiva a criança.',
       severity: 'info',
     });
   }
@@ -380,7 +380,7 @@ export default function ParentDashboard() {
               >
                 <span className="flex items-center gap-2">
                   <BarChart3 size={15} />
-                  Visao Geral
+                  Visão Geral
                 </span>
               </Tabs.Trigger>
               <Tabs.Trigger
@@ -389,7 +389,7 @@ export default function ParentDashboard() {
               >
                 <span className="flex items-center gap-2">
                   <BookOpen size={15} />
-                  Sessoes
+                  Sessões
                   {summaries.length > 0 && (
                     <span className="ml-0.5 px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">
                       {summaries.length}
@@ -475,7 +475,7 @@ export default function ParentDashboard() {
                 {/* Charts */}
                 <motion.div variants={fadeInUp('medium')} className="grid md:grid-cols-2 gap-6">
                   <div className="glass rounded-[var(--eq-radius)] p-5">
-                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes (30 dias)</h3>
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessões (30 dias)</h3>
                     <SessionsChart
                       data={
                         analytics?.byDay
@@ -488,7 +488,7 @@ export default function ParentDashboard() {
                     />
                   </div>
                   <div className="glass rounded-[var(--eq-radius)] p-5">
-                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Materias Estudadas</h3>
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Matérias Estudadas</h3>
                     {analytics && Object.keys(analytics.bySubject).length > 0 ? (
                       <SubjectsChart data={analytics.bySubject} />
                     ) : (
@@ -507,7 +507,7 @@ export default function ParentDashboard() {
                       <XPBar totalXp={kidStats.total_xp} />
                     </div>
                     <div className="glass rounded-[var(--eq-radius)] p-5">
-                      <h3 className="text-[var(--eq-text)] font-semibold mb-3">Sequencia de Estudo</h3>
+                      <h3 className="text-[var(--eq-text)] font-semibold mb-3">Sequência de Estudo</h3>
                       <StreakDisplay currentStreak={kidStats.current_streak} longestStreak={kidStats.longest_streak} />
                     </div>
                   </motion.div>
@@ -517,10 +517,10 @@ export default function ParentDashboard() {
                   <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-8 text-center">
                     <div className="text-5xl mb-3">📚</div>
                     <h3 className="text-[var(--eq-text)] font-semibold mb-2">
-                      {selectedKid.name} ainda nao comecou a estudar
+                      {selectedKid.name} ainda não começou a estudar
                     </h3>
                     <p className="text-[var(--eq-text-secondary)] text-sm">
-                      As estatisticas aparecerao aqui apos as primeiras sessoes.
+                      As estatísticas aparecerão aqui após as primeiras sessões.
                     </p>
                   </motion.div>
                 )}
@@ -556,10 +556,10 @@ export default function ParentDashboard() {
                   <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-8 text-center">
                     <div className="text-5xl mb-3">📭</div>
                     <h3 className="text-[var(--eq-text)] font-semibold mb-2">
-                      Nenhuma sessao registrada ainda
+                      Nenhuma sessão registrada ainda
                     </h3>
                     <p className="text-[var(--eq-text-secondary)] text-sm">
-                      Quando {selectedKid.name} estudar com o Edu, as sessoes detalhadas aparecerao aqui.
+                      Quando {selectedKid.name} estudar com o Edu, as sessões detalhadas aparecerão aqui.
                     </p>
                   </motion.div>
                 ) : summaries.length > 0 ? (
@@ -579,7 +579,7 @@ export default function ParentDashboard() {
                 ) : (
                   /* Fallback: show old-style session list if no summaries but sessions exist */
                   <motion.div variants={fadeInUp('medium')} className="glass rounded-[var(--eq-radius)] p-5">
-                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessoes Recentes</h3>
+                    <h3 className="text-[var(--eq-text)] font-semibold mb-4">Sessões Recentes</h3>
                     <div className="space-y-2">
                       {kidSessions.map((session) => {
                         const sub = getSubjectById(session.subject);
@@ -747,7 +747,7 @@ export default function ParentDashboard() {
             <div>
               <p className="text-white/50 text-xs font-bold mb-2 flex items-center gap-1.5">
                 <span className="w-5 h-5 rounded-full bg-purple-600 text-white text-[10px] font-bold flex items-center justify-center">1</span>
-                Copie seu codigo de convite
+                Copie seu código de convite
               </p>
               {inviteCode && <InviteCodeCard code={inviteCode} />}
             </div>
@@ -760,7 +760,7 @@ export default function ParentDashboard() {
                   Filho cria conta
                 </p>
                 <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Acessa <strong className="text-white/70">studdo.com.br</strong> e digita o codigo
+                  Acessa <strong className="text-white/70">studdo.com.br</strong> e digita o código
                 </p>
               </div>
               <div className="rounded-2xl p-4" style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.12)' }}>
@@ -769,7 +769,7 @@ export default function ParentDashboard() {
                   Pronto!
                 </p>
                 <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Ele aparece aqui e voce acompanha tudo em tempo real
+                  Ele aparece aqui e você acompanha tudo em tempo real
                 </p>
               </div>
             </div>

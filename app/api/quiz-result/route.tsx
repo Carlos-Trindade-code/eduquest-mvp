@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
   const emoji = percentage >= 80 ? '🏆' : percentage >= 60 ? '⭐' : percentage >= 40 ? '💪' : '📚';
-  const message = percentage >= 80 ? 'Excelente!' : percentage >= 60 ? 'Muito bom!' : percentage >= 40 ? 'Bom esforco!' : 'Praticando!';
+  const message = percentage >= 80 ? 'Excelente!' : percentage >= 60 ? 'Muito bom!' : percentage >= 40 ? 'Bom esforço!' : 'Praticando!';
   const barColor = percentage >= 60 ? '#10B981' : '#F59E0B';
 
   return new ImageResponse(
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
         {/* CTA */}
         <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#8B5CF6', display: 'flex' }}>
-            Teste voce tambem!
+            Teste você também!
           </div>
           <div style={{ fontSize: 14, color: 'rgba(240,244,248,0.35)', display: 'flex' }}>
             www.studdo.com.br/quiz

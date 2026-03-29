@@ -8,10 +8,10 @@ import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 
 const mobileChatMessages = [
-  { role: 'kid' as const, text: 'Nao entendo fracoes' },
-  { role: 'edu' as const, text: 'Vamos pensar juntos! Se voce tem uma pizza cortada em 4 pedacos e come 1, que fracao sobra?' },
+  { role: 'kid' as const, text: 'Não entendo frações' },
+  { role: 'edu' as const, text: 'Vamos pensar juntos! Se você tem uma pizza cortada em 4 pedaços e come 1, que fração sobra?' },
   { role: 'kid' as const, text: '3/4!' },
-  { role: 'edu' as const, text: 'Exatamente! Voce ja sabe mais do que imagina!' },
+  { role: 'edu' as const, text: 'Exatamente! Você já sabe mais do que imagina!' },
 ];
 
 function MobileChatPreview() {
@@ -77,15 +77,15 @@ function MobileChatPreview() {
 }
 
 const stats = [
-  { value: '7', label: 'materias disponiveis' },
+  { value: '7', label: 'matérias disponíveis' },
   { value: '4-18', label: 'anos de idade' },
   { value: '100%', label: 'gratuito' },
   { value: '🔒', label: 'dados protegidos' },
 ];
 
 const trustItems = [
-  'Gratis durante o beta — comece em 10 segundos',
-  'Quiz interativo com feedback instantaneo',
+  'Grátis durante o beta — comece em 10 segundos',
+  'Quiz interativo com feedback instantâneo',
   'Dashboard em tempo real para os pais',
 ];
 
@@ -254,7 +254,7 @@ function ChatPreview() {
               initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
               transition={{ delay: 2.0 }}
             >
-              <span>✓</span> Metodo Socratico
+              <span>✓</span> Método Socrático
             </motion.div>
             <motion.div
               className="absolute -left-4 bottom-20 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
@@ -342,7 +342,7 @@ export function HeroSection() {
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
                 style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 32px rgba(245,166,35,0.35)' }}
               >
-                Testar tutor gratis
+                Testar tutor grátis
                 <ArrowRight size={18} />
               </Link>
               <Link

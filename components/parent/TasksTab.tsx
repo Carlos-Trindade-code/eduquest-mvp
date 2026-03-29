@@ -216,7 +216,7 @@ export function TasksTab({ kidId, parentId, tasks, summaries, onTaskCreated, onT
                   <span className="text-white/20 text-[10px]">{relativeDate(task.created_at)}</span>
                   {task.status === 'completed' && matchingSummary && (
                     <span className="flex items-center gap-1 text-emerald-400/40 text-[10px] font-medium">
-                      Sessao concluida
+                      Sessão concluída
                     </span>
                   )}
                 </div>

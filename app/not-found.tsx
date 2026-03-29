@@ -11,10 +11,10 @@ export default function NotFound() {
 
         <h1 className="text-white text-5xl font-black mt-6 mb-2">404</h1>
         <h2 className="text-white text-xl font-bold mb-2">
-          Pagina nao encontrada
+          Página não encontrada
         </h2>
         <p className="text-white/50 text-sm mb-8">
-          Parece que voce se perdeu no caminho. Vamos te levar de volta!
+          Parece que você se perdeu no caminho. Vamos te levar de volta!
         </p>
 
         <div className="flex items-center justify-center gap-3">
@@ -23,7 +23,7 @@ export default function NotFound() {
             className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-xl text-sm shadow-lg shadow-purple-600/25 hover:opacity-90 transition-opacity"
           >
             <Home size={16} />
-            Ir para o inicio
+            Ir para o início
           </Link>
 
           <NotFoundActions />

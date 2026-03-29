@@ -29,12 +29,12 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
         const msg = error.message?.toLowerCase() || '';
         if (msg.includes('not found') || msg.includes('invalid')) {
           setStatus('error');
-          setErrorMsg('Turma nao encontrada. Verifique se digitou o codigo corretamente.');
+          setErrorMsg('Turma não encontrada. Verifique se digitou o código corretamente.');
           return;
         }
         if (msg.includes('already') || msg.includes('ja')) {
           setStatus('error');
-          setErrorMsg('Voce ja faz parte desta turma!');
+          setErrorMsg('Você já faz parte desta turma!');
           return;
         }
         setStatus('error');
@@ -45,9 +45,9 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
         const rpcError = (data?.error || '').toLowerCase();
         let friendlyError = 'Algo deu errado. Tente novamente.';
         if (rpcError.includes('not found') || rpcError.includes('invalid') || rpcError.includes('nao encontr')) {
-          friendlyError = 'Turma nao encontrada. Verifique se digitou o codigo corretamente.';
+          friendlyError = 'Turma não encontrada. Verifique se digitou o código corretamente.';
         } else if (rpcError.includes('already') || rpcError.includes('ja')) {
-          friendlyError = 'Voce ja faz parte desta turma!';
+          friendlyError = 'Você já faz parte desta turma!';
         }
         setStatus('error');
         setErrorMsg(friendlyError);
@@ -86,7 +86,7 @@ export function JoinClassroom({ mode = 'modal', onJoined }: JoinClassroomProps) 
         >
           <div className="text-4xl mb-2">✅</div>
           <p className="text-white font-bold text-sm">Entrou na turma{classroomName ? `: ${classroomName}` : ''}!</p>
-          <p className="text-xs mt-1" style={{ color: 'rgba(240,244,248,0.5)' }}>Os materiais do professor estarao disponiveis</p>
+          <p className="text-xs mt-1" style={{ color: 'rgba(240,244,248,0.5)' }}>Os materiais do professor estarão disponíveis</p>
         </motion.div>
       ) : (
         <div className="space-y-3">

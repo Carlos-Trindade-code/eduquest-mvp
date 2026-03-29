@@ -38,7 +38,7 @@ const steps: TutorialStep[] = [
   {
     number: '01',
     title: 'Escolha sua idade',
-    subtitle: 'O Edu adapta a linguagem e dificuldade para voce',
+    subtitle: 'O Edu adapta a linguagem e dificuldade para você',
     mascot: 'waving',
     color: '#3B82F6',
     icon: Sparkles,
@@ -46,7 +46,7 @@ const steps: TutorialStep[] = [
   {
     number: '02',
     title: 'Escolha a materia',
-    subtitle: '7 materias cobrindo todo o curriculo escolar',
+    subtitle: '7 matérias cobrindo todo o currículo escolar',
     mascot: 'reading',
     color: '#8B5CF6',
     icon: BookOpen,
@@ -54,7 +54,7 @@ const steps: TutorialStep[] = [
   {
     number: '03',
     title: 'Envie sua tarefa',
-    subtitle: 'Tire foto, anexe material ou digite o exercicio',
+    subtitle: 'Tire foto, anexe material ou digite o exercício',
     mascot: 'thinking',
     color: '#06B6D4',
     icon: Camera,
@@ -62,14 +62,14 @@ const steps: TutorialStep[] = [
   {
     number: '04',
     title: 'Converse com o Edu',
-    subtitle: 'Ele te guia a descobrir a resposta por conta propria',
+    subtitle: 'Ele te guia a descobrir a resposta por conta própria',
     mascot: 'encouraging',
     color: '#10B981',
     icon: MessageCircleQuestion,
   },
   {
     number: '05',
-    title: 'Ganhe XP e suba de nivel!',
+    title: 'Ganhe XP e suba de nível!',
     subtitle: 'Conquistas, badges e streaks te motivam a estudar todo dia',
     mascot: 'celebrating',
     color: '#F59E0B',
@@ -89,12 +89,12 @@ const ageGroups = [
 ];
 
 const subjects = [
-  { name: 'Matematica', emoji: '🔢', color: '#3B82F6' },
-  { name: 'Portugues', emoji: '📖', color: '#10B981' },
-  { name: 'Historia', emoji: '🏛️', color: '#F59E0B' },
-  { name: 'Ciencias', emoji: '🔬', color: '#8B5CF6' },
+  { name: 'Matemática', emoji: '🔢', color: '#3B82F6' },
+  { name: 'Português', emoji: '📖', color: '#10B981' },
+  { name: 'História', emoji: '🏛️', color: '#F59E0B' },
+  { name: 'Ciências', emoji: '🔬', color: '#8B5CF6' },
   { name: 'Geografia', emoji: '🌍', color: '#06B6D4' },
-  { name: 'Ingles', emoji: '🇺🇸', color: '#EF4444' },
+  { name: 'Inglês', emoji: '🇺🇸', color: '#EF4444' },
 ];
 
 // ============================================================
@@ -233,8 +233,8 @@ export function TutorialPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            Em 5 passos simples voce vai aprender a estudar de um jeito totalmente novo.
-            Vamos la?
+            Em 5 passos simples você vai aprender a estudar de um jeito totalmente novo.
+            Vamos lá?
           </motion.p>
 
           <motion.div
@@ -244,7 +244,7 @@ export function TutorialPage() {
             transition={{ delay: 0.8 }}
           >
             <a href="#step-01" className="inline-flex flex-col items-center text-white/30 hover:text-white/60 transition-colors">
-              <span className="text-sm mb-2">Rolar para comecar</span>
+              <span className="text-sm mb-2">Rolar para começar</span>
               <motion.div
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
@@ -323,7 +323,7 @@ export function TutorialPage() {
             <div>
               <p className="text-white font-semibold text-sm">Tire uma foto</p>
               <p className="text-white/40 text-xs mt-0.5">
-                Aponte a camera pro exercicio e a IA le automaticamente
+                Aponte a câmera pro exercício e a IA lê automaticamente
               </p>
             </div>
           </motion.div>
@@ -342,7 +342,7 @@ export function TutorialPage() {
             <div>
               <p className="text-white font-semibold text-sm">Anexe o material</p>
               <p className="text-white/40 text-xs mt-0.5">
-                Envie PDF ou imagem do conteudo para o Edu extrair o que estudar
+                Envie PDF ou imagem do conteúdo para o Edu extrair o que estudar
               </p>
             </div>
           </motion.div>
@@ -359,9 +359,9 @@ export function TutorialPage() {
               <FileText size={28} className="text-green-400" />
             </div>
             <div>
-              <p className="text-white font-semibold text-sm">Digite o exercicio</p>
+              <p className="text-white font-semibold text-sm">Digite o exercício</p>
               <p className="text-white/40 text-xs mt-0.5">
-                Cole ou escreva a questao diretamente
+                Cole ou escreva a questão diretamente
               </p>
             </div>
           </motion.div>
@@ -403,8 +403,8 @@ export function TutorialPage() {
               O Edu cuida do seu descanso
             </motion.h2>
             <motion.p variants={fadeInUp('high')} className="text-white/50 text-lg mb-8">
-              Baseado na Tecnica Pomodoro, o Edu avisa quando e hora de fazer uma pausa.
-              Estudar com intervalos regulares melhora a memorizacao em ate 40%!
+              Baseado na Técnica Pomodoro, o Edu avisa quando é hora de fazer uma pausa.
+              Estudar com intervalos regulares melhora a memorização em até 40%!
             </motion.p>
 
             <motion.div variants={fadeInUp('high')} className="grid sm:grid-cols-3 gap-4">
@@ -438,7 +438,7 @@ export function TutorialPage() {
                 <p className="text-white/70 text-sm text-left">
                   Ao terminar, o Edu pergunta:{' '}
                   <span className="text-green-400 font-semibold">
-                    &quot;Quer continuar avancando nesse assunto?&quot;
+                    &quot;Quer continuar avançando nesse assunto?&quot;
                   </span>
                 </p>
               </div>
@@ -466,7 +466,7 @@ export function TutorialPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Pronto para comecar?
+            Pronto para começar?
           </motion.h2>
 
           <motion.p
@@ -476,7 +476,7 @@ export function TutorialPage() {
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
           >
-            Crie sua conta gratis e comece a estudar com o Edu agora mesmo!
+            Crie sua conta grátis e comece a estudar com o Edu agora mesmo!
           </motion.p>
 
           <motion.div
@@ -488,13 +488,13 @@ export function TutorialPage() {
           >
             <Button variant="primary" size="xl" rounded="lg" asChild>
               <Link href="/register" className="gap-2">
-                Criar Conta Gratis
+                Criar Conta Grátis
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
             <Button variant="secondary" size="xl" rounded="lg" asChild>
               <Link href="/login" className="gap-2">
-                Ja tenho conta
+                Já tenho conta
               </Link>
             </Button>
           </motion.div>
@@ -514,7 +514,7 @@ export function TutorialPage() {
         <Button variant="primary" size="lg" rounded="lg" asChild className="shadow-2xl shadow-purple-900/50">
           <Link href="/register" className="gap-2">
             <Sparkles className="w-4 h-4" />
-            Criar Conta Gratis
+            Criar Conta Grátis
           </Link>
         </Button>
       </motion.div>

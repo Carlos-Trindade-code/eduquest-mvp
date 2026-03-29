@@ -252,7 +252,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
                   className="bg-green-500/15 border border-green-500/30 text-green-300 text-sm rounded-xl px-4 py-3 flex items-center gap-2"
                 >
                   <span className="shrink-0">✉️</span>
-                  Email de recuperacao enviado! Verifique sua caixa de entrada.
+                  Email de recuperação enviado! Verifique sua caixa de entrada.
                 </motion.div>
               )}
             </AnimatePresence>
@@ -304,7 +304,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             </motion.button>
 
             <p className="text-center text-[var(--eq-text-secondary)] text-sm pt-2">
-              Nao tem conta?{' '}
+              Não tem conta?{' '}
               <Link href="/register" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
                 Criar conta
                 <ArrowRight size={12} className="inline ml-1" />

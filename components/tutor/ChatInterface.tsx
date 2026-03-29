@@ -49,7 +49,7 @@ function TrialExpiredGate() {
         🎓
       </motion.div>
       <div>
-        <h2 className="text-white text-2xl font-extrabold mb-2">Gostou da experiencia?</h2>
+        <h2 className="text-white text-2xl font-extrabold mb-2">Gostou da experiência?</h2>
         <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
           Crie uma conta gratuita para continuar estudando, ganhar XP e acompanhar seu progresso!
         </p>
@@ -66,12 +66,12 @@ function TrialExpiredGate() {
           className="w-full py-3 rounded-xl text-sm text-center font-medium transition-all text-white/50 hover:text-white hover:bg-white/5"
           style={{ border: '1px solid rgba(255,255,255,0.08)' }}
         >
-          Ja tenho conta — Entrar
+          Já tenho conta — Entrar
         </a>
       </div>
       <div className="flex flex-col items-center gap-2 mt-2">
         <div className="flex gap-4">
-          {['🏆 XP e Niveis', '🔥 Streak', '📊 Progresso'].map((item) => (
+          {['🏆 XP e Níveis', '🔥 Streak', '📊 Progresso'].map((item) => (
             <span key={item} className="text-xs" style={{ color: 'rgba(240,244,248,0.35)' }}>{item}</span>
           ))}
         </div>
@@ -327,7 +327,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
         topics_covered: [],
         strengths: [],
         difficulties: [],
-        ai_suggestion: 'Nao foi possivel gerar o resumo automatico.',
+        ai_suggestion: 'Não foi possível gerar o resumo automático.',
         parent_tip: '',
       });
     }
@@ -380,7 +380,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
           >
             <UserPlus size={14} className="text-purple-400 shrink-0" />
             <span style={{ color: 'rgba(240,244,248,0.6)' }}>
-              Sessao gratuita de teste —{' '}
+              Sessão gratuita de teste —{' '}
               <a href="/register?redirect=/tutor" className="text-purple-400 font-semibold hover:underline">
                 crie uma conta
               </a>{' '}
@@ -429,7 +429,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
           <div className="mb-4 space-y-3">
             <p className="text-purple-400 text-xs font-bold flex items-center gap-1.5">
               <Sparkles size={14} />
-              Atividades do pai/mae
+              Atividades do pai/mãe
             </p>
             {guidedActivities.map((activity) => (
               <ActivityCard
@@ -447,7 +447,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
                   } else {
                     // For reading/exercise/review, start a tutor session with context
                     const context = [
-                      a.instructions ? `[Instrucoes do pai/mae: ${a.title}]\n${a.instructions}` : '',
+                      a.instructions ? `[Instruções do pai/mãe: ${a.title}]\n${a.instructions}` : '',
                     ].filter(Boolean).join('\n\n');
                     handleStart({
                       homework: context,

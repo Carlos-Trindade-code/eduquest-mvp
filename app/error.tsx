@@ -30,7 +30,7 @@ export default function Error({
           Ops, algo deu errado!
         </h1>
         <p className="text-white/50 text-sm mb-8">
-          Nao se preocupe, isso acontece as vezes. Tente novamente ou volte para o inicio.
+          Não se preocupe, isso acontece às vezes. Tente novamente ou volte para o início.
         </p>
 
         <div className="flex items-center justify-center gap-3">
@@ -51,7 +51,7 @@ export default function Error({
             whileTap={{ scale: 0.98 }}
           >
             <Home size={16} />
-            Inicio
+            Início
           </motion.a>
         </div>
       </motion.div>
