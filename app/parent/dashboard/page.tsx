@@ -19,8 +19,6 @@ import {
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakDisplay } from '@/components/gamification/StreakDisplay';
 import { BadgeCard } from '@/components/gamification/BadgeCard';
-import { SessionsChart } from '@/components/parent/charts/SessionsChart';
-import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { StudyStatsCards } from '@/components/parent/StudyStatsCards';
 import { WeeklyDigest } from '@/components/parent/WeeklyDigest';
 import { SessionTimeline } from '@/components/parent/SessionTimeline';
@@ -28,6 +26,14 @@ import { SessionDetail } from '@/components/parent/SessionDetail';
 import { TasksTab } from '@/components/parent/TasksTab';
 import { MaterialsTab } from '@/components/parent/MaterialsTab';
 import { StudyTogetherTab } from '@/components/parent/StudyTogetherTab';
+import dynamic from 'next/dynamic';
+
+const SessionsChart = dynamic(() => import('@/components/parent/charts/SessionsChart').then(m => m.SessionsChart), {
+  loading: () => <div className="h-48 bg-white/5 rounded-xl animate-pulse" />,
+});
+const SubjectsChart = dynamic(() => import('@/components/parent/charts/SubjectsChart').then(m => m.SubjectsChart), {
+  loading: () => <div className="h-48 bg-white/5 rounded-xl animate-pulse" />,
+});
 import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
