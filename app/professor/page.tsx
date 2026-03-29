@@ -305,12 +305,37 @@ function TopPerformers({ members, analytics }: { members: ClassroomMember[]; ana
 }
 
 function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
+  const steps = [
+    { icon: '1️⃣', title: 'Crie uma turma', desc: 'Escolha a materia e de um nome' },
+    { icon: '2️⃣', title: 'Envie materiais', desc: 'PDFs, imagens ou textos viram base para a IA' },
+    { icon: '3️⃣', title: 'Compartilhe o codigo', desc: 'Alunos entram com o codigo ST-XXXX' },
+    { icon: '4️⃣', title: 'Acompanhe o progresso', desc: 'Veja sessoes, XP e ranking dos alunos' },
+  ];
   return (
-    <div className="max-w-md mx-auto text-center py-16">
-      <div className="text-5xl mb-4">🏫</div>
-      <h2 className="text-white text-xl font-bold mb-2">Crie sua primeira turma</h2>
-      <p className="text-sm mb-6" style={{ color: 'rgba(240,244,248,0.5)' }}>Adicione materiais e compartilhe o codigo com seus alunos</p>
-      <motion.button onClick={onCreateClick} className="px-6 py-3 rounded-xl font-bold text-sm bg-purple-600 text-white" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}><Plus size={16} className="inline mr-2" />Criar turma</motion.button>
+    <div className="max-w-lg mx-auto py-12">
+      <div className="text-center mb-8">
+        <div className="text-5xl mb-4">🏫</div>
+        <h2 className="text-white text-xl font-bold mb-2">Bem-vindo ao Studdo para Professores</h2>
+        <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>Configure sua turma em 4 passos simples</p>
+      </div>
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        {steps.map((step) => (
+          <motion.div
+            key={step.title}
+            className="rounded-xl p-4"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <span className="text-xl block mb-2">{step.icon}</span>
+            <p className="text-white text-sm font-semibold mb-0.5">{step.title}</p>
+            <p className="text-white/40 text-xs">{step.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+      <div className="text-center">
+        <motion.button onClick={onCreateClick} className="px-8 py-3.5 rounded-xl font-bold text-sm bg-purple-600 text-white shadow-lg shadow-purple-600/25" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}><Plus size={16} className="inline mr-2" />Criar minha primeira turma</motion.button>
+      </div>
     </div>
   );
 }
