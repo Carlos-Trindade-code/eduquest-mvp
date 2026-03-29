@@ -55,6 +55,12 @@ export interface AgeThemeTokens {
   xpBarGradientTo: string;
   streakColor: string;
   badgeSize: string;
+
+  // Age-adaptive UI
+  buttonHeight: string;
+  showTextLabels: boolean;
+  dropZoneSize: string;
+  cardSize: string;
 }
 
 const themes: Record<AgeGroup, AgeThemeTokens> = {
@@ -107,6 +113,11 @@ const themes: Record<AgeGroup, AgeThemeTokens> = {
     xpBarGradientTo: '#F59E0B',
     streakColor: '#F97316',
     badgeSize: '5rem',
+
+    buttonHeight: '3.5rem',
+    showTextLabels: false,
+    dropZoneSize: '14rem',
+    cardSize: '10rem',
   },
 
   '7-9': {
@@ -158,6 +169,11 @@ const themes: Record<AgeGroup, AgeThemeTokens> = {
     xpBarGradientTo: '#F59E0B',
     streakColor: '#F97316',
     badgeSize: '4.5rem',
+
+    buttonHeight: '3rem',
+    showTextLabels: true,
+    dropZoneSize: '12rem',
+    cardSize: '8rem',
   },
 
   '10-12': {
@@ -209,6 +225,11 @@ const themes: Record<AgeGroup, AgeThemeTokens> = {
     xpBarGradientTo: '#D97706',
     streakColor: '#F97316',
     badgeSize: '4rem',
+
+    buttonHeight: '2.5rem',
+    showTextLabels: true,
+    dropZoneSize: '10rem',
+    cardSize: '7rem',
   },
 
   '13-15': {
@@ -260,6 +281,11 @@ const themes: Record<AgeGroup, AgeThemeTokens> = {
     xpBarGradientTo: '#D97706',
     streakColor: '#F97316',
     badgeSize: '3.5rem',
+
+    buttonHeight: '2.25rem',
+    showTextLabels: true,
+    dropZoneSize: '8rem',
+    cardSize: '6rem',
   },
 
   '16-18': {
@@ -311,6 +337,11 @@ const themes: Record<AgeGroup, AgeThemeTokens> = {
     xpBarGradientTo: '#D97706',
     streakColor: '#F97316',
     badgeSize: '3rem',
+
+    buttonHeight: '2.25rem',
+    showTextLabels: true,
+    dropZoneSize: '8rem',
+    cardSize: '6rem',
   },
 };
 
@@ -358,5 +389,8 @@ export function tokensToCSSVars(tokens: AgeThemeTokens): Record<string, string> 
     '--eq-xp-to': tokens.xpBarGradientTo,
     '--eq-streak-color': tokens.streakColor,
     '--eq-badge-size': tokens.badgeSize,
+    '--eq-button-height': tokens.buttonHeight,
+    '--eq-dropzone-size': tokens.dropZoneSize,
+    '--eq-card-size': tokens.cardSize,
   };
 }

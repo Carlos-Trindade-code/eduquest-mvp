@@ -25,10 +25,12 @@ import { StudyStatsCards } from '@/components/parent/StudyStatsCards';
 import { SessionTimeline } from '@/components/parent/SessionTimeline';
 import { SessionDetail } from '@/components/parent/SessionDetail';
 import { TasksTab } from '@/components/parent/TasksTab';
+import { MaterialsTab } from '@/components/parent/MaterialsTab';
+import { StudyTogetherTab } from '@/components/parent/StudyTogetherTab';
 import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell, RefreshCw, Loader2, Plus } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell, RefreshCw, Loader2, Plus, FolderOpen, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats, ParentTask } from '@/lib/auth/types';
@@ -431,6 +433,24 @@ export default function ParentDashboard() {
                   Alertas
                 </span>
               </Tabs.Trigger>
+              <Tabs.Trigger
+                value="materials"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <FolderOpen size={15} />
+                  Materiais
+                </span>
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="study-together"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <Heart size={15} />
+                  Estudar Juntos
+                </span>
+              </Tabs.Trigger>
             </Tabs.List>
 
             {/* Tab 1: Visao Geral */}
@@ -678,6 +698,28 @@ export default function ParentDashboard() {
                   ));
                 })()}
               </motion.div>
+            </Tabs.Content>
+
+            {/* Tab 6: Materiais */}
+            <Tabs.Content value="materials">
+              {selectedKid && profile && (
+                <MaterialsTab
+                  parentId={profile.id}
+                  kidId={selectedKid.id}
+                  kidName={selectedKid.name?.split(' ')[0] || 'filho'}
+                />
+              )}
+            </Tabs.Content>
+
+            {/* Tab 7: Estudar Juntos */}
+            <Tabs.Content value="study-together">
+              {selectedKid && profile && (
+                <StudyTogetherTab
+                  parentId={profile.id}
+                  kidId={selectedKid.id}
+                  kidName={selectedKid.name?.split(' ')[0] || 'filho'}
+                />
+              )}
             </Tabs.Content>
           </Tabs.Root>
         )}

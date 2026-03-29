@@ -19,8 +19,10 @@ import { getSuggestions } from '@/lib/subjects/suggestions';
 import { getBuildForSubject, TOTAL_PIECES } from '@/lib/gamification/builds';
 import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
-import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask } from '@/lib/supabase/queries';
-import type { AgeGroup, BehavioralProfile, ParentTask } from '@/lib/auth/types';
+import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask, getKidActivities, updateActivityStatus } from '@/lib/supabase/queries';
+import { ActivityCard } from '@/components/activities/ActivityCard';
+import { QuizPlayer } from '@/components/activities/QuizPlayer';
+import type { AgeGroup, BehavioralProfile, ParentTask, GuidedActivity } from '@/lib/auth/types';
 
 const TRIAL_KEY = 'studdo_trial_sessions';
 
@@ -100,6 +102,8 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   const [trialExpired, setTrialExpired] = useState(false);
   const [pendingTasks, setPendingTasks] = useState<ParentTask[]>([]);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [guidedActivities, setGuidedActivities] = useState<GuidedActivity[]>([]);
+  const [activeQuiz, setActiveQuiz] = useState<GuidedActivity | null>(null);
   const [summaryResult, setSummaryResult] = useState<{
     topics_covered: string[];
     strengths: string[];
@@ -132,12 +136,15 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     }
   }, [profile]);
 
-  // Load pending tasks from parents
+  // Load pending tasks and guided activities from parents
   useEffect(() => {
     if (profile?.id && !homeworkSet) {
       const supabase = createClient();
       getKidPendingTasks(supabase, profile.id).then(({ data }) => {
         setPendingTasks(data);
+      });
+      getKidActivities(supabase, profile.id, ['pending', 'in_progress']).then(({ data }) => {
+        setGuidedActivities(data);
       });
     }
   }, [profile, homeworkSet]);
@@ -413,7 +420,71 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
             })}
           </div>
         )}
-        <HomeworkSetup onStart={handleStart} />
+        {/* Guided activities from parents */}
+        {guidedActivities.length > 0 && !activeQuiz && (
+          <div className="mb-4 space-y-3">
+            <p className="text-purple-400 text-xs font-bold flex items-center gap-1.5">
+              <Sparkles size={14} />
+              Atividades do pai/mae
+            </p>
+            {guidedActivities.map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
+                onStart={(a) => {
+                  if (a.activity_type === 'quiz' && a.questions) {
+                    setActiveQuiz(a);
+                    // Mark as in_progress
+                    const supabase = createClient();
+                    updateActivityStatus(supabase, a.id, {
+                      status: 'in_progress',
+                      started_at: new Date().toISOString(),
+                    });
+                  } else {
+                    // For reading/exercise/review, start a tutor session with context
+                    const context = [
+                      a.instructions ? `[Instrucoes do pai/mae: ${a.title}]\n${a.instructions}` : '',
+                    ].filter(Boolean).join('\n\n');
+                    handleStart({
+                      homework: context,
+                      subject: a.subject,
+                      ageGroup,
+                      behavioralProfile: 'default',
+                    });
+                  }
+                }}
+              />
+            ))}
+          </div>
+        )}
+        {/* Active quiz */}
+        {activeQuiz && activeQuiz.questions && (
+          <QuizPlayer
+            questions={activeQuiz.questions}
+            subject={activeQuiz.subject}
+            title={activeQuiz.title}
+            parentNote={activeQuiz.parent_note}
+            onComplete={async (score, total) => {
+              const percentage = Math.round((score / total) * 100);
+              const xpEarned = score * 10;
+              const supabase = createClient();
+              await updateActivityStatus(supabase, activeQuiz.id, {
+                status: 'completed',
+                kid_score: percentage,
+                xp_earned: xpEarned,
+                completed_at: new Date().toISOString(),
+              });
+              // Award XP
+              if (profile?.id) {
+                await addXP(supabase, profile.id, xpEarned);
+                setTotalXp(prev => prev + xpEarned);
+              }
+              setGuidedActivities(prev => prev.filter(a => a.id !== activeQuiz.id));
+            }}
+            onClose={() => setActiveQuiz(null)}
+          />
+        )}
+        {!activeQuiz && <HomeworkSetup onStart={handleStart} />}
       </AgeThemeProvider>
     );
   }

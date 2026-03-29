@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, FileText, School, Home } from 'lucide-react';
+import { Sparkles, FileText, School, Home, FolderOpen } from 'lucide-react';
 import Link from 'next/link';
 import { SubjectSelector } from './SubjectSelector';
 import { AgeGroupSelector } from './AgeGroupSelector';
@@ -13,7 +13,9 @@ import { Button } from '@/components/ui/button';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
-import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
+import { getKidMaterials } from '@/lib/supabase/queries';
+import { getFileIcon } from '@/lib/storage/materials';
+import type { AgeGroup, BehavioralProfile, Material } from '@/lib/auth/types';
 
 interface ClassroomMaterial {
   id: string;
@@ -39,6 +41,8 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
   const [behavioralProfile] = useState<BehavioralProfile>('default');
   const [materials, setMaterials] = useState<ClassroomMaterial[]>([]);
   const [selectedMaterial, setSelectedMaterial] = useState<ClassroomMaterial | null>(null);
+  const [personalMaterials, setPersonalMaterials] = useState<Material[]>([]);
+  const [selectedPersonalMaterial, setSelectedPersonalMaterial] = useState<Material | null>(null);
   const { profile } = useAuth();
 
   // Load materials from student's classrooms
@@ -63,6 +67,23 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
         }
         setMaterials(mats);
       });
+  }, [profile]);
+
+  // Load personal materials (from library)
+  useEffect(() => {
+    if (!profile?.id) return;
+    const supabase = createClient();
+    getKidMaterials(supabase, profile.id).then(({ data }) => {
+      setPersonalMaterials(data.filter(m => m.content_text));
+    });
+    // Also check sessionStorage for material from /materials page
+    const storedText = sessionStorage.getItem('studdo_material_text');
+    const storedTitle = sessionStorage.getItem('studdo_material_title');
+    if (storedText && storedTitle) {
+      setPhotoText(storedText);
+      sessionStorage.removeItem('studdo_material_text');
+      sessionStorage.removeItem('studdo_material_title');
+    }
   }, [profile]);
 
   return (
@@ -133,10 +154,55 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
         </motion.div>
       )}
 
+      {/* Personal materials library */}
+      {personalMaterials.length > 0 && (
+        <motion.div variants={fadeInUp('medium')} className="mb-1">
+          <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium flex items-center gap-1.5">
+            <FolderOpen size={14} />
+            Meus materiais
+          </p>
+          <div className="space-y-2 max-h-40 overflow-y-auto">
+            {personalMaterials.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => {
+                  setSelectedPersonalMaterial(selectedPersonalMaterial?.id === m.id ? null : m);
+                  if (selectedPersonalMaterial?.id !== m.id) setSelectedMaterial(null);
+                }}
+                className={`w-full text-left rounded-xl p-3 transition-all ${
+                  selectedPersonalMaterial?.id === m.id ? 'ring-1 ring-purple-500' : ''
+                }`}
+                style={{
+                  background: selectedPersonalMaterial?.id === m.id ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.03)',
+                  border: `1px solid ${selectedPersonalMaterial?.id === m.id ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.05)'}`,
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm shrink-0">{getFileIcon(m.file_type)}</span>
+                  <div className="min-w-0">
+                    <p className="text-white text-xs font-medium truncate">{m.title}</p>
+                  </div>
+                  {selectedPersonalMaterial?.id === m.id && (
+                    <span className="text-purple-400 text-[10px] font-bold shrink-0 ml-auto">Selecionado</span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+          <Link
+            href="/materials"
+            className="inline-flex items-center gap-1 text-purple-400/60 hover:text-purple-400 text-[11px] mt-1.5 transition-colors"
+          >
+            <FolderOpen size={10} />
+            Ver todos os materiais
+          </Link>
+        </motion.div>
+      )}
+
       {/* Photo Upload — optional */}
       <motion.div variants={fadeInUp('medium')} className="mb-1">
         <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">
-          3. Tem foto da tarefa? (opcional)
+          {personalMaterials.length > 0 || materials.length > 0 ? '4' : '3'}. Tem foto da tarefa? (opcional)
         </p>
         <PhotoUpload onTextExtracted={setPhotoText} />
         {photoText && (
@@ -152,6 +218,7 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
           onClick={() => {
             const context = [
               selectedMaterial?.content_text ? `[Material do professor: ${selectedMaterial.title}]\n${selectedMaterial.content_text}` : '',
+              selectedPersonalMaterial?.content_text ? `[Meu material: ${selectedPersonalMaterial.title}]\n${selectedPersonalMaterial.content_text}` : '',
               photoText,
             ].filter(Boolean).join('\n\n');
             onStart({ homework: context, subject, ageGroup, behavioralProfile });

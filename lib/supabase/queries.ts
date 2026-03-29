@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats, SessionSummary, ParentTask } from '@/lib/auth/types';
+import type { Profile, Session, Message, UserStats, Badge, Suggestion, AdminMetrics, UserFeedback, FeedbackStats, SessionSummary, ParentTask, Material, GuidedActivity } from '@/lib/auth/types';
 import { checkNewBadges } from '@/lib/gamification/badges';
 
 // ==========================================
@@ -779,4 +779,147 @@ export async function getClassroomStats(
   const studentsActiveThisWeek = activeThisWeek.size;
 
   return { totalSessions, averageXP, mostActiveStudent, mostStudiedSubject, studentsActiveThisWeek };
+}
+
+// ==========================================
+// MATERIALS LIBRARY
+// ==========================================
+
+export async function createMaterial(
+  supabase: SupabaseClient,
+  data: Omit<Material, 'id' | 'created_at' | 'updated_at' | 'tags'> & { tags?: string[] }
+) {
+  const { data: result, error } = await supabase
+    .from('materials')
+    .insert({ ...data, tags: data.tags || [] })
+    .select()
+    .single();
+  return { data: result as Material | null, error };
+}
+
+export async function getMaterials(
+  supabase: SupabaseClient,
+  ownerId: string,
+  options?: { subject?: string; kidId?: string; limit?: number }
+) {
+  let query = supabase
+    .from('materials')
+    .select('*')
+    .eq('owner_id', ownerId)
+    .order('created_at', { ascending: false });
+
+  if (options?.subject) query = query.eq('subject', options.subject);
+  if (options?.kidId) query = query.eq('kid_id', options.kidId);
+  if (options?.limit) query = query.limit(options.limit);
+
+  const { data, error } = await query;
+  return { data: (data || []) as Material[], error };
+}
+
+export async function getKidMaterials(
+  supabase: SupabaseClient,
+  kidId: string,
+  options?: { subject?: string }
+) {
+  let query = supabase
+    .from('materials')
+    .select('*')
+    .or(`owner_id.eq.${kidId},kid_id.eq.${kidId}`)
+    .order('created_at', { ascending: false });
+
+  if (options?.subject) query = query.eq('subject', options.subject);
+
+  const { data, error } = await query;
+  return { data: (data || []) as Material[], error };
+}
+
+export async function deleteMaterialRecord(
+  supabase: SupabaseClient,
+  materialId: string
+) {
+  const { error } = await supabase
+    .from('materials')
+    .delete()
+    .eq('id', materialId);
+  return { error };
+}
+
+// ==========================================
+// GUIDED ACTIVITIES (Study Together)
+// ==========================================
+
+export async function createGuidedActivity(
+  supabase: SupabaseClient,
+  data: Omit<GuidedActivity, 'id' | 'kid_score' | 'xp_earned' | 'started_at' | 'completed_at' | 'created_at'>
+) {
+  const { data: result, error } = await supabase
+    .from('guided_activities')
+    .insert(data)
+    .select()
+    .single();
+  return { data: result as GuidedActivity | null, error };
+}
+
+export async function getParentActivities(
+  supabase: SupabaseClient,
+  parentId: string,
+  kidId: string
+) {
+  const { data, error } = await supabase
+    .from('guided_activities')
+    .select('*')
+    .eq('parent_id', parentId)
+    .eq('kid_id', kidId)
+    .order('created_at', { ascending: false });
+  return { data: (data || []) as GuidedActivity[], error };
+}
+
+export async function getKidActivities(
+  supabase: SupabaseClient,
+  kidId: string,
+  statusFilter?: string[]
+) {
+  let query = supabase
+    .from('guided_activities')
+    .select('*')
+    .eq('kid_id', kidId)
+    .order('created_at', { ascending: false });
+
+  if (statusFilter && statusFilter.length > 0) {
+    query = query.in('status', statusFilter);
+  }
+
+  const { data, error } = await query;
+  return { data: (data || []) as GuidedActivity[], error };
+}
+
+export async function updateActivityStatus(
+  supabase: SupabaseClient,
+  activityId: string,
+  updates: {
+    status: 'in_progress' | 'completed';
+    kid_score?: number;
+    xp_earned?: number;
+    started_at?: string;
+    completed_at?: string;
+  }
+) {
+  const { data, error } = await supabase
+    .from('guided_activities')
+    .update(updates)
+    .eq('id', activityId)
+    .select()
+    .single();
+  return { data: data as GuidedActivity | null, error };
+}
+
+export async function deleteGuidedActivity(
+  supabase: SupabaseClient,
+  activityId: string
+) {
+  const { error } = await supabase
+    .from('guided_activities')
+    .delete()
+    .eq('id', activityId);
+  return { error };
 }

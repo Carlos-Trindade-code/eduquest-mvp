@@ -199,6 +199,56 @@ export interface KidStudyStats {
   top_difficulties: string[];
 }
 
+// Materials Library
+export interface Material {
+  id: string;
+  owner_id: string;
+  owner_type: 'kid' | 'parent' | 'teacher';
+  kid_id: string | null;
+  title: string;
+  description: string | null;
+  file_url: string | null;
+  file_type: string | null;
+  file_name: string | null;
+  file_size: number | null;
+  content_text: string | null;
+  subject: string | null;
+  tags: string[];
+  thumbnail_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Guided Activities (Study Together)
+export type ActivityType = 'quiz' | 'reading' | 'exercise' | 'review';
+export type ActivityStatus = 'pending' | 'in_progress' | 'completed';
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+}
+
+export interface GuidedActivity {
+  id: string;
+  parent_id: string;
+  kid_id: string;
+  title: string;
+  subject: string;
+  activity_type: ActivityType;
+  material_ids: string[];
+  questions: QuizQuestion[] | null;
+  instructions: string | null;
+  parent_note: string | null;
+  status: ActivityStatus;
+  kid_score: number | null;
+  xp_earned: number;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
 export type ParentTaskStatus = 'pending' | 'in_progress' | 'completed';
 
 export interface ParentTask {
