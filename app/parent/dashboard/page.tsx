@@ -22,6 +22,7 @@ import { BadgeCard } from '@/components/gamification/BadgeCard';
 import { SessionsChart } from '@/components/parent/charts/SessionsChart';
 import { SubjectsChart } from '@/components/parent/charts/SubjectsChart';
 import { StudyStatsCards } from '@/components/parent/StudyStatsCards';
+import { WeeklyDigest } from '@/components/parent/WeeklyDigest';
 import { SessionTimeline } from '@/components/parent/SessionTimeline';
 import { SessionDetail } from '@/components/parent/SessionDetail';
 import { TasksTab } from '@/components/parent/TasksTab';
@@ -461,6 +462,13 @@ export default function ParentDashboard() {
                 initial="hidden"
                 animate="visible"
               >
+                {/* Weekly Digest */}
+                <WeeklyDigest
+                  kidName={selectedKid?.name || 'Seu filho'}
+                  stats={kidStats}
+                  summaries={summaries}
+                />
+
                 {/* Enhanced Stats Cards */}
                 <StudyStatsCards stats={studyStats} summaries={summaries} />
 

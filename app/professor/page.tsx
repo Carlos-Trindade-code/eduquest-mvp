@@ -209,8 +209,36 @@ export default function ProfessorPage() {
 
                 {classroomStats && members.length > 0 && (<ClassroomStatsSummary stats={classroomStats} totalStudents={members.length} />)}
 
+                {/* Top performers ranking */}
+                {members.length > 0 && Object.values(studentAnalytics).some((a) => a.totalXP > 0) && (
+                  <TopPerformers members={members} analytics={studentAnalytics} />
+                )}
+
                 <div className="glass rounded-2xl p-5">
-                  <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4"><Users size={16} className="text-blue-400" />Alunos ({members.length})</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-white font-semibold text-sm flex items-center gap-2"><Users size={16} className="text-blue-400" />Alunos ({members.length})</h3>
+                    {members.length > 0 && Object.values(studentAnalytics).some((a) => a.totalSessions > 0) && (
+                      <button
+                        onClick={() => {
+                          const lines = [
+                            `📊 Relatorio — ${selectedClassroom.name}`,
+                            `Total: ${classroomStats?.totalSessions || 0} sessoes · XP medio: ${classroomStats?.averageXP || 0}`,
+                            '',
+                            ...members.map((m) => {
+                              const a = studentAnalytics[m.student_id];
+                              return `${m.profiles?.name || 'Aluno'}: ${a?.totalSessions || 0} sessoes, ${a?.totalXP || 0} XP, ${a?.totalMinutes || 0}min`;
+                            }),
+                            '',
+                            `Gerado pelo Studdo — studdo.com.br`,
+                          ];
+                          navigator.clipboard.writeText(lines.join('\n'));
+                        }}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
+                      >
+                        <Copy size={12} />Copiar relatorio
+                      </button>
+                    )}
+                  </div>
                   {members.length === 0 ? (
                     <p className="text-white/30 text-sm text-center py-8">Nenhum aluno ainda. Compartilhe o codigo da turma.</p>
                   ) : analyticsLoading ? (
@@ -229,6 +257,50 @@ export default function ProfessorPage() {
       <AnimatePresence>{showUploadModal && selectedClassroom && (<UploadMaterialModal classroomId={selectedClassroom.id} onUploaded={() => { setShowUploadModal(false); loadClassroomData(selectedClassroom.id); }} onClose={() => setShowUploadModal(false)} />)}</AnimatePresence>
       <FeedbackButton />
     </div>
+  );
+}
+
+function TopPerformers({ members, analytics }: { members: ClassroomMember[]; analytics: Record<string, StudentAnalytics> }) {
+  const MEDALS = ['🥇', '🥈', '🥉'];
+  const ranked = members
+    .map((m) => ({ ...m, xp: analytics[m.student_id]?.totalXP || 0, sessions: analytics[m.student_id]?.totalSessions || 0 }))
+    .filter((m) => m.xp > 0)
+    .sort((a, b) => b.xp - a.xp)
+    .slice(0, 3);
+
+  if (ranked.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="glass rounded-2xl p-5"
+    >
+      <h3 className="text-white font-semibold text-sm flex items-center gap-2 mb-4">
+        <Star size={16} className="text-yellow-400" />
+        Destaque da turma
+      </h3>
+      <div className="grid grid-cols-3 gap-3">
+        {ranked.map((student, i) => (
+          <div
+            key={student.id}
+            className="rounded-xl p-3 text-center"
+            style={{
+              background: i === 0 ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${i === 0 ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.05)'}`,
+            }}
+          >
+            <span className="text-2xl block mb-1">{MEDALS[i]}</span>
+            <div className="w-8 h-8 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold mb-1">
+              {(student.profiles?.name || '?').charAt(0).toUpperCase()}
+            </div>
+            <p className="text-white text-xs font-semibold truncate">{student.profiles?.name || 'Aluno'}</p>
+            <p className="text-amber-400 text-[10px] font-bold">{student.xp} XP</p>
+            <p className="text-white/25 text-[10px]">{student.sessions} sessoes</p>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
