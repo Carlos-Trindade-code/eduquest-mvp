@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Flame, Trophy, Star, Zap, BookOpen,
-  Calendar, Target, Sparkles, ChevronRight,
+  Calendar, Target, Sparkles, ChevronRight, Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
@@ -35,6 +35,8 @@ export default function PerfilPage() {
   const [earnedBadges, setEarnedBadges] = useState<Badge[]>([]);
   const [subjectStats, setSubjectStats] = useState<SubjectStat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const ageGroup: AgeGroup = profile?.age_group || '10-12';
 
   useEffect(() => {
@@ -272,7 +274,79 @@ export default function PerfilPage() {
               <ChevronRight size={14} />
             </Link>
           </motion.div>
+
+          {/* Delete account */}
+          <div className="pt-6 border-t border-white/5">
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="flex items-center gap-2 text-red-400/60 hover:text-red-400 text-xs transition-colors mx-auto"
+            >
+              <Trash2 size={12} />
+              Excluir minha conta
+            </button>
+          </div>
         </div>
+
+        {/* Delete confirmation modal */}
+        <AnimatePresence>
+          {showDeleteModal && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !deleting && setShowDeleteModal(false)}
+            >
+              <motion.div
+                className="glass rounded-2xl p-6 max-w-sm w-full"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-red-500/10 flex items-center justify-center mb-3">
+                    <Trash2 size={20} className="text-red-400" />
+                  </div>
+                  <h3 className="text-white font-bold text-lg">Excluir conta?</h3>
+                  <p className="text-white/50 text-sm mt-2">
+                    Todos os seus dados serao apagados permanentemente: sessoes, badges, XP, materiais e progresso. Esta acao nao pode ser desfeita.
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white/70 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setDeleting(true);
+                      try {
+                        const res = await fetch('/api/account/delete', { method: 'POST' });
+                        if (res.ok) {
+                          router.push('/?deleted=1');
+                        } else {
+                          alert('Erro ao excluir conta. Tente novamente.');
+                        }
+                      } catch {
+                        alert('Erro ao excluir conta. Tente novamente.');
+                      } finally {
+                        setDeleting(false);
+                      }
+                    }}
+                    disabled={deleting}
+                    className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-500 transition-colors disabled:opacity-50"
+                  >
+                    {deleting ? 'Excluindo...' : 'Sim, excluir'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </AgeThemeProvider>
   );

@@ -1,14 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateTutorResponse } from '@/lib/ai/provider';
 import type { AgeGroup } from '@/lib/auth/types';
-
-interface ExamRequest {
-  topic: string;
-  subject: string;
-  ageGroup: AgeGroup;
-  questionCount: number;
-  fileContent?: string;
-}
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { examSchema } from '@/lib/api/schemas';
 
 function getAgeLabel(ageGroup: AgeGroup): string {
   const labels: Record<AgeGroup, string> = {
@@ -34,7 +28,7 @@ function getSubjectName(id: string): string {
   return names[id] || id;
 }
 
-function buildExamPrompt(req: ExamRequest): string {
+function buildExamPrompt(req: { topic: string; subject: string; ageGroup: AgeGroup; questionCount: number; fileContent?: string }): string {
   const ageLabel = getAgeLabel(req.ageGroup);
   const subjectName = getSubjectName(req.subject);
 
@@ -79,19 +73,26 @@ IMPORTANTE:
 - Para múltipla escolha, as alternativas devem ser plausíveis (distratores reais)`;
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const body: ExamRequest = await request.json();
+    const rl = rateLimit(request, { maxRequests: 5, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
 
-    if (!body.topic && !body.fileContent) {
-      body.topic = getSubjectName(body.subject);
+    const parsed = examSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+    }
+    const examInput = { ...parsed.data };
+
+    if (!examInput.topic && !examInput.fileContent) {
+      examInput.topic = getSubjectName(examInput.subject);
     }
 
-    const systemPrompt = buildExamPrompt(body);
+    const systemPrompt = buildExamPrompt(examInput);
 
-    const userMessage = body.fileContent
-      ? `Gere a prova baseada no tema "${body.topic || 'conteúdo do material'}" usando o material de referência fornecido.`
-      : `Gere a prova sobre o tema: "${body.topic}"`;
+    const userMessage = examInput.fileContent
+      ? `Gere a prova baseada no tema "${examInput.topic || 'conteúdo do material'}" usando o material de referência fornecido.`
+      : `Gere a prova sobre o tema: "${examInput.topic}"`;
 
     const response = await generateTutorResponse({
       systemPrompt,
@@ -100,26 +101,24 @@ export async function POST(request: Request) {
     });
 
     // Parse JSON response — try to extract JSON if wrapped in markdown
-    let examData;
+    let examResult;
     try {
-      examData = JSON.parse(response);
+      examResult = JSON.parse(response);
     } catch {
-      // Try to extract JSON from markdown code blocks
       const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)```/);
       if (jsonMatch) {
-        examData = JSON.parse(jsonMatch[1].trim());
+        examResult = JSON.parse(jsonMatch[1].trim());
       } else {
-        // Try to find JSON object in the response
         const objectMatch = response.match(/\{[\s\S]*\}/);
         if (objectMatch) {
-          examData = JSON.parse(objectMatch[0]);
+          examResult = JSON.parse(objectMatch[0]);
         } else {
           throw new Error('Resposta da IA não é JSON válido');
         }
       }
     }
 
-    return NextResponse.json({ exam: examData });
+    return NextResponse.json({ exam: examResult });
   } catch (error) {
     console.error('Exam generation error:', error);
     return NextResponse.json(

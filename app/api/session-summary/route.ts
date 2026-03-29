@@ -1,13 +1,7 @@
 import { NextRequest } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-
-interface SessionSummaryRequest {
-  messages: { role: string; content: string }[];
-  subject: string;
-  ageGroup: string;
-  durationMinutes: number;
-  xpEarned: number;
-}
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { sessionSummarySchema } from '@/lib/api/schemas';
 
 interface SessionSummary {
   topics_covered: string[];
@@ -87,6 +81,9 @@ function parseJsonResponse(text: string): SessionSummary | null {
 
 export async function POST(request: NextRequest) {
   try {
+    const rl = rateLimit(request, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(
@@ -95,15 +92,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body: SessionSummaryRequest = await request.json();
-    const { messages, subject, ageGroup, durationMinutes, xpEarned } = body;
-
-    if (!messages || messages.length === 0) {
-      return Response.json(
-        { error: 'Nenhuma mensagem fornecida para análise.' },
-        { status: 400 }
-      );
+    const parsed = sessionSummarySchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { messages, subject, ageGroup, durationMinutes, xpEarned } = parsed.data;
 
     const ai = new GoogleGenAI({ apiKey });
 

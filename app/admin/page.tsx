@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { Shield } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { ADMIN_EMAIL } from '@/lib/auth/constants';
+import { ADMIN_EMAILS } from '@/lib/auth/constants';
 
 export default function AdminPage() {
   const [authorized, setAuthorized] = useState(false);
@@ -15,7 +15,7 @@ export default function AdminPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
-      if (user?.email === ADMIN_EMAIL) {
+      if (ADMIN_EMAILS.includes(user?.email?.toLowerCase() || '')) {
         setAuthorized(true);
       }
       setChecking(false);

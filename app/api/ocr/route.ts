@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
 import mammoth from 'mammoth';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 
 const DOCX_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -10,6 +11,9 @@ const DOCX_TYPES = [
 
 export async function POST(request: NextRequest) {
   try {
+    const rl = rateLimit(request, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
+
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     // Auth is optional — guests can use OCR during trial

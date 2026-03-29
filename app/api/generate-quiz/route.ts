@@ -1,20 +1,25 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { generateQuizSchema } from '@/lib/api/schemas';
 
 export async function POST(request: NextRequest) {
   try {
+    const rl = rateLimit(request, { maxRequests: 5, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
+
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return Response.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
-    const { materialText, subject, ageGroup, questionCount = 5 } = await request.json();
-
-    if (!materialText) {
-      return Response.json({ error: 'Texto do material obrigatório' }, { status: 400 });
+    const parsed = generateQuizSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { materialText, subject, ageGroup, questionCount } = parsed.data;
 
     if (!process.env.GEMINI_API_KEY) {
       return Response.json({ error: 'GEMINI_API_KEY não configurada' }, { status: 500 });
@@ -68,13 +73,13 @@ RETORNE APENAS um JSON válido neste formato (sem markdown, sem explicação ext
       return Response.json({ error: 'Falha ao gerar quiz. Tente novamente.' }, { status: 500 });
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
+    const quizResult = JSON.parse(jsonMatch[0]);
 
-    if (!parsed.questions || !Array.isArray(parsed.questions)) {
+    if (!quizResult.questions || !Array.isArray(quizResult.questions)) {
       return Response.json({ error: 'Formato de quiz inválido' }, { status: 500 });
     }
 
-    return Response.json(parsed);
+    return Response.json(quizResult);
   } catch (error) {
     console.error('Generate quiz error:', error);
     return Response.json({ error: 'Erro ao gerar quiz' }, { status: 500 });

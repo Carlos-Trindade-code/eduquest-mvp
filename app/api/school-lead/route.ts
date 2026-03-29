@@ -1,14 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { schoolLeadSchema } from '@/lib/api/schemas';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { schoolName, contactName, email, phone, role, studentCount, message } = body;
+    const rl = rateLimit(request, { maxRequests: 3, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
 
-    if (!schoolName || !contactName || !email) {
-      return NextResponse.json({ error: 'Campos obrigatorios: escola, nome e email' }, { status: 400 });
+    const parsed = schoolLeadSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { schoolName, contactName, email, phone, role, studentCount, message } = parsed.data;
 
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase.from('school_leads').insert({

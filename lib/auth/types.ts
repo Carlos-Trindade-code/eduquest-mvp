@@ -58,8 +58,6 @@ export interface Session {
   ended_at: string | null;
   duration_minutes: number | null;
   xp_earned: number;
-  error_count: number;
-  message_count: number;
 }
 
 export interface Message {

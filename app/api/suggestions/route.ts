@@ -1,16 +1,18 @@
 import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { NextRequest } from 'next/server';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { suggestionsSchema } from '@/lib/api/schemas';
 
 export async function POST(request: NextRequest) {
   try {
-    const { content, userName, userEmail } = await request.json();
+    const rl = rateLimit(request, { maxRequests: 5, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
 
-    if (!content || typeof content !== 'string' || content.trim().length < 5) {
-      return Response.json(
-        { error: 'Sugestão deve ter pelo menos 5 caracteres' },
-        { status: 400 }
-      );
+    const parsed = suggestionsSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { content, userName, userEmail } = parsed.data;
 
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();

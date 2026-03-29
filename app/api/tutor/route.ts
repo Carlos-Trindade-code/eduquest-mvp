@@ -2,39 +2,33 @@ import { NextRequest } from 'next/server';
 import { buildSystemPrompt } from '@/lib/subjects/prompts';
 import { generateTutorResponse, getCurrentProvider } from '@/lib/ai/provider';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
-import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
-
-interface TutorRequestBody {
-  messages: { role: 'user' | 'assistant'; content: string }[];
-  homework: string;
-  subject?: string;
-  ageGroup?: AgeGroup;
-  behavioralProfile?: BehavioralProfile;
-  studentName?: string;
-  age?: number;
-  grade?: string;
-  knownDifficulties?: string[];
-  errorPatterns?: string[];
-}
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { tutorSchema } from '@/lib/api/schemas';
 
 export async function POST(request: NextRequest) {
   try {
+    const rl = rateLimit(request, { maxRequests: 20, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
+
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     // Auth is optional — guests can use the trial (limited client-side)
-    const body: TutorRequestBody = await request.json();
+    const parsed = tutorSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+    }
     const {
       messages,
       homework,
-      subject = 'other',
-      ageGroup = '10-12',
-      behavioralProfile = 'default',
+      subject,
+      ageGroup,
+      behavioralProfile,
       studentName,
       age,
       grade,
       knownDifficulties,
       errorPatterns,
-    } = body;
+    } = parsed.data;
 
     // Build the full evolutionary system prompt
     const systemPrompt = buildSystemPrompt({

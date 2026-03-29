@@ -1,4 +1,6 @@
-export const ADMIN_EMAIL = 'carlostrindade@me.com';
+const adminEmails = process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || 'carlostrindade@me.com';
+export const ADMIN_EMAILS = adminEmails.split(',').map(e => e.trim().toLowerCase());
+export const ADMIN_EMAIL = ADMIN_EMAILS[0];
 
 /**
  * Validates that a redirect path is safe (relative, no protocol, no double-slash).

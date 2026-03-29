@@ -1,5 +1,7 @@
 import { generateTutorResponse } from '@/lib/ai/provider';
 import { NextRequest } from 'next/server';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { faqSchema } from '@/lib/api/schemas';
 
 const FAQ_SYSTEM_PROMPT = `Você é o Edu 🦉, assistente do Studdo, uma plataforma educacional com tutor IA para crianças de 4 a 18 anos.
 
@@ -23,11 +25,14 @@ Responda em português do Brasil. Seja conciso: máximo 3-4 frases. Não faça l
 
 export async function POST(request: NextRequest) {
   try {
-    const { question } = await request.json();
+    const rl = rateLimit(request, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
 
-    if (!question || typeof question !== 'string') {
-      return Response.json({ error: 'Pergunta inválida' }, { status: 400 });
+    const parsed = faqSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { question } = parsed.data;
 
     const answer = await generateTutorResponse({
       systemPrompt: FAQ_SYSTEM_PROMPT,

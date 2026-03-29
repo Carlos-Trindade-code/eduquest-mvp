@@ -4,6 +4,8 @@ import { uploadMaterial, deleteMaterialFile } from '@/lib/storage/materials';
 import { createMaterial, getKidMaterials, getMaterials, deleteMaterialRecord } from '@/lib/supabase/queries';
 import { GoogleGenAI } from '@google/genai';
 import mammoth from 'mammoth';
+import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { deleteMaterialSchema } from '@/lib/api/schemas';
 
 const DOCX_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -51,6 +53,9 @@ async function extractText(file: File): Promise<string | null> {
 // POST — upload material
 export async function POST(request: NextRequest) {
   try {
+    const rl = rateLimit(request, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
+
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -160,16 +165,20 @@ export async function GET(request: NextRequest) {
 // DELETE — remove material
 export async function DELETE(request: NextRequest) {
   try {
+    const rl = rateLimit(request, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.success) return rateLimitResponse();
+
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return Response.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
-    const { materialId } = await request.json();
-    if (!materialId) {
-      return Response.json({ error: 'materialId obrigatório' }, { status: 400 });
+    const parsed = deleteMaterialSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { materialId } = parsed.data;
 
     // Get material to find file path
     const { data: material } = await supabase
