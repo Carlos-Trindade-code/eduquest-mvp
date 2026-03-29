@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
 
     if (!content || typeof content !== 'string' || content.trim().length < 5) {
       return Response.json(
-        { error: 'Sugestao deve ter pelo menos 5 caracteres' },
+        { error: 'Sugestão deve ter pelo menos 5 caracteres' },
         { status: 400 }
       );
     }
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Suggestion insert error:', error);
       return Response.json(
-        { error: 'Erro ao salvar sugestao' },
+        { error: 'Erro ao salvar sugestão' },
         { status: 500 }
       );
     }

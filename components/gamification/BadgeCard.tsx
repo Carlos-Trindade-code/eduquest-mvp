@@ -30,13 +30,13 @@ const rarityStyles: Record<BadgeRarity, { border: string; glow: string; label: s
   epic: {
     border: 'border-purple-400/40',
     glow: 'shadow-[0_0_20px_rgba(139,92,246,0.2)]',
-    label: 'Epico',
+    label: 'Épico',
     labelColor: 'text-purple-400',
   },
   legendary: {
     border: 'border-amber-400/50',
     glow: 'shadow-[0_0_25px_rgba(251,191,36,0.25)]',
-    label: 'Lendario',
+    label: 'Lendário',
     labelColor: 'text-amber-400',
   },
 };

@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const errorMessage =
       error instanceof Error && error.message.includes('API key')
-        ? 'API key nao configurada. Verifique o .env.local.'
+        ? 'API key não configurada. Verifique o .env.local.'
         : 'Erro no tutor. Tente novamente.';
 
     return Response.json({ error: errorMessage }, { status: 500 });

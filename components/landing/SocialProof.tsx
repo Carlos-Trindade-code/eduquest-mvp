@@ -122,7 +122,7 @@ export function SocialProof() {
                   <method.icon className="w-6 h-6" style={{ color: method.color }} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-1">{method.title}</h3>
+                  <h3 className="text-lg font-semibold text-white mb-1 break-words">{method.title}</h3>
                   <p className="text-white/50 text-sm leading-relaxed">{method.description}</p>
                 </div>
               </div>

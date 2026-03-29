@@ -30,7 +30,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'sessions_5',
     name: 'Estudante Dedicado',
-    description: 'Complete 5 sessoes de estudo',
+    description: 'Complete 5 sessões de estudo',
     icon: '📖',
     rarity: 'common',
     condition: (s) => s.sessionsCompleted >= 5,
@@ -38,15 +38,15 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'sessions_25',
     name: 'Maratonista do Saber',
-    description: 'Complete 25 sessoes de estudo',
+    description: 'Complete 25 sessões de estudo',
     icon: '🏆',
     rarity: 'rare',
     condition: (s) => s.sessionsCompleted >= 25,
   },
   {
     id: 'sessions_100',
-    name: 'Centuriao',
-    description: 'Complete 100 sessoes de estudo',
+    name: 'Centurião',
+    description: 'Complete 100 sessões de estudo',
     icon: '👑',
     rarity: 'epic',
     condition: (s) => s.sessionsCompleted >= 100,
@@ -69,7 +69,7 @@ export const badges: BadgeDefinition[] = [
   },
   {
     id: 'streak_30',
-    name: 'Mestre do Mes',
+    name: 'Mestre do Mês',
     description: 'Estude 30 dias seguidos',
     icon: '🌙',
     rarity: 'legendary',
@@ -78,7 +78,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'xp_1000',
     name: 'Mil XP',
-    description: 'Acumule 1.000 pontos de experiencia',
+    description: 'Acumule 1.000 pontos de experiência',
     icon: '💎',
     rarity: 'common',
     condition: (s) => s.totalXp >= 1000,
@@ -86,7 +86,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'xp_5000',
     name: 'Cinco Mil XP',
-    description: 'Acumule 5.000 pontos de experiencia',
+    description: 'Acumule 5.000 pontos de experiência',
     icon: '💰',
     rarity: 'rare',
     condition: (s) => s.totalXp >= 5000,
@@ -94,7 +94,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'multi_subject',
     name: 'Polimata',
-    description: 'Estude 3 materias diferentes',
+    description: 'Estude 3 matérias diferentes',
     icon: '🧠',
     rarity: 'common',
     condition: (s) => s.subjectsStudied.length >= 3,
@@ -102,7 +102,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'all_subjects',
     name: 'Mestre de Todas as Artes',
-    description: 'Estude todas as materias disponiveis',
+    description: 'Estude todas as matérias disponíveis',
     icon: '🎓',
     rarity: 'epic',
     condition: (s) => s.subjectsStudied.length >= 6,

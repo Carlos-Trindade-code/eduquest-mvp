@@ -247,7 +247,7 @@ export async function redeemInviteCode(
     if (rpcError.includes('not found') || rpcError.includes('invalid') || rpcError.includes('nao encontr')) {
       friendlyError = 'Codigo nao encontrado. Verifique se digitou corretamente.';
     } else if (rpcError.includes('already') || rpcError.includes('ja') || data.already_linked) {
-      friendlyError = 'Voce ja esta conectado a este pai/mae!';
+      friendlyError = 'Você já está conectado a este pai/mãe!';
     }
     return {
       data: { ...data, error: friendlyError } as {

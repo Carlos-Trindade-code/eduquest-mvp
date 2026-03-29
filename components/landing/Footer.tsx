@@ -23,7 +23,7 @@ export function Footer() {
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
               style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 40px rgba(245,166,35,0.4)' }}
             >
-              Testar tutor gratis
+              Testar tutor grátis
               <ArrowRight size={18} />
             </Link>
             <Link

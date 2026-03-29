@@ -32,16 +32,16 @@ export async function POST(request: NextRequest) {
         if (text) {
           return Response.json({ text });
         }
-        return Response.json({ error: 'Documento vazio ou ilegivel.' }, { status: 400 });
+        return Response.json({ error: 'Documento vazio ou ilegível.' }, { status: 400 });
       } catch {
-        return Response.json({ error: 'Nao consegui ler o documento Word. Tente outro formato.' }, { status: 500 });
+        return Response.json({ error: 'Não consegui ler o documento Word. Tente outro formato.' }, { status: 500 });
       }
     }
 
     // ---- Images & PDF: use Gemini Vision ----
     if (!process.env.GEMINI_API_KEY) {
       return Response.json(
-        { error: 'API key nao configurada. Defina GEMINI_API_KEY no .env.local' },
+        { error: 'API key não configurada. Defina GEMINI_API_KEY no .env.local' },
         { status: 500 }
       );
     }
@@ -90,7 +90,7 @@ Retorne APENAS o texto extraído, sem explicações adicionais.`,
   } catch (error) {
     console.error('OCR error:', error);
     return Response.json(
-      { error: 'Nao consegui ler o arquivo. Tente novamente.' },
+      { error: 'Não consegui ler o arquivo. Tente novamente.' },
       { status: 500 }
     );
   }

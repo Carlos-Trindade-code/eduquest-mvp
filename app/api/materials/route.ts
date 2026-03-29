@@ -38,7 +38,7 @@ async function extractText(file: File): Promise<string | null> {
         role: 'user',
         parts: [
           { inlineData: { mimeType, data: base64 } },
-          { text: 'Extraia todo o texto deste documento/imagem escolar brasileiro. Mantenha a formatacao original. Retorne APENAS o texto extraido.' },
+          { text: 'Extraia todo o texto deste documento/imagem escolar brasileiro. Mantenha a formatação original. Retorne APENAS o texto extraído.' },
         ],
       }],
     });
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return Response.json({ error: 'Nao autenticado' }, { status: 401 });
+      return Response.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
     const formData = await request.formData();
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (!profile) {
-      return Response.json({ error: 'Perfil nao encontrado' }, { status: 404 });
+      return Response.json({ error: 'Perfil não encontrado' }, { status: 404 });
     }
 
     if (!file) {
@@ -126,7 +126,7 @@ export async function GET(request: NextRequest) {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return Response.json({ error: 'Nao autenticado' }, { status: 401 });
+      return Response.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
     const { data: profile } = await supabase
@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (!profile) {
-      return Response.json({ error: 'Perfil nao encontrado' }, { status: 404 });
+      return Response.json({ error: 'Perfil não encontrado' }, { status: 404 });
     }
 
     const url = new URL(request.url);
@@ -163,12 +163,12 @@ export async function DELETE(request: NextRequest) {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return Response.json({ error: 'Nao autenticado' }, { status: 401 });
+      return Response.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
     const { materialId } = await request.json();
     if (!materialId) {
-      return Response.json({ error: 'materialId obrigatorio' }, { status: 400 });
+      return Response.json({ error: 'materialId obrigatório' }, { status: 400 });
     }
 
     // Get material to find file path

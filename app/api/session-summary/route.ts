@@ -18,10 +18,10 @@ interface SessionSummary {
 }
 
 const FALLBACK_SUMMARY: SessionSummary = {
-  topics_covered: ['Sessao de estudo realizada'],
-  strengths: ['Dedicacao ao estudo'],
+  topics_covered: ['Sessão de estudo realizada'],
+  strengths: ['Dedicação ao estudo'],
   difficulties: [],
-  ai_suggestion: 'Continue praticando! Cada sessao te deixa mais preparado.',
+  ai_suggestion: 'Continue praticando! Cada sessão te deixa mais preparado.',
   parent_tip: 'Incentive seu filho a manter uma rotina regular de estudos.',
 };
 
@@ -31,26 +31,26 @@ function buildAnalysisPrompt(
   durationMinutes: number,
   xpEarned: number
 ): string {
-  return `Voce e um analista educacional especializado em criancas e adolescentes.
-Analise a conversa abaixo entre um aluno (faixa etaria: ${ageGroup}) e um tutor de ${subject}.
-A sessao durou ${durationMinutes} minutos e o aluno ganhou ${xpEarned} XP.
+  return `Você é um analista educacional especializado em crianças e adolescentes.
+Analise a conversa abaixo entre um aluno (faixa etária: ${ageGroup}) e um tutor de ${subject}.
+A sessão durou ${durationMinutes} minutos e o aluno ganhou ${xpEarned} XP.
 
-Retorne APENAS um JSON valido (sem markdown, sem crases, sem explicacao) com esta estrutura exata:
+Retorne APENAS um JSON válido (sem markdown, sem crases, sem explicação) com esta estrutura exata:
 {
   "topics_covered": ["topico1", "topico2"],
   "strengths": ["ponto forte 1"],
   "difficulties": ["dificuldade 1"],
-  "ai_suggestion": "sugestao encorajadora para o aluno",
-  "parent_tip": "dica pratica para os pais"
+  "ai_suggestion": "sugestão encorajadora para o aluno",
+  "parent_tip": "dica prática para os pais"
 }
 
 Regras:
-- topics_covered: topicos especificos estudados (maximo 5)
-- strengths: o que o aluno dominou bem (maximo 3)
-- difficulties: onde o aluno teve dificuldade (maximo 3, pode ser array vazio se nao houve)
-- ai_suggestion: sugestao encorajadora de proximo passo para o aluno (maximo 2 frases)
-- parent_tip: dica pratica para os pais acompanharem (maximo 2 frases)
-- Tudo em portugues (pt-BR), linguagem simples e positiva
+- topics_covered: tópicos específicos estudados (máximo 5)
+- strengths: o que o aluno dominou bem (máximo 3)
+- difficulties: onde o aluno teve dificuldade (máximo 3, pode ser array vazio se não houve)
+- ai_suggestion: sugestão encorajadora de próximo passo para o aluno (máximo 2 frases)
+- parent_tip: dica prática para os pais acompanharem (máximo 2 frases)
+- Tudo em português (pt-BR), linguagem simples e positiva
 - RETORNE APENAS O JSON, nada mais`;
 }
 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(
-        { error: 'API key nao configurada. Verifique o .env.local.' },
+        { error: 'API key não configurada. Verifique o .env.local.' },
         { status: 500 }
       );
     }
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     if (!messages || messages.length === 0) {
       return Response.json(
-        { error: 'Nenhuma mensagem fornecida para analise.' },
+        { error: 'Nenhuma mensagem fornecida para análise.' },
         { status: 400 }
       );
     }

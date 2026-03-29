@@ -45,7 +45,7 @@ async function generateWithGemini(options: GenerateOptions): Promise<string> {
     contents,
   });
 
-  return response.text || 'Nao consegui responder. Tenta de novo!';
+  return response.text || 'Não consegui responder. Tenta de novo!';
 }
 
 // ============================================================
@@ -68,7 +68,7 @@ async function generateWithAnthropic(options: GenerateOptions): Promise<string> 
   const textBlock = response.content.find((block) => block.type === 'text');
   return textBlock && 'text' in textBlock
     ? textBlock.text
-    : 'Nao consegui responder. Tenta de novo!';
+    : 'Não consegui responder. Tenta de novo!';
 }
 
 // ============================================================

@@ -48,7 +48,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Bubble */}
       <div
-        className="px-4 py-3 leading-relaxed"
+        className="max-w-[85vw] sm:max-w-none px-4 py-3 leading-relaxed"
         style={{
           maxWidth: tokens.bubbleMaxWidth,
           fontSize: tokens.bubbleFontSize,

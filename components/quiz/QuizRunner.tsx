@@ -90,7 +90,7 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
         </div>
 
         {/* Score */}
-        <div className="flex gap-4">
+        <div className="flex gap-2 sm:gap-4">
           <motion.div
             className="rounded-2xl px-8 py-5 text-center"
             style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}

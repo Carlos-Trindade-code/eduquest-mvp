@@ -68,7 +68,7 @@ export function Navbar() {
               <Link href="/login">Entrar</Link>
             </Button>
             <Button variant="primary" size="sm" rounded="lg" asChild>
-              <Link href="/tutor">Testar gratis</Link>
+              <Link href="/tutor">Testar grátis</Link>
             </Button>
           </div>
 
@@ -104,7 +104,7 @@ export function Navbar() {
             ))}
             <div className="flex flex-col gap-2 pt-3 border-t border-white/10">
               <Button variant="primary" size="md" asChild>
-                <Link href="/tutor">Testar tutor gratis</Link>
+                <Link href="/tutor">Testar tutor grátis</Link>
               </Button>
               <Button variant="secondary" size="md" asChild>
                 <Link href="/login">Entrar</Link>
