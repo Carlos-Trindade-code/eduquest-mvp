@@ -9,7 +9,11 @@ type EventType =
   | 'feedback_submitted'
   | 'onboarding_completed'
   | 'login'
-  | 'register';
+  | 'register'
+  | 'quiz_completed'
+  | 'material_uploaded'
+  | 'exam_generated'
+  | 'account_deleted';
 
 export function trackEvent(eventType: EventType, metadata?: Record<string, unknown>) {
   try {
