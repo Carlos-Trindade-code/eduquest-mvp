@@ -82,7 +82,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
         userType: userType!,
         age: age ? parseInt(age) : undefined,
         grade: grade || undefined,
-        inviteCode: inviteCode || undefined,
+        inviteCode: inviteCode.trim() || undefined,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao criar conta');
@@ -389,33 +389,47 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         </div>
                       </div>
 
-                      <div className="space-y-1.5 rounded-xl p-3" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.12)' }}>
-                        <label htmlFor="register-invite-code" className="text-[var(--eq-text-secondary)] text-sm font-medium block">
-                          Código de convite do seu pai/mãe
-                        </label>
-                        <div className="relative group">
-                          <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
-                          <input
-                            id="register-invite-code"
-                            type="text"
-                            value={inviteCode}
-                            onChange={(e) => {
-                              let val = e.target.value.toUpperCase();
-                              // Auto-format: add EQ- prefix if user types without it
-                              if (val.length > 0 && !val.startsWith('EQ-') && !val.startsWith('EQ') && !val.startsWith('E')) {
-                                val = 'EQ-' + val;
-                              }
-                              // Limit to EQ-XXXX format (max 7 chars)
-                              if (val.length <= 7) {
-                                setInviteCode(val);
-                              }
-                            }}
-                            placeholder="EQ-XXXX"
-                            maxLength={7}
-                            className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
-                          />
-                        </div>
-                        <p className="text-white/50 text-xs pl-1">Se não tiver agora, pode vincular depois no app</p>
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setInviteCode(inviteCode ? '' : ' ')}
+                          className="flex items-center gap-1.5 text-white/30 hover:text-white/50 text-xs transition-colors"
+                        >
+                          <Ticket size={12} />
+                          {inviteCode.trim() ? 'Esconder código de convite' : 'Tem código de convite? (opcional)'}
+                        </button>
+                        <AnimatePresence>
+                          {inviteCode && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="mt-2 relative group">
+                                <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                                <input
+                                  id="register-invite-code"
+                                  type="text"
+                                  value={inviteCode.trim()}
+                                  onChange={(e) => {
+                                    let val = e.target.value.toUpperCase();
+                                    if (val.length > 0 && !val.startsWith('EQ-') && !val.startsWith('EQ') && !val.startsWith('E')) {
+                                      val = 'EQ-' + val;
+                                    }
+                                    if (val.length <= 7) {
+                                      setInviteCode(val);
+                                    }
+                                  }}
+                                  placeholder="EQ-XXXX"
+                                  maxLength={7}
+                                  className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
+                                />
+                              </div>
+                              <p className="text-white/30 text-[11px] mt-1 pl-1">Código do pai/mãe para vincular contas</p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </motion.div>
                   )}
