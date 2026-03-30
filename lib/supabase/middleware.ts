@@ -61,12 +61,7 @@ export async function updateSession(request: NextRequest) {
 
   // --- Role enforcement: prevent cross-role access ---
   if (user && userType) {
-    // Parents cannot access kid-only pages
-    if (pathname.startsWith('/tutor') && userType === 'parent') {
-      const url = request.nextUrl.clone();
-      url.pathname = '/parent/dashboard';
-      return NextResponse.redirect(url);
-    }
+    // Parents CAN access /tutor to preview — no redirect
     // Kids cannot access parent-only pages
     if (pathname.startsWith('/parent') && userType === 'kid') {
       const url = request.nextUrl.clone();
