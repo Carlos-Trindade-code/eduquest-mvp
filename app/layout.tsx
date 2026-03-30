@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
-import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { BottomNavWrapper } from "@/components/layout/BottomNavWrapper";
 import "./globals.css";
 
@@ -19,15 +17,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.studdo.com.br"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Studdo",
-  },
-  other: {
-    "mobile-web-app-capable": "yes",
-  },
   title: {
     default: "Studdo — Tutor IA que ensina de verdade",
     template: "%s | Studdo",
@@ -107,8 +96,6 @@ export default function RootLayout({
       >
         {children}
         <BottomNavWrapper />
-        <ServiceWorkerRegistration />
-        <InstallPrompt />
       </body>
     </html>
   );

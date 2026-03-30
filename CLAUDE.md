@@ -264,8 +264,7 @@ curl -s -o /dev/null -w "%{http_code}" https://eduquest-mvp-production.up.railwa
 2. **Dominio**: Configurar www.studdo.com.br no Railway + DNS no registro.br
 3. **Pagamento**: Integrar Stripe para planos premium
 4. **Email templates**: Customizar emails do Supabase
-5. **PWA**: manifest.json para instalar como app
-6. **Upload de material**: Aba para enviar PDFs/imagens com conteudo para estudo
-7. **Prompt pos-estudo**: Perguntar "quer continuar avancando?" ao fim da sessao
-8. **Testes**: Jest + React Testing Library
-9. **Modo offline**: Service worker
+5. **Upload de material**: Aba para enviar PDFs/imagens com conteudo para estudo
+6. **Prompt pos-estudo**: Perguntar "quer continuar avancando?" ao fim da sessao
+7. **Testes**: Jest + React Testing Library
+8. **PWA (melhoria futura)**: Service worker, manifest.json e modo offline foram removidos temporariamente (causavam tela de loading infinito). Reimplementar quando o app estiver mais estavel.
