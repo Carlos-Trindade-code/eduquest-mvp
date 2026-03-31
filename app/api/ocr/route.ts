@@ -9,6 +9,16 @@ const DOCX_TYPES = [
   'application/msword',
 ];
 
+const ALLOWED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+  'application/pdf',
+];
+
 export async function POST(request: NextRequest) {
   try {
     const rl = rateLimit(request, { maxRequests: 10, windowMs: 60_000 });
@@ -17,11 +27,24 @@ export async function POST(request: NextRequest) {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     // Auth is optional — guests can use OCR during trial
-    const formData = await request.formData();
+
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return Response.json(
+        { error: 'Nenhuma imagem enviada. Envie uma foto para extrair o texto.' },
+        { status: 400 }
+      );
+    }
+
     const imageFile = formData.get('image') as File;
 
-    if (!imageFile) {
-      return Response.json({ error: 'Nenhum arquivo enviado' }, { status: 400 });
+    if (!imageFile || imageFile.size === 0) {
+      return Response.json(
+        { error: 'Nenhuma imagem enviada. Envie uma foto para extrair o texto.' },
+        { status: 400 }
+      );
     }
 
     const mimeType = imageFile.type || 'application/octet-stream';
@@ -36,16 +59,31 @@ export async function POST(request: NextRequest) {
         if (text) {
           return Response.json({ text });
         }
-        return Response.json({ error: 'Documento vazio ou ilegível.' }, { status: 400 });
+        return Response.json(
+          { error: 'O documento parece estar vazio ou não foi possível ler o conteúdo. Tente outro arquivo.' },
+          { status: 400 }
+        );
       } catch {
-        return Response.json({ error: 'Não consegui ler o documento Word. Tente outro formato.' }, { status: 500 });
+        return Response.json(
+          { error: 'Não consegui ler o documento Word. Verifique se o arquivo não está corrompido ou tente outro formato.' },
+          { status: 400 }
+        );
       }
+    }
+
+    // ---- Validate image/PDF format ----
+    if (!ALLOWED_IMAGE_TYPES.includes(mimeType)) {
+      return Response.json(
+        { error: `Formato de arquivo não suportado (${mimeType}). Envie uma imagem (JPG, PNG, GIF, WebP) ou PDF.` },
+        { status: 400 }
+      );
     }
 
     // ---- Images & PDF: use Gemini Vision ----
     if (!process.env.GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY is not configured');
       return Response.json(
-        { error: 'API key não configurada. Defina GEMINI_API_KEY no .env.local' },
+        { error: 'Serviço de leitura de imagem temporariamente indisponível. Tente novamente mais tarde.' },
         { status: 500 }
       );
     }
@@ -53,6 +91,13 @@ export async function POST(request: NextRequest) {
     // Convert to base64
     const bytes = await imageFile.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
+
+    if (!base64) {
+      return Response.json(
+        { error: 'Não foi possível processar a imagem. O arquivo pode estar vazio ou corrompido.' },
+        { status: 400 }
+      );
+    }
 
     // Initialize Gemini
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -94,7 +139,7 @@ Retorne APENAS o texto extraído, sem explicações adicionais.`,
   } catch (error) {
     console.error('OCR error:', error);
     return Response.json(
-      { error: 'Não consegui ler o arquivo. Tente novamente.' },
+      { error: 'Ocorreu um erro no servidor ao processar a imagem. Tente novamente mais tarde.' },
       { status: 500 }
     );
   }

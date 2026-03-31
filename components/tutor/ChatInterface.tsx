@@ -1,83 +1,97 @@
 // components/tutor/ChatInterface.tsx
 'use client';
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, RotateCcw, Sparkles, ClipboardList, UserPlus, Clock } from 'lucide-react';
-import { HomeworkSetup } from './HomeworkSetup';
-import { MessageList } from './MessageList';
-import { MessageInput } from './MessageInput';
-import { SessionSummary } from './SessionSummary';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { TrialExpiredGate } from './TrialExpiredGate';
+import { HomeworkSetupView } from './HomeworkSetupView';
+import { ActiveSession } from './ActiveSession';
+import { SessionSummaryView } from './SessionSummaryView';
 import { AgeThemeProvider } from '@/components/providers/AgeThemeProvider';
-import { XPBar } from '@/components/gamification/XPBar';
 import { BadgeToast } from '@/components/gamification/BadgeToast';
-import { BuildProgress } from '@/components/gamification/BuildProgress';
 import { useChatSession } from '@/hooks/useChatSession';
 import { useAuth } from '@/hooks/useAuth';
 import { getSubjectById } from '@/lib/subjects/config';
 import { getSuggestions } from '@/lib/subjects/suggestions';
 import { getBuildForSubject, TOTAL_PIECES } from '@/lib/gamification/builds';
-import { SubjectIcon } from '@/components/illustrations/SubjectIcons';
 import { createClient } from '@/lib/supabase/client';
-import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask, getKidActivities, updateActivityStatus } from '@/lib/supabase/queries';
-import { ActivityCard } from '@/components/activities/ActivityCard';
+import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask, getKidActivities } from '@/lib/supabase/queries';
 import { updateStreakTracking } from '@/components/gamification/StreakReminder';
-import { QuizPlayer } from '@/components/activities/QuizPlayer';
 import type { AgeGroup, BehavioralProfile, ParentTask, GuidedActivity } from '@/lib/auth/types';
 
 const TRIAL_KEY = 'studdo_trial_sessions';
+const TRIAL_FP_KEY = 'studdo_trial_fp';
 
-function getTrialCount(): number {
+function getLocalTrialCount(): number {
   if (typeof window === 'undefined') return 0;
   return parseInt(localStorage.getItem(TRIAL_KEY) || '0', 10);
 }
 
-function incrementTrialCount() {
+function setLocalTrialCount(count: number) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(TRIAL_KEY, String(getTrialCount() + 1));
+  localStorage.setItem(TRIAL_KEY, String(count));
 }
 
-function TrialExpiredGate() {
-  return (
-    <div className="flex flex-col items-center justify-center flex-1 gap-6 py-12 px-4 text-center">
-      <motion.div
-        className="text-6xl"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 300 }}
-      >
-        🦉
-      </motion.div>
-      <div>
-        <h2 className="text-white text-2xl font-extrabold mb-2">O Edu adorou estudar com você!</h2>
-        <p className="text-sm max-w-sm mx-auto" style={{ color: 'rgba(240,244,248,0.5)' }}>
-          Crie uma conta gratuita em 30 segundos para continuar. Sem cartão de crédito, sem pegadinha.
-        </p>
-      </div>
-      <div className="flex flex-col gap-3 w-full max-w-xs">
-        <a
-          href="/register?redirect=/tutor"
-          className="w-full py-3.5 font-bold rounded-xl text-sm text-center shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
-          style={{ background: '#F5A623', color: '#0D1B2A', boxShadow: '0 8px 30px rgba(245,166,35,0.3)' }}
-        >
-          Criar conta gratuita
-          <span className="text-xs opacity-70">→</span>
-        </a>
-        <a
-          href="/login?redirect=/tutor"
-          className="w-full py-3 rounded-xl text-sm text-center font-medium transition-all text-white/50 hover:text-white hover:bg-white/5"
-          style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-        >
-          Já tenho conta — Entrar
-        </a>
-      </div>
-      <div className="flex flex-wrap justify-center gap-3 mt-2">
-        {['🏆 XP e Níveis', '🔥 Streak diário', '📊 Dashboard pais', '🎯 Badges'].map((item) => (
-          <span key={item} className="text-xs px-2.5 py-1 rounded-full" style={{ color: 'rgba(240,244,248,0.5)', background: 'rgba(255,255,255,0.03)' }}>{item}</span>
-        ))}
-      </div>
-    </div>
-  );
+function incrementLocalTrialCount() {
+  if (typeof window === 'undefined') return;
+  setLocalTrialCount(getLocalTrialCount() + 1);
+}
+
+// Generate a fingerprint hash from browser characteristics
+async function generateFingerprint(): Promise<string> {
+  if (typeof window === 'undefined') return '';
+  const raw = [
+    navigator.userAgent,
+    `${screen.width}x${screen.height}x${screen.colorDepth}`,
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+    navigator.language,
+    navigator.languages?.join(',') ?? '',
+    navigator.hardwareConcurrency?.toString() ?? '',
+    navigator.maxTouchPoints?.toString() ?? '',
+  ].join('|');
+  // Hash with SubtleCrypto (SHA-256)
+  const encoder = new TextEncoder();
+  const data = encoder.encode(raw);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Cache fingerprint in localStorage so we don't recompute every time
+async function getFingerprint(): Promise<string> {
+  if (typeof window === 'undefined') return '';
+  const cached = localStorage.getItem(TRIAL_FP_KEY);
+  if (cached && cached.length >= 16) return cached;
+  const fp = await generateFingerprint();
+  localStorage.setItem(TRIAL_FP_KEY, fp);
+  return fp;
+}
+
+// Fetch server-side trial count for fingerprint
+async function getServerTrialCount(fp: string): Promise<number> {
+  try {
+    const res = await fetch(`/api/trial?fp=${encodeURIComponent(fp)}`);
+    if (!res.ok) return 0;
+    const data = await res.json();
+    return typeof data.count === 'number' ? data.count : 0;
+  } catch {
+    return 0;
+  }
+}
+
+// Increment server-side trial count
+async function incrementServerTrialCount(fp: string): Promise<number> {
+  try {
+    const res = await fetch('/api/trial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fingerprint: fp }),
+    });
+    if (!res.ok) return -1;
+    const data = await res.json();
+    return typeof data.count === 'number' ? data.count : -1;
+  } catch {
+    return -1;
+  }
 }
 
 interface ChatInterfaceProps {
@@ -120,11 +134,28 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   const { profile, loading: authLoading } = useAuth();
   const isGuest = !profile;
 
-  // Check if guest trial is expired
+  // Check if guest trial is expired (combine localStorage + server count)
   useEffect(() => {
-    if (!authLoading && isGuest && getTrialCount() >= 3) {
+    if (authLoading || !isGuest) return;
+    const localCount = getLocalTrialCount();
+    // Immediately gate if localStorage already shows expired
+    if (localCount >= 3) {
       setTrialExpired(true);
     }
+    // Also check server-side (async) — uses MAX of both counts
+    (async () => {
+      const fp = await getFingerprint();
+      if (!fp) return;
+      const serverCount = await getServerTrialCount(fp);
+      const realCount = Math.max(localCount, serverCount);
+      // Sync localStorage up if server has a higher count
+      if (serverCount > localCount) {
+        setLocalTrialCount(serverCount);
+      }
+      if (realCount >= 3) {
+        setTrialExpired(true);
+      }
+    })();
   }, [authLoading, isGuest]);
 
   // Load XP from user_stats table
@@ -340,7 +371,13 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     }
 
     setSummaryLoading(false);
-    if (isGuest) incrementTrialCount();
+    if (isGuest) {
+      incrementLocalTrialCount();
+      // Also increment server-side (fire-and-forget, don't block UX)
+      getFingerprint().then((fp) => {
+        if (fp) incrementServerTrialCount(fp);
+      });
+    }
   };
 
   // Wire up finishRef so the header button can trigger finish
@@ -360,6 +397,15 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     sendMessage();
   };
 
+  const handleQuizComplete = async (activityId: string, xpEarned: number) => {
+    setTotalXp((prev) => prev + xpEarned);
+    setGuidedActivities((prev) => prev.filter((a) => a.id !== activityId));
+  };
+
+  const handleRemoveActivity = (activityId: string) => {
+    setGuidedActivities((prev) => prev.filter((a) => a.id !== activityId));
+  };
+
   // Trial expired — show registration gate
   if (trialExpired) {
     return (
@@ -372,237 +418,56 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   if (!homeworkSet) {
     return (
       <AgeThemeProvider ageGroup={ageGroup}>
-        {/* Guest trial banner */}
-        {isGuest && (
-          <div
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl mb-4 text-xs"
-            style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}
-          >
-            <UserPlus size={14} className="text-purple-400 shrink-0" />
-            <span style={{ color: 'rgba(240,244,248,0.6)' }}>
-              Sessão gratuita de teste —{' '}
-              <a href="/register?redirect=/tutor" className="text-purple-400 font-semibold hover:underline">
-                crie uma conta
-              </a>{' '}
-              para continuar estudando
-            </span>
-          </div>
-        )}
-        {pendingTasks.length > 0 && (
-          <div className="mb-4 space-y-3">
-            <p className="text-amber-400 text-xs font-bold flex items-center gap-1.5">
-              <ClipboardList size={14} />
-              Tarefas sugeridas
-            </p>
-            {pendingTasks.map((task) => {
-              const subjectInfo = getSubjectById(task.subject);
-              return (
-                <motion.div
-                  key={task.id}
-                  className="glass rounded-[var(--eq-radius-sm)] p-4"
-                  style={{ border: '1px solid rgba(245,158,11,0.2)' }}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">{subjectInfo?.icon || '📚'}</span>
-                    <span className="text-white text-sm font-semibold">{subjectInfo?.name || task.subject}</span>
-                  </div>
-                  <p className="text-white/60 text-xs mb-3">{task.description}</p>
-                  <button
-                    onClick={() => handleStartFromTask(task)}
-                    className="w-full py-2 rounded-lg text-xs font-bold transition-all hover:opacity-90"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(139,92,246,0.8), rgba(99,102,241,0.8))',
-                      color: 'white',
-                    }}
-                  >
-                    Começar esta tarefa
-                  </button>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
-        {/* Guided activities from parents */}
-        {guidedActivities.length > 0 && !activeQuiz && (
-          <div className="mb-4 space-y-3">
-            <p className="text-purple-400 text-xs font-bold flex items-center gap-1.5">
-              <Sparkles size={14} />
-              Atividades do pai/mãe
-            </p>
-            {guidedActivities.map((activity) => (
-              <ActivityCard
-                key={activity.id}
-                activity={activity}
-                onStart={(a) => {
-                  if (a.activity_type === 'quiz' && a.questions) {
-                    setActiveQuiz(a);
-                    // Mark as in_progress
-                    const supabase = createClient();
-                    updateActivityStatus(supabase, a.id, {
-                      status: 'in_progress',
-                      started_at: new Date().toISOString(),
-                    });
-                  } else {
-                    // For reading/exercise/review, start a tutor session with context
-                    const context = [
-                      a.instructions ? `[Instruções do pai/mãe: ${a.title}]\n${a.instructions}` : '',
-                    ].filter(Boolean).join('\n\n');
-                    handleStart({
-                      homework: context,
-                      subject: a.subject,
-                      ageGroup,
-                      behavioralProfile: 'default',
-                    });
-                  }
-                }}
-              />
-            ))}
-          </div>
-        )}
-        {/* Active quiz */}
-        {activeQuiz && activeQuiz.questions && (
-          <QuizPlayer
-            questions={activeQuiz.questions}
-            subject={activeQuiz.subject}
-            title={activeQuiz.title}
-            parentNote={activeQuiz.parent_note}
-            onComplete={async (score, total) => {
-              const percentage = Math.round((score / total) * 100);
-              const xpEarned = score * 10;
-              const supabase = createClient();
-              await updateActivityStatus(supabase, activeQuiz.id, {
-                status: 'completed',
-                kid_score: percentage,
-                xp_earned: xpEarned,
-                completed_at: new Date().toISOString(),
-              });
-              // Award XP
-              if (profile?.id) {
-                await addXP(supabase, profile.id, xpEarned);
-                setTotalXp(prev => prev + xpEarned);
-              }
-              setGuidedActivities(prev => prev.filter(a => a.id !== activeQuiz.id));
-            }}
-            onClose={() => setActiveQuiz(null)}
-          />
-        )}
-        {!activeQuiz && <HomeworkSetup onStart={handleStart} />}
+        <HomeworkSetupView
+          isGuest={isGuest}
+          pendingTasks={pendingTasks}
+          guidedActivities={guidedActivities}
+          activeQuiz={activeQuiz}
+          ageGroup={ageGroup}
+          behavioralProfile={behavioralProfile}
+          profileId={profile?.id}
+          onStart={handleStart}
+          onStartFromTask={handleStartFromTask}
+          onSetActiveQuiz={setActiveQuiz}
+          onQuizComplete={handleQuizComplete}
+          onRemoveActivity={handleRemoveActivity}
+        />
       </AgeThemeProvider>
     );
   }
 
-  const subjectInfo = getSubjectById(subject);
-
   return (
     <AgeThemeProvider ageGroup={ageGroup}>
       {showSummary ? (
-        <SessionSummary
-          xpEarned={sessionXp}
-          messageCount={sessionMessageCount}
+        <SessionSummaryView
+          sessionXp={sessionXp}
+          sessionMessageCount={sessionMessageCount}
           subject={subject}
-          durationMinutes={sessionDuration}
+          sessionDuration={sessionDuration}
           summaryResult={summaryResult}
           summaryLoading={summaryLoading}
-          onNewSession={handleReset}
           isGuest={isGuest}
+          onNewSession={handleReset}
         />
       ) : (
-        <>
-          {/* XP Bar */}
-          <div className="mb-2 relative">
-            <XPBar totalXp={totalXp} compact />
-            <AnimatePresence>
-              {xpGained && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                  animate={{ opacity: 1, y: -5, scale: 1 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="absolute right-0 top-0 flex items-center gap-1 text-amber-400 font-bold text-sm"
-                >
-                  <Sparkles size={14} />
-                  +{xpGained} XP
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Build Progress */}
-          <BuildProgress
-            subject={subject}
-            pieces={sessionPieces}
-            milestoneMessage={milestoneMessage}
-          />
-
-          {/* Subject banner */}
-          <motion.div
-            className="flex items-center gap-3 glass rounded-[var(--eq-radius-sm)] p-3 mb-3 shrink-0"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            {subjectInfo ? (
-              <SubjectIcon subject={subjectInfo.id} size={24} animated={false} />
-            ) : (
-              <BookOpen size={16} className="text-[var(--eq-accent)] shrink-0" />
-            )}
-            <p className="text-[var(--eq-text-secondary)] text-xs flex-1 line-clamp-2">
-              {subjectInfo?.name ?? subject}
-            </p>
-            {elapsedMinutes > 0 && (
-              <span className="text-[var(--eq-text-muted)] text-xs flex items-center gap-1 shrink-0">
-                <Clock size={10} />
-                {elapsedMinutes}min
-              </span>
-            )}
-            <button
-              onClick={handleReset}
-              className="text-[var(--eq-text-muted)] hover:text-[var(--eq-text)] text-xs shrink-0 transition-colors flex items-center gap-1"
-            >
-              <RotateCcw size={12} />
-              trocar
-            </button>
-          </motion.div>
-
-          <MessageList messages={messages} loading={loading} error={chatError} onRetry={retryLastMessage} />
-
-          {/* Topic suggestion chips — cleared on first send */}
-          <AnimatePresence>
-            {suggestions.length > 0 && !loading && (
-              <motion.div
-                className="flex flex-wrap gap-2 my-2"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-              >
-                {suggestions.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => handleSuggestionClick(s)}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 active:scale-95"
-                    style={{
-                      background: 'rgba(139,92,246,0.12)',
-                      border: '1px solid rgba(139,92,246,0.3)',
-                      color: 'rgba(240,244,248,0.8)',
-                    }}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="mt-2">
-            <MessageInput
-              value={input}
-              onChange={setInput}
-              onSend={handleSend}
-              disabled={loading}
-              placeholder="Digite sua resposta..."
-            />
-          </div>
-        </>
+        <ActiveSession
+          subject={subject}
+          totalXp={totalXp}
+          xpGained={xpGained}
+          sessionPieces={sessionPieces}
+          milestoneMessage={milestoneMessage}
+          elapsedMinutes={elapsedMinutes}
+          messages={messages}
+          loading={loading}
+          chatError={chatError}
+          suggestions={suggestions}
+          input={input}
+          onInputChange={setInput}
+          onSend={handleSend}
+          onSuggestionClick={handleSuggestionClick}
+          onRetry={retryLastMessage}
+          onReset={handleReset}
+        />
       )}
 
       {newBadgeIds.length > 0 && (
