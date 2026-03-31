@@ -12,6 +12,7 @@ import type { Material } from '@/lib/auth/types';
 const IMAGE_ACCEPT = 'image/*';
 const DOC_ACCEPT = '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const MAX_FILES = 5;
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 interface FileEntry {
   file: File;
@@ -48,6 +49,12 @@ export function MaterialUpload({ onUploaded, kidId, ownerType = 'kid', compact =
 
     if (totalAfter > MAX_FILES) {
       setError(`Maximo ${MAX_FILES} arquivos`);
+      return;
+    }
+
+    const oversized = incoming.filter(f => f.size > MAX_FILE_SIZE);
+    if (oversized.length > 0) {
+      setError(`${oversized[0].name} é muito grande (${(oversized[0].size / 1024 / 1024).toFixed(1)}MB). O limite é 50MB.`);
       return;
     }
 

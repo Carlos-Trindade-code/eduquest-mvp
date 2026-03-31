@@ -16,15 +16,36 @@ const statusConfig = {
   done: { label: 'Concluida', color: '#10B981', icon: Check },
 };
 
+const PAGE_SIZE = 20;
+
 export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsListProps) {
   const [filter, setFilter] = useState<'all' | 'pending' | 'read' | 'done'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [statusMessage, setStatusMessage] = useState<Record<string, { type: 'success' | 'error'; text: string }>>({});
+
+  const handleUpdateWithFeedback = async (id: string, status: 'pending' | 'read' | 'done', notes?: string) => {
+    try {
+      await onUpdateStatus(id, status, notes);
+      setStatusMessage((prev) => ({ ...prev, [id]: { type: 'success', text: 'Atualizado!' } }));
+    } catch {
+      setStatusMessage((prev) => ({ ...prev, [id]: { type: 'error', text: 'Erro ao atualizar' } }));
+    }
+    setTimeout(() => {
+      setStatusMessage((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+    }, 3000);
+  };
 
   const filtered = filter === 'all'
     ? suggestions
     : suggestions.filter((s) => s.status === filter);
+  const paginated = filtered.slice(0, page * PAGE_SIZE);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -45,7 +66,7 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
   const handleBulkAction = async (status: 'read' | 'done') => {
     setBulkLoading(true);
     for (const id of selectedIds) {
-      await onUpdateStatus(id, status);
+      await handleUpdateWithFeedback(id, status);
     }
     setSelectedIds(new Set());
     setBulkLoading(false);
@@ -59,7 +80,7 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
         {(['all', 'pending', 'read', 'done'] as const).map((f) => (
           <button
             key={f}
-            onClick={() => setFilter(f)}
+            onClick={() => { setFilter(f); setPage(1); }}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filter === f
                 ? 'bg-purple-600 text-white'
@@ -122,7 +143,7 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
             <p className="text-white/40 text-sm">Nenhuma sugestao encontrada</p>
           </div>
         ) : (
-          filtered.map((suggestion, i) => {
+          paginated.map((suggestion, i) => {
             const config = statusConfig[suggestion.status];
             const isExpanded = expandedId === suggestion.id;
 
@@ -165,6 +186,11 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
                         {suggestion.user_name && <span>{suggestion.user_name}</span>}
                         {suggestion.user_email && <span>{suggestion.user_email}</span>}
                         <span>{new Date(suggestion.created_at).toLocaleDateString('pt-BR')}</span>
+                        {statusMessage[suggestion.id] && (
+                          <span className={`font-medium ${statusMessage[suggestion.id].type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                            {statusMessage[suggestion.id].text}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -182,7 +208,7 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
                       <div className="p-4 flex flex-wrap gap-2">
                         {suggestion.status !== 'read' && (
                           <button
-                            onClick={() => onUpdateStatus(suggestion.id, 'read')}
+                            onClick={() => handleUpdateWithFeedback(suggestion.id, 'read')}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium hover:bg-blue-500/20 transition-colors"
                           >
                             <Eye size={14} />
@@ -191,7 +217,7 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
                         )}
                         {suggestion.status !== 'done' && (
                           <button
-                            onClick={() => onUpdateStatus(suggestion.id, 'done')}
+                            onClick={() => handleUpdateWithFeedback(suggestion.id, 'done')}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 text-xs font-medium hover:bg-green-500/20 transition-colors"
                           >
                             <Check size={14} />
@@ -200,7 +226,7 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
                         )}
                         {suggestion.status !== 'pending' && (
                           <button
-                            onClick={() => onUpdateStatus(suggestion.id, 'pending')}
+                            onClick={() => handleUpdateWithFeedback(suggestion.id, 'pending')}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 text-xs font-medium hover:bg-amber-500/20 transition-colors"
                           >
                             <Clock size={14} />
@@ -221,6 +247,21 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
           })
         )}
       </div>
+
+      {/* Pagination */}
+      {filtered.length > 0 && (
+        <p className="text-xs text-white/30 text-right mt-3">
+          Exibindo {Math.min(page * PAGE_SIZE, filtered.length)} de {filtered.length}
+        </p>
+      )}
+      {filtered.length > page * PAGE_SIZE && (
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          className="w-full py-2 mt-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 text-sm transition-colors"
+        >
+          Carregar mais ({filtered.length - page * PAGE_SIZE} restantes)
+        </button>
+      )}
     </div>
   );
 }

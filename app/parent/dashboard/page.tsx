@@ -200,24 +200,28 @@ export default function ParentDashboard() {
   };
 
   const loadKidData = async (kidId: string) => {
-    const [statsResult, badgesResult, analyticsResult, sessionsResult, summariesResult, studyStatsResult, tasksResult] = await Promise.all([
-      getUserStats(supabase, kidId),
-      getUserBadges(supabase, kidId),
-      getKidAnalytics(supabase, kidId, 30),
-      getKidSessions(supabase, kidId, 10),
-      getKidSessionSummaries(supabase, kidId),
-      getKidStudyStats(supabase, kidId),
-      getParentTasks(supabase, profile!.id, kidId),
-    ]);
-    setKidStats(statsResult.data);
-    setKidBadges(badgesResult.data);
-    setAnalytics(analyticsResult);
-    setKidSessions(sessionsResult.data);
-    setSummaries((summariesResult.data as SessionSummary[]) || []);
-    setStudyStats((studyStatsResult.data as KidStudyStats) || null);
-    setParentTasks(tasksResult.data);
-    setSelectedSession(null);
-    setLastRefreshedAt(Date.now());
+    try {
+      const [statsResult, badgesResult, analyticsResult, sessionsResult, summariesResult, studyStatsResult, tasksResult] = await Promise.all([
+        getUserStats(supabase, kidId),
+        getUserBadges(supabase, kidId),
+        getKidAnalytics(supabase, kidId, 30),
+        getKidSessions(supabase, kidId, 10),
+        getKidSessionSummaries(supabase, kidId),
+        getKidStudyStats(supabase, kidId),
+        getParentTasks(supabase, profile!.id, kidId),
+      ]);
+      setKidStats(statsResult.data);
+      setKidBadges(badgesResult.data);
+      setAnalytics(analyticsResult);
+      setKidSessions(sessionsResult.data);
+      setSummaries((summariesResult.data as SessionSummary[]) || []);
+      setStudyStats((studyStatsResult.data as KidStudyStats) || null);
+      setParentTasks(tasksResult.data);
+      setSelectedSession(null);
+      setLastRefreshedAt(Date.now());
+    } catch (err) {
+      console.error('Failed to load kid data:', err);
+    }
   };
 
   const silentRefresh = useCallback(async (kidId: string) => {
@@ -240,6 +244,8 @@ export default function ParentDashboard() {
       setStudyStats((studyStatsResult.data as KidStudyStats) || null);
       setParentTasks(tasksResult.data);
       setLastRefreshedAt(Date.now());
+    } catch (err) {
+      console.error('Silent refresh failed:', err);
     } finally {
       setIsRefreshing(false);
     }

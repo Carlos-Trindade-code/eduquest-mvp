@@ -26,6 +26,8 @@ const defaultLabels = {
 const IMAGE_ACCEPT = 'image/*';
 const DOC_ACCEPT = '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const MAX_FILES = 5;
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_DOC_SIZE = 20 * 1024 * 1024; // 20MB
 
 interface FileEntry {
   file: File;
@@ -55,6 +57,16 @@ export function PhotoUpload({ onTextExtracted, labels }: PhotoUploadProps) {
     if (totalAfter > MAX_FILES) {
       setError(`Máximo de ${MAX_FILES} arquivos. Você tem ${files.length}, tentou adicionar ${incoming.length}.`);
       return;
+    }
+
+    for (const file of incoming) {
+      const isImage = file.type.startsWith('image/');
+      const limit = isImage ? MAX_IMAGE_SIZE : MAX_DOC_SIZE;
+      const limitLabel = isImage ? '5MB' : '20MB';
+      if (file.size > limit) {
+        setError(`${file.name} é muito grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Limite: ${limitLabel}.`);
+        return;
+      }
     }
 
     const newEntries: FileEntry[] = await Promise.all(

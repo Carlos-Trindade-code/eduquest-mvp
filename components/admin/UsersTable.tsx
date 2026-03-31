@@ -1,12 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, GraduationCap, UserCheck, Shield, BookOpen } from 'lucide-react';
 import type { Profile } from '@/lib/auth/types';
 
 interface UsersTableProps {
   profiles: Profile[];
+  loading?: boolean;
 }
+
+const PAGE_SIZE = 50;
 
 const typeConfig: Record<string, { label: string; icon: typeof GraduationCap; color: string }> = {
   kid: { label: 'Aluno', icon: GraduationCap, color: '#3B82F6' },
@@ -15,9 +19,11 @@ const typeConfig: Record<string, { label: string; icon: typeof GraduationCap; co
   admin: { label: 'Admin', icon: Shield, color: '#8B5CF6' },
 };
 
-export function UsersTable({ profiles }: UsersTableProps) {
+export function UsersTable({ profiles, loading }: UsersTableProps) {
+  const [page, setPage] = useState(1);
   const kidCount = profiles.filter((p) => p.user_type === 'kid').length;
   const parentCount = profiles.filter((p) => p.user_type === 'parent').length;
+  const paginated = profiles.slice(0, page * PAGE_SIZE);
 
   return (
     <div>
@@ -50,7 +56,16 @@ export function UsersTable({ profiles }: UsersTableProps) {
         </div>
 
         {/* Rows */}
-        {profiles.map((profile, i) => {
+        {loading && profiles.length === 0 && (
+          Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="grid grid-cols-12 gap-2 px-4 py-3 border-b border-white/5">
+              {[3, 3, 2, 1, 1, 2].map((span, j) => (
+                <div key={j} className={`col-span-${span} h-4 rounded bg-white/5 animate-pulse`} />
+              ))}
+            </div>
+          ))
+        )}
+        {paginated.map((profile, i) => {
           const config = typeConfig[profile.user_type] || typeConfig.kid;
 
           return (
@@ -93,12 +108,27 @@ export function UsersTable({ profiles }: UsersTableProps) {
           );
         })}
 
-        {profiles.length === 0 && (
+        {!loading && profiles.length === 0 && (
           <div className="p-8 text-center">
             <p className="text-white/30 text-sm">Nenhum usuario encontrado</p>
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {profiles.length > 0 && (
+        <p className="text-xs text-white/30 text-right mt-3">
+          Exibindo {Math.min(page * PAGE_SIZE, profiles.length)} de {profiles.length}
+        </p>
+      )}
+      {profiles.length > page * PAGE_SIZE && (
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          className="w-full py-2 mt-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/50 text-sm transition-colors"
+        >
+          Carregar mais ({profiles.length - page * PAGE_SIZE} restantes)
+        </button>
+      )}
     </div>
   );
 }

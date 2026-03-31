@@ -6,7 +6,7 @@ import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
 import { JoinClassroom } from '@/components/classroom/JoinClassroom';
 import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface HeaderProps {
   appName?: string;
@@ -27,6 +27,12 @@ export function Header({
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, profile, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   // Close menu on outside click
   useEffect(() => {

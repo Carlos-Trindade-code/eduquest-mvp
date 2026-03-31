@@ -45,6 +45,7 @@ export function AdminDashboard() {
   const [schoolLeads, setSchoolLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const router = useRouter();
 
@@ -53,21 +54,28 @@ export function AdminDashboard() {
   const loadData = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
-    const [metricsData, suggestionsData, profilesData, feedbacksData, feedbackStatsData] = await Promise.all([
-      getAdminMetrics(supabase),
-      getAllSuggestions(supabase),
-      getAllProfiles(supabase),
-      getAllFeedback(supabase),
-      getFeedbackStats(supabase),
-    ]);
-    setMetrics(metricsData);
-    setSuggestions(suggestionsData);
-    setProfiles(profilesData);
-    setFeedbacks(feedbacksData);
-    setFeedbackStats(feedbackStatsData);
-    supabase.rpc('get_school_leads').then(({ data }) => setSchoolLeads(data || []));
-    setLoading(false);
-    setRefreshing(false);
+    try {
+      const [metricsData, suggestionsData, profilesData, feedbacksData, feedbackStatsData] = await Promise.all([
+        getAdminMetrics(supabase),
+        getAllSuggestions(supabase),
+        getAllProfiles(supabase),
+        getAllFeedback(supabase),
+        getFeedbackStats(supabase),
+      ]);
+      setMetrics(metricsData);
+      setSuggestions(suggestionsData);
+      setProfiles(profilesData);
+      setFeedbacks(feedbacksData);
+      setFeedbackStats(feedbackStatsData);
+      supabase.rpc('get_school_leads').then(({ data }) => setSchoolLeads(data || []));
+      setError(null);
+    } catch (err) {
+      console.error('Failed to load admin data:', err);
+      setError('Não foi possível carregar os dados. Verifique sua conexão.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   };
 
   useEffect(() => {
@@ -153,6 +161,14 @@ export function AdminDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {error && (
+          <div className="mb-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-between">
+            <p className="text-red-400 text-sm">{error}</p>
+            <button onClick={() => { setError(null); loadData(); }} className="text-red-400 text-xs font-bold hover:text-red-300 transition-colors shrink-0 ml-4">
+              Tentar novamente
+            </button>
+          </div>
+        )}
         <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
           {/* Tab triggers */}
           <Tabs.List className="flex gap-2 mb-8 overflow-x-auto pb-2">
@@ -224,7 +240,7 @@ export function AdminDashboard() {
 
           {/* Users tab */}
           <Tabs.Content value="users">
-            <UsersTable profiles={profiles} />
+            <UsersTable profiles={profiles} loading={loading} />
           </Tabs.Content>
 
           {/* Feedback tab */}
