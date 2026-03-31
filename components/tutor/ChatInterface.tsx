@@ -225,6 +225,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     messages,
     input,
     loading,
+    streaming,
     error: chatError,
     sessionXp,
     setInput,
@@ -459,6 +460,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
           elapsedMinutes={elapsedMinutes}
           messages={messages}
           loading={loading}
+          streaming={streaming}
           chatError={chatError}
           suggestions={suggestions}
           input={input}

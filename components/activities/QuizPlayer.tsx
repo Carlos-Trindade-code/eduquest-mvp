@@ -205,7 +205,7 @@ export function QuizPlayer({ questions, subject, title, parentNote, onComplete, 
                 className="space-y-3"
               >
                 <div className={`rounded-xl p-3 ${
-                  isCorrect ? 'bg-green-500/10 border border-green-500/20' : 'bg-amber-500/10 border border-amber-500/20'
+                  isCorrect ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'
                 }`}>
                   <div className="flex items-center gap-2 mb-1">
                     {isYoungKid && (
@@ -215,11 +215,16 @@ export function QuizPlayer({ questions, subject, title, parentNote, onComplete, 
                         animated
                       />
                     )}
-                    <p className={`text-xs font-medium ${isCorrect ? 'text-green-300' : 'text-amber-300'}`}>
-                      {isCorrect ? 'Acertou! 🎉' : 'Quase la!'}
+                    <p className={`text-sm font-medium ${isCorrect ? 'text-green-300' : 'text-red-300'}`}>
+                      {isCorrect ? 'Acertou! 🎉' : 'Resposta incorreta'}
                     </p>
                   </div>
-                  <p className="text-white/50 text-xs">{currentQ.explanation}</p>
+                  {!isCorrect && (
+                    <p className="text-red-200/70 text-sm mb-1">
+                      Resposta correta: <strong>{currentQ.options[currentQ.correctIndex]}</strong>
+                    </p>
+                  )}
+                  <p className={`text-sm ${isCorrect ? 'text-green-200/70' : 'text-red-200/70'}`}>{currentQ.explanation}</p>
                 </div>
 
                 <button

@@ -72,6 +72,33 @@ async function generateWithAnthropic(options: GenerateOptions): Promise<string> 
 }
 
 // ============================================================
+// GEMINI STREAMING
+// ============================================================
+async function* streamWithGemini(options: GenerateOptions): AsyncGenerator<string> {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+  const contents = options.messages.map((m) => ({
+    role: m.role === 'assistant' ? ('model' as const) : ('user' as const),
+    parts: [{ text: m.content }],
+  }));
+
+  const response = await ai.models.generateContentStream({
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+    config: {
+      systemInstruction: options.systemPrompt,
+      maxOutputTokens: options.maxTokens || 1024,
+      temperature: 0.7,
+    },
+    contents,
+  });
+
+  for await (const chunk of response) {
+    const text = chunk.text;
+    if (text) yield text;
+  }
+}
+
+// ============================================================
 // PUBLIC API
 // ============================================================
 export async function generateTutorResponse(options: GenerateOptions): Promise<string> {
@@ -84,6 +111,19 @@ export async function generateTutorResponse(options: GenerateOptions): Promise<s
       return generateWithAnthropic(options);
     default:
       throw new Error(`Provider desconhecido: ${provider}`);
+  }
+}
+
+export async function* streamTutorResponse(options: GenerateOptions): AsyncGenerator<string> {
+  const provider = getProvider();
+
+  switch (provider) {
+    case 'gemini':
+      yield* streamWithGemini(options);
+      break;
+    default:
+      // Fallback: yield full response at once
+      yield await generateTutorResponse(options);
   }
 }
 

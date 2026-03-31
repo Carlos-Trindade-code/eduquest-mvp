@@ -15,6 +15,7 @@ interface UseChatSessionReturn {
   messages: ChatMessage[];
   input: string;
   loading: boolean;
+  streaming: boolean;
   error: boolean;
   sessionXp: number;
   setInput: (value: string) => void;
@@ -37,6 +38,7 @@ export function useChatSession(
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState(false);
   const [sessionXp, setSessionXp] = useState(0);
   const lastUserMessageRef = useRef<string | null>(null);
@@ -117,8 +119,91 @@ export function useChatSession(
     return { sessionId, durationMinutes };
   }, [sessionXp]);
 
+  const fetchTutorResponse = useCallback(async (allMessages: ChatMessage[]) => {
+    const body = JSON.stringify({
+      messages: allMessages,
+      homework,
+      subject,
+      ageGroup,
+      behavioralProfile,
+    });
+
+    // Try streaming first
+    try {
+      const res = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
+        body,
+      });
+
+      if (res.ok && res.headers.get('content-type')?.includes('text/event-stream') && res.body) {
+        // Add empty assistant message for streaming
+        setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
+        setStreaming(true);
+        setLoading(false);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.error) { setError(true); setStreaming(false); return null; }
+              if (data.done) { setStreaming(false); return data.fullText || fullText; }
+              if (data.text) {
+                fullText += data.text;
+                setMessages((prev) => {
+                  const updated = [...prev];
+                  updated[updated.length - 1] = { role: 'assistant', content: fullText };
+                  return updated;
+                });
+              }
+            } catch { /* skip malformed line */ }
+          }
+        }
+        setStreaming(false);
+        return fullText;
+      }
+
+      // Non-streaming response
+      const data = await res.json();
+      if (res.ok && data.message) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
+        return data.message;
+      }
+      setError(true);
+      return null;
+    } catch {
+      setError(true);
+      setStreaming(false);
+      return null;
+    }
+  }, [homework, subject, ageGroup, behavioralProfile]);
+
+  const handleAssistantResponse = useCallback((fullText: string | null) => {
+    if (fullText) {
+      if (sessionIdRef.current) {
+        const supabase = createClient();
+        saveMessage(supabase, sessionIdRef.current, 'assistant', fullText).catch(() => {});
+      }
+      const xp = XP_REWARDS.MESSAGE_SENT;
+      setSessionXp((prev) => prev + xp);
+      onXPEarned?.(xp);
+    }
+  }, [onXPEarned]);
+
   const sendMessage = useCallback(async () => {
-    if (!input.trim() || loading) return;
+    if (!input.trim() || loading || streaming) return;
 
     const userMessage: ChatMessage = { role: 'user', content: input };
     const newMessages = [...messages, userMessage];
@@ -128,47 +213,18 @@ export function useChatSession(
     setError(false);
     lastUserMessageRef.current = input;
 
-    // Salva mensagem do usuário
     if (sessionIdRef.current) {
       const supabase = createClient();
       saveMessage(supabase, sessionIdRef.current, 'user', input).catch(() => {});
     }
 
-    try {
-      const res = await fetch('/api/tutor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: newMessages,
-          homework,
-          subject,
-          ageGroup,
-          behavioralProfile,
-        }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.message) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
-        if (sessionIdRef.current) {
-          const supabase = createClient();
-          saveMessage(supabase, sessionIdRef.current, 'assistant', data.message).catch(() => {});
-        }
-        const xp = XP_REWARDS.MESSAGE_SENT;
-        setSessionXp((prev) => prev + xp);
-        onXPEarned?.(xp);
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [input, loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
+    const fullText = await fetchTutorResponse(newMessages);
+    handleAssistantResponse(fullText);
+    setLoading(false);
+  }, [input, loading, streaming, messages, fetchTutorResponse, handleAssistantResponse]);
 
   const sendMessageText = useCallback(async (text: string) => {
-    if (!text.trim() || loading) return;
+    if (!text.trim() || loading || streaming) return;
 
     const userMessage: ChatMessage = { role: 'user', content: text };
     const newMessages = [...messages, userMessage];
@@ -182,81 +238,26 @@ export function useChatSession(
       saveMessage(supabase, sessionIdRef.current, 'user', text).catch(() => {});
     }
 
-    try {
-      const res = await fetch('/api/tutor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: newMessages,
-          homework,
-          subject,
-          ageGroup,
-          behavioralProfile,
-        }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.message) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
-        if (sessionIdRef.current) {
-          const supabase = createClient();
-          saveMessage(supabase, sessionIdRef.current, 'assistant', data.message).catch(() => {});
-        }
-        const xp = XP_REWARDS.MESSAGE_SENT;
-        setSessionXp((prev) => prev + xp);
-        onXPEarned?.(xp);
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
+    const fullText = await fetchTutorResponse(newMessages);
+    handleAssistantResponse(fullText);
+    setLoading(false);
+  }, [loading, streaming, messages, fetchTutorResponse, handleAssistantResponse]);
 
   const retryLastMessage = useCallback(async () => {
-    if (!lastUserMessageRef.current || loading) return;
+    if (!lastUserMessageRef.current || loading || streaming) return;
     setError(false);
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/tutor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages,
-          homework,
-          subject,
-          ageGroup,
-          behavioralProfile,
-        }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.message) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.message }]);
-        if (sessionIdRef.current) {
-          const supabase = createClient();
-          saveMessage(supabase, sessionIdRef.current, 'assistant', data.message).catch(() => {});
-        }
-        const xp = XP_REWARDS.MESSAGE_SENT;
-        setSessionXp((prev) => prev + xp);
-        onXPEarned?.(xp);
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, messages, homework, subject, ageGroup, behavioralProfile, onXPEarned]);
+    const fullText = await fetchTutorResponse(messages);
+    handleAssistantResponse(fullText);
+    setLoading(false);
+  }, [loading, streaming, messages, fetchTutorResponse, handleAssistantResponse]);
 
   return {
     messages,
     input,
     loading,
+    streaming,
     error,
     sessionXp,
     setInput,

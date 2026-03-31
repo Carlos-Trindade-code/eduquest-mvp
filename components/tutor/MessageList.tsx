@@ -11,11 +11,12 @@ import type { ChatMessage as ChatMessageType } from '@/lib/auth/types';
 interface MessageListProps {
   messages: ChatMessageType[];
   loading: boolean;
+  streaming?: boolean;
   error?: boolean;
   onRetry?: () => void;
 }
 
-export function MessageList({ messages, loading, error, onRetry }: MessageListProps) {
+export function MessageList({ messages, loading, streaming, error, onRetry }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { tokens } = useAgeTheme();
 
@@ -27,7 +28,11 @@ export function MessageList({ messages, loading, error, onRetry }: MessageListPr
     <div className="flex-1 overflow-y-auto space-y-3 pr-1 min-h-0">
       <AnimatePresence mode="popLayout">
         {messages.map((msg, i) => (
-          <ChatMessage key={`${msg.role}-${i}`} message={msg} />
+          <ChatMessage
+            key={`${msg.role}-${i}`}
+            message={msg}
+            isStreaming={streaming && i === messages.length - 1 && msg.role === 'assistant'}
+          />
         ))}
       </AnimatePresence>
 

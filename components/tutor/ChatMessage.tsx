@@ -10,9 +10,10 @@ import type { ChatMessage as ChatMessageType } from '@/lib/auth/types';
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  isStreaming?: boolean;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const { tokens } = useAgeTheme();
   const shouldReduceMotion = useReducedMotion();
@@ -79,6 +80,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
           >
             {message.content}
           </ReactMarkdown>
+        )}
+        {isStreaming && !isUser && (
+          <span className="inline-block w-0.5 h-4 bg-purple-400 animate-pulse ml-0.5 align-text-bottom" />
         )}
       </div>
     </motion.div>

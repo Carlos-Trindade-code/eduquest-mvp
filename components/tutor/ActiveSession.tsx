@@ -20,6 +20,7 @@ interface ActiveSessionProps {
   elapsedMinutes: number;
   messages: ChatMessage[];
   loading: boolean;
+  streaming?: boolean;
   chatError: boolean;
   suggestions: string[];
   input: string;
@@ -39,6 +40,7 @@ export function ActiveSession({
   elapsedMinutes,
   messages,
   loading,
+  streaming,
   chatError,
   suggestions,
   input,
@@ -106,7 +108,7 @@ export function ActiveSession({
         </button>
       </motion.div>
 
-      <MessageList messages={messages} loading={loading} error={chatError} onRetry={onRetry} />
+      <MessageList messages={messages} loading={loading} streaming={streaming} error={chatError} onRetry={onRetry} />
 
       {/* Topic suggestion chips — cleared on first send */}
       <AnimatePresence>

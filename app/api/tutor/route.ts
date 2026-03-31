@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { buildSystemPrompt } from '@/lib/subjects/prompts';
-import { generateTutorResponse, getCurrentProvider } from '@/lib/ai/provider';
+import { generateTutorResponse, streamTutorResponse, getCurrentProvider } from '@/lib/ai/provider';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { tutorSchema } from '@/lib/api/schemas';
@@ -43,13 +43,43 @@ export async function POST(request: NextRequest) {
       homework,
     });
 
+    const provider = getCurrentProvider();
+    const streamRequested = request.headers.get('accept') === 'text/event-stream';
+
+    if (streamRequested && provider === 'gemini') {
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        async start(controller) {
+          try {
+            let fullText = '';
+            for await (const chunk of streamTutorResponse({ systemPrompt, messages, maxTokens: 1024 })) {
+              fullText += chunk;
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
+            }
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, fullText })}\n\n`));
+            controller.close();
+          } catch (err) {
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: 'Erro no tutor. Tente novamente.' })}\n\n`));
+            controller.close();
+          }
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          Connection: 'keep-alive',
+        },
+      });
+    }
+
+    // Non-streaming fallback
     const message = await generateTutorResponse({
       systemPrompt,
       messages,
       maxTokens: 1024,
     });
-
-    const provider = getCurrentProvider();
 
     return Response.json({ message, provider });
   } catch (error) {
