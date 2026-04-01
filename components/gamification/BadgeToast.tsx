@@ -1,7 +1,7 @@
 // components/gamification/BadgeToast.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getBadgeById } from '@/lib/gamification/badges';
 
@@ -17,7 +17,7 @@ const rarityColors: Record<string, string> = {
   legendary: '#F5A623',
 };
 
-export function BadgeToast({ badgeIds, onClose }: BadgeToastProps) {
+export const BadgeToast = memo(function BadgeToast({ badgeIds, onClose }: BadgeToastProps) {
   const badge = getBadgeById(badgeIds[0]);
   // Use ref to avoid restarting the timer when onClose reference changes
   const onCloseRef = useRef(onClose);
@@ -60,4 +60,4 @@ export function BadgeToast({ badgeIds, onClose }: BadgeToastProps) {
       )}
     </AnimatePresence>
   );
-}
+});

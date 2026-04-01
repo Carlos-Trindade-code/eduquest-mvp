@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
@@ -13,7 +14,7 @@ interface ChatMessageProps {
   isStreaming?: boolean;
 }
 
-export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const { tokens } = useAgeTheme();
   const shouldReduceMotion = useReducedMotion();
@@ -87,4 +88,4 @@ export function ChatMessage({ message, isStreaming }: ChatMessageProps) {
       </div>
     </motion.div>
   );
-}
+});

@@ -1,6 +1,8 @@
 // components/tutor/HomeworkSetupView.tsx
 'use client';
 
+import { memo } from 'react';
+
 import { motion } from 'framer-motion';
 import { UserPlus, ClipboardList, Sparkles } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
@@ -31,7 +33,7 @@ interface HomeworkSetupViewProps {
   onRemoveActivity: (activityId: string) => void;
 }
 
-export function HomeworkSetupView({
+export const HomeworkSetupView = memo(function HomeworkSetupView({
   isGuest,
   pendingTasks,
   guidedActivities,
@@ -165,4 +167,4 @@ export function HomeworkSetupView({
       {!activeQuiz && <HomeworkSetup onStart={onStart} />}
     </>
   );
-}
+});

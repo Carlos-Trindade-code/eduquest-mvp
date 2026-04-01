@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FolderOpen, Loader2, Trash2, ExternalLink, Upload } from 'lucide-react';
 import { MaterialUpload } from '@/components/materials/MaterialUpload';
@@ -164,7 +165,7 @@ export function MaterialsTab({ parentId, kidId, kidName }: MaterialsTabProps) {
                 {/* Icon */}
                 <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 text-lg">
                   {m.thumbnail_url ? (
-                    <img src={m.thumbnail_url} alt="" className="w-full h-full rounded-lg object-cover" />
+                    <Image src={m.thumbnail_url!} alt="" className="w-full h-full rounded-lg object-cover" width={40} height={40} />
                   ) : (
                     getFileIcon(m.file_type)
                   )}

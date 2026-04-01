@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { getXpForNextLevel, getLevelTitle } from '@/lib/gamification/xp';
 import { Progress } from '@/components/ui/progress';
@@ -10,7 +11,7 @@ interface XPBarProps {
   compact?: boolean;
 }
 
-export function XPBar({ totalXp, compact = false }: XPBarProps) {
+export const XPBar = memo(function XPBar({ totalXp, compact = false }: XPBarProps) {
   const { currentLevel, xpInCurrentLevel, xpNeededForNext, progress } =
     getXpForNextLevel(totalXp);
   const title = getLevelTitle(currentLevel);
@@ -76,4 +77,4 @@ export function XPBar({ totalXp, compact = false }: XPBarProps) {
       <Progress value={percent} showShimmer />
     </div>
   );
-}
+});

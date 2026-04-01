@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -48,7 +49,7 @@ const eyeExpressions: Record<MascotExpression, { leftPupilY: number; rightPupilY
   sad: { leftPupilY: 3, rightPupilY: 3, leftEyeScale: 0.8, rightEyeScale: 0.8, blinkRate: 6 },
 };
 
-export function MascotOwl({
+export const MascotOwl = memo(function MascotOwl({
   expression = 'neutral',
   size = 'md',
   animated = true,
@@ -363,4 +364,4 @@ export function MascotOwl({
       )}
     </motion.svg>
   );
-}
+});

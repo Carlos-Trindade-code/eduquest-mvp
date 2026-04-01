@@ -1,6 +1,8 @@
 // components/tutor/ActiveSession.tsx
 'use client';
 
+import { memo } from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, RotateCcw, Sparkles, Clock } from 'lucide-react';
 import { MessageList } from './MessageList';
@@ -31,7 +33,7 @@ interface ActiveSessionProps {
   onReset: () => void;
 }
 
-export function ActiveSession({
+export const ActiveSession = memo(function ActiveSession({
   subject,
   totalXp,
   xpGained,
@@ -148,4 +150,4 @@ export function ActiveSession({
       </div>
     </>
   );
-}
+});

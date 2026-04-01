@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Printer, ArrowLeft, Eye, EyeOff, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -144,7 +145,7 @@ export function ExamPreview({ exam, onBack }: ExamPreviewProps) {
                 <div className="mb-4 flex flex-wrap gap-4">
                   {q.visuals.map((v, idx) => (
                     <div key={idx} className="rounded-lg overflow-hidden border border-white/10 bg-black/20">
-                      <img src={v.url} alt={v.alt || `Imagem ilustrativa da questão`} className="max-w-xs max-h-48 object-contain" />
+                      <Image src={v.url} alt={v.alt || `Imagem ilustrativa da questão`} className="max-w-xs max-h-48 object-contain" width={320} height={192} unoptimized />
                     </div>
                   ))}
                 </div>
