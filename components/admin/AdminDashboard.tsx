@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   LogOut,
   RefreshCw,
+  Download,
 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
@@ -27,6 +28,7 @@ import { MetricsCards } from './MetricsCards';
 import { FeedbackList } from './FeedbackList';
 import { AnalyticsPanel } from './AnalyticsPanel';
 import type { AdminMetrics, Suggestion, Profile, UserFeedback, FeedbackStats } from '@/lib/auth/types';
+import { exportToCSV } from '@/lib/export/csv';
 
 function createSupabase() {
   return createBrowserClient(
@@ -232,6 +234,25 @@ export function AdminDashboard() {
 
           {/* Suggestions tab */}
           <Tabs.Content value="suggestions">
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => exportToCSV(
+                  suggestions.map(s => ({
+                    Conteudo: s.content,
+                    Nome: s.user_name || '',
+                    Email: s.user_email || '',
+                    Status: s.status,
+                    Notas: s.admin_notes || '',
+                    Data: new Date(s.created_at).toLocaleDateString('pt-BR'),
+                  })),
+                  'sugestoes'
+                )}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 text-xs transition-colors"
+              >
+                <Download size={14} />
+                Exportar CSV
+              </button>
+            </div>
             <SuggestionsList
               suggestions={suggestions}
               onUpdateStatus={handleUpdateSuggestion}
@@ -240,6 +261,23 @@ export function AdminDashboard() {
 
           {/* Users tab */}
           <Tabs.Content value="users">
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => exportToCSV(
+                  profiles.map(p => ({
+                    Nome: p.name || 'Sem nome',
+                    Email: p.email,
+                    Tipo: p.user_type,
+                    Criado_em: new Date(p.created_at).toLocaleDateString('pt-BR'),
+                  })),
+                  'usuarios'
+                )}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 text-xs transition-colors"
+              >
+                <Download size={14} />
+                Exportar CSV
+              </button>
+            </div>
             <UsersTable profiles={profiles} loading={loading} />
           </Tabs.Content>
 

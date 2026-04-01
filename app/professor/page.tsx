@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Users, Copy, Check, Upload, Sparkles, LogOut, Shield,
   FileText, Loader2, X, Clock, Star,
-  Activity, BarChart3, Zap,
+  Activity, BarChart3, Zap, Download,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { getSubjectById, subjects } from '@/lib/subjects/config';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
+import { exportToCSV } from '@/lib/export/csv';
 import {
   getStudentAnalytics,
   getClassroomStats,
@@ -218,25 +219,46 @@ export default function ProfessorPage() {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-white font-semibold text-sm flex items-center gap-2"><Users size={16} className="text-blue-400" />Alunos ({members.length})</h3>
                     {members.length > 0 && Object.values(studentAnalytics).some((a) => a.totalSessions > 0) && (
-                      <button
-                        onClick={() => {
-                          const lines = [
-                            `📊 Relatório — ${selectedClassroom.name}`,
-                            `Total: ${classroomStats?.totalSessions || 0} sessões · XP médio: ${classroomStats?.averageXP || 0}`,
-                            '',
-                            ...members.map((m) => {
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => exportToCSV(
+                            members.map((m) => {
                               const a = studentAnalytics[m.student_id];
-                              return `${m.profiles?.name || 'Aluno'}: ${a?.totalSessions || 0} sessões, ${a?.totalXP || 0} XP, ${a?.totalMinutes || 0}min`;
+                              const favSub = a?.favoriteSubject ? getSubjectById(a.favoriteSubject) : null;
+                              return {
+                                Nome: m.profiles?.name || 'Aluno',
+                                Sessoes: a?.totalSessions || 0,
+                                XP_Total: a?.totalXP || 0,
+                                Ultima_Atividade: a?.lastSessionDate ? formatRelativeDate(a.lastSessionDate) : 'Sem atividade',
+                                Materia_Favorita: favSub ? favSub.name : '--',
+                              };
                             }),
-                            '',
-                            `Gerado pelo Studdo — studdo.com.br`,
-                          ];
-                          navigator.clipboard.writeText(lines.join('\n'));
-                        }}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
-                      >
-                        <Copy size={12} />Copiar relatório
-                      </button>
+                            `alunos_${selectedClassroom.name.replace(/\s+/g, '_')}`
+                          )}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
+                        >
+                          <Download size={12} />Exportar CSV
+                        </button>
+                        <button
+                          onClick={() => {
+                            const lines = [
+                              `📊 Relatório — ${selectedClassroom.name}`,
+                              `Total: ${classroomStats?.totalSessions || 0} sessões · XP médio: ${classroomStats?.averageXP || 0}`,
+                              '',
+                              ...members.map((m) => {
+                                const a = studentAnalytics[m.student_id];
+                                return `${m.profiles?.name || 'Aluno'}: ${a?.totalSessions || 0} sessões, ${a?.totalXP || 0} XP, ${a?.totalMinutes || 0}min`;
+                              }),
+                              '',
+                              `Gerado pelo Studdo — studdo.com.br`,
+                            ];
+                            navigator.clipboard.writeText(lines.join('\n'));
+                          }}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
+                        >
+                          <Copy size={12} />Copiar relatório
+                        </button>
+                      </div>
                     )}
                   </div>
                   {members.length === 0 ? (
