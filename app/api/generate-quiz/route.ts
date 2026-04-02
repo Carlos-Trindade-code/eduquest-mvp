@@ -1,6 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
-import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { generateQuizSchema } from '@/lib/api/schemas';
 
@@ -9,11 +8,9 @@ export async function POST(request: NextRequest) {
     const rl = rateLimit(request, { maxRequests: 5, windowMs: 60_000 });
     if (!rl.success) return rateLimitResponse();
 
-    const supabase = createRouteHandlerClient(request);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return Response.json({ error: 'Não autenticado' }, { status: 401 });
-    }
+    // Auth is optional — guests can generate quizzes (rate-limited above)
+    // const supabase = createRouteHandlerClient(request);
+    // const { data: { user } } = await supabase.auth.getUser();
 
     const parsed = generateQuizSchema.safeParse(await request.json());
     if (!parsed.success) {

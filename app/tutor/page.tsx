@@ -11,12 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 
 function TutorLoadingSkeleton() {
   return (
-    <motion.div
+    <div
       className="flex-1 flex flex-col items-center justify-center gap-5 py-12"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
     >
       <MascotOwl expression="thinking" size="lg" animated />
       <div className="text-center">
@@ -37,7 +33,7 @@ function TutorLoadingSkeleton() {
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 

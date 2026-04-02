@@ -2,18 +2,54 @@
 
 import { Navbar } from '@/components/landing/Navbar';
 import dynamic from 'next/dynamic';
-const MusicPlayer = dynamic(() => import('@/components/landing/MusicPlayer').then(m => m.MusicPlayer), { ssr: false });
 import { HeroSection } from '@/components/landing/HeroSection';
-import { ParentTestimonials } from '@/components/landing/ParentTestimonials';
-import { SocialProof } from '@/components/landing/SocialProof';
-import { DemoShowcase } from '@/components/landing/DemoShowcase';
-import { FeaturesSection } from '@/components/landing/FeaturesSection';
-import { AgeGroupShowcase } from '@/components/landing/AgeGroupShowcase';
-import { HowItWorks } from '@/components/landing/HowItWorks';
-import { ParentDashboardPreview } from '@/components/landing/ParentDashboardPreview';
-import { SchoolsSection } from '@/components/landing/SchoolsSection';
-import { FAQSection } from '@/components/landing/FAQSection';
-import { Footer } from '@/components/landing/Footer';
+
+const MusicPlayer = dynamic(() => import('@/components/landing/MusicPlayer').then(m => m.MusicPlayer), { ssr: false });
+
+const SectionSkeleton = () => (
+  <div className="w-full py-20 px-4">
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="h-10 w-1/3 mx-auto rounded-lg bg-white/5 animate-pulse" />
+      <div className="h-4 w-2/3 mx-auto rounded bg-white/5 animate-pulse" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-48 rounded-2xl bg-white/5 animate-pulse" />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const ParentTestimonials = dynamic(() => import('@/components/landing/ParentTestimonials').then(m => m.ParentTestimonials), {
+  loading: () => <SectionSkeleton />,
+});
+const SocialProof = dynamic(() => import('@/components/landing/SocialProof').then(m => m.SocialProof), {
+  loading: () => <SectionSkeleton />,
+});
+const DemoShowcase = dynamic(() => import('@/components/landing/DemoShowcase').then(m => m.DemoShowcase), {
+  loading: () => <SectionSkeleton />,
+});
+const FeaturesSection = dynamic(() => import('@/components/landing/FeaturesSection').then(m => m.FeaturesSection), {
+  loading: () => <SectionSkeleton />,
+});
+const AgeGroupShowcase = dynamic(() => import('@/components/landing/AgeGroupShowcase').then(m => m.AgeGroupShowcase), {
+  loading: () => <SectionSkeleton />,
+});
+const HowItWorks = dynamic(() => import('@/components/landing/HowItWorks').then(m => m.HowItWorks), {
+  loading: () => <SectionSkeleton />,
+});
+const ParentDashboardPreview = dynamic(() => import('@/components/landing/ParentDashboardPreview').then(m => m.ParentDashboardPreview), {
+  loading: () => <SectionSkeleton />,
+});
+const SchoolsSection = dynamic(() => import('@/components/landing/SchoolsSection').then(m => m.SchoolsSection), {
+  loading: () => <SectionSkeleton />,
+});
+const FAQSection = dynamic(() => import('@/components/landing/FAQSection').then(m => m.FAQSection), {
+  loading: () => <SectionSkeleton />,
+});
+const Footer = dynamic(() => import('@/components/landing/Footer').then(m => m.Footer), {
+  loading: () => <div className="w-full h-32 bg-white/5 animate-pulse" />,
+});
 
 
 export default function LandingPage() {
