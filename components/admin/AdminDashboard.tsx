@@ -71,8 +71,7 @@ export function AdminDashboard() {
       setFeedbackStats(feedbackStatsData);
       supabase.rpc('get_school_leads').then(({ data }) => setSchoolLeads(data || []));
       setError(null);
-    } catch (err) {
-      console.error('Failed to load admin data:', err);
+    } catch {
       setError('Não foi possível carregar os dados. Verifique sua conexão.');
     } finally {
       setLoading(false);

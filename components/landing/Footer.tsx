@@ -15,7 +15,7 @@ export function Footer() {
             100% gratuito. Sem cartão.
           </h2>
           <p className="text-lg mb-8" style={{ color: 'rgba(240,244,248,0.55)' }}>
-            O Studdo está em beta aberto — todas as funcionalidades liberadas, sem limite.
+            Todas as funcionalidades liberadas, sem limite.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link

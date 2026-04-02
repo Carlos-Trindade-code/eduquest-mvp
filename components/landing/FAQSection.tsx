@@ -31,7 +31,7 @@ const faqItems = [
   {
     question: 'Quanto custa?',
     answer:
-      'O Studdo está em fase beta e é totalmente grátis! Estamos testando com grupos de escolas para aperfeiçoar a plataforma. No futuro, teremos planos acessíveis com funcionalidades premium.',
+      'O Studdo é totalmente grátis! No futuro, teremos planos acessíveis com funcionalidades premium, mas todas as funcionalidades atuais continuarão disponíveis.',
   },
   {
     question: 'Para que idade serve?',

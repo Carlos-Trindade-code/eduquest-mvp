@@ -84,7 +84,7 @@ const stats = [
 ];
 
 const trustItems = [
-  'Grátis durante o beta — comece em 10 segundos',
+  'Grátis — comece em 10 segundos',
   'Quiz interativo com feedback instantâneo',
   'Dashboard em tempo real para os pais',
 ];
