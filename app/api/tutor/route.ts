@@ -13,7 +13,13 @@ export async function POST(request: NextRequest) {
     const supabase = createRouteHandlerClient(request);
     const { data: { user } } = await supabase.auth.getUser();
     // Auth is optional — guests can use the trial (limited client-side)
-    const parsed = tutorSchema.safeParse(await request.json());
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return Response.json({ error: 'Corpo da requisição inválido. Envie um JSON válido.' }, { status: 400 });
+    }
+    const parsed = tutorSchema.safeParse(body);
     if (!parsed.success) {
       return Response.json({ error: 'Dados inválidos', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
