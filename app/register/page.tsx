@@ -75,7 +75,7 @@ export default function RegisterPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-app flex items-center justify-center px-4">
+        <div className="min-h-screen theme-light flex items-center justify-center px-4">
           <div className="w-full max-w-md space-y-6">
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-white/5 mx-auto mb-4 animate-pulse" />

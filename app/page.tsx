@@ -9,11 +9,11 @@ const MusicPlayer = dynamic(() => import('@/components/landing/MusicPlayer').the
 const SectionSkeleton = () => (
   <div className="w-full py-20 px-4">
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="h-10 w-1/3 mx-auto rounded-lg bg-white/5 animate-pulse" />
-      <div className="h-4 w-2/3 mx-auto rounded bg-white/5 animate-pulse" />
+      <div className="h-10 w-1/3 mx-auto rounded-lg bg-gray-200/50 animate-pulse" />
+      <div className="h-4 w-2/3 mx-auto rounded bg-gray-200/50 animate-pulse" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 rounded-2xl bg-white/5 animate-pulse" />
+          <div key={i} className="h-48 rounded-2xl bg-gray-200/50 animate-pulse" />
         ))}
       </div>
     </div>
@@ -48,13 +48,13 @@ const FAQSection = dynamic(() => import('@/components/landing/FAQSection').then(
   loading: () => <SectionSkeleton />,
 });
 const Footer = dynamic(() => import('@/components/landing/Footer').then(m => m.Footer), {
-  loading: () => <div className="w-full h-32 bg-white/5 animate-pulse" />,
+  loading: () => <div className="w-full h-32 bg-gray-200/50 animate-pulse" />,
 });
 
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-[#0A0A1A]">
+    <main className="min-h-screen theme-light">
       <Navbar />
       <HeroSection />
       <ParentTestimonials />
