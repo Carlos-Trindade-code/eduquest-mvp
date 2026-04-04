@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronDown,
@@ -12,11 +12,16 @@ import {
   Check,
   Home,
   ArrowLeft,
+  Clock,
+  Eye,
+  MessageSquare,
 } from 'lucide-react';
 import Link from 'next/link';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
+import { createClient } from '@/lib/supabase/client';
+import type { Suggestion } from '@/lib/auth/types';
 
 const faqItems = [
   {
@@ -141,6 +146,31 @@ export default function AjudaPage() {
   const [suggestion, setSuggestion] = useState('');
   const [suggestionSent, setSuggestionSent] = useState(false);
   const [suggestionLoading, setSuggestionLoading] = useState(false);
+  const [userSuggestions, setUserSuggestions] = useState<Suggestion[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [suggestionsLoaded, setSuggestionsLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchUserSuggestions = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        setIsLoggedIn(true);
+
+        const res = await fetch('/api/suggestions');
+        if (res.ok) {
+          const data = await res.json();
+          setUserSuggestions(data.suggestions || []);
+        }
+      } catch {
+        // silent
+      } finally {
+        setSuggestionsLoaded(true);
+      }
+    };
+    fetchUserSuggestions();
+  }, []);
 
   const handleAskEdu = async () => {
     if (!aiQuestion.trim() || aiLoading) return;
@@ -172,6 +202,16 @@ export default function AjudaPage() {
       setSuggestionSent(true);
       setSuggestion('');
       setTimeout(() => setSuggestionSent(false), 4000);
+      // Refresh user suggestions list if logged in
+      if (isLoggedIn) {
+        try {
+          const res = await fetch('/api/suggestions');
+          if (res.ok) {
+            const data = await res.json();
+            setUserSuggestions(data.suggestions || []);
+          }
+        } catch { /* silent */ }
+      }
     } catch {
       // silent
     }
@@ -317,6 +357,56 @@ export default function AjudaPage() {
             )}
           </div>
         </section>
+
+        {/* User's past suggestions */}
+        {isLoggedIn && suggestionsLoaded && userSuggestions.length > 0 && (
+          <section>
+            <h2 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+              <MessageSquare size={18} className="text-purple-400" />
+              Minhas sugestoes
+            </h2>
+            <div className="space-y-3">
+              {userSuggestions.map((s) => {
+                const statusMap = {
+                  pending: { label: 'Pendente', color: '#F59E0B', Icon: Clock },
+                  read: { label: 'Lida', color: '#3B82F6', Icon: Eye },
+                  done: { label: 'Concluida', color: '#10B981', Icon: Check },
+                };
+                const st = statusMap[s.status];
+                return (
+                  <div key={s.id} className="glass rounded-xl p-4">
+                    <div className="flex items-start gap-3 mb-2">
+                      <div
+                        className="px-2 py-0.5 rounded-full text-xs font-medium shrink-0"
+                        style={{ backgroundColor: `${st.color}15`, color: st.color }}
+                      >
+                        {st.label}
+                      </div>
+                      <span className="text-white/40 text-xs ml-auto">
+                        {new Date(s.created_at).toLocaleDateString('pt-BR')}
+                      </span>
+                    </div>
+                    <p className="text-white text-sm mb-2">{s.content}</p>
+
+                    {s.admin_notes && (
+                      <div
+                        className="rounded-xl p-3 mt-2"
+                        style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}
+                      >
+                        <p className="text-purple-300 text-xs font-semibold mb-1">
+                          Resposta da equipe Studdo:
+                        </p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: 'rgba(240,244,248,0.7)' }}>
+                          {s.admin_notes}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Quick links */}
         <section className="grid grid-cols-2 gap-3">

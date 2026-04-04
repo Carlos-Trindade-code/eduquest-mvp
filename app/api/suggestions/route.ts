@@ -2,6 +2,24 @@ import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { NextRequest } from 'next/server';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { suggestionsSchema } from '@/lib/api/schemas';
+import { getUserSuggestions } from '@/lib/supabase/queries';
+
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = createRouteHandlerClient(request);
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ error: 'Nao autenticado' }, { status: 401 });
+    }
+
+    const suggestions = await getUserSuggestions(supabase, user.id);
+    return Response.json({ suggestions });
+  } catch (error) {
+    console.error('Get user suggestions error:', error);
+    return Response.json({ error: 'Erro interno' }, { status: 500 });
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {

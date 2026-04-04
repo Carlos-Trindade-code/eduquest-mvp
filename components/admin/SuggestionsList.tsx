@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Eye, Clock, MessageSquare, Filter, CheckSquare, Square } from 'lucide-react';
+import { Check, Eye, Clock, MessageSquare, Filter, CheckSquare, Square, Send, Loader2 } from 'lucide-react';
 import type { Suggestion } from '@/lib/auth/types';
 
 interface SuggestionsListProps {
@@ -25,6 +25,8 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
   const [bulkLoading, setBulkLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [statusMessage, setStatusMessage] = useState<Record<string, { type: 'success' | 'error'; text: string }>>({});
+  const [replyText, setReplyText] = useState<Record<string, string>>({});
+  const [replyLoading, setReplyLoading] = useState<Record<string, boolean>>({});
 
   const handleUpdateWithFeedback = async (id: string, status: 'pending' | 'read' | 'done', notes?: string) => {
     try {
@@ -234,11 +236,47 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
                           </button>
                         )}
                       </div>
+
+                      {/* Existing admin response */}
                       {suggestion.admin_notes && (
-                        <div className="px-4 pb-4">
-                          <p className="text-white/30 text-xs">Notas: {suggestion.admin_notes}</p>
+                        <div className="mx-4 mb-3 p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
+                          <p className="text-purple-300 text-xs font-semibold mb-1">Resposta da equipe Studdo:</p>
+                          <p className="text-white/60 text-sm whitespace-pre-wrap">{suggestion.admin_notes}</p>
                         </div>
                       )}
+
+                      {/* Reply textarea */}
+                      <div className="px-4 pb-4">
+                        <label className="text-white/40 text-xs font-medium mb-1.5 block">
+                          {suggestion.admin_notes ? 'Editar resposta:' : 'Responder ao usuario:'}
+                        </label>
+                        <textarea
+                          value={replyText[suggestion.id] ?? (suggestion.admin_notes || '')}
+                          onChange={(e) => setReplyText((prev) => ({ ...prev, [suggestion.id]: e.target.value }))}
+                          placeholder="Escreva uma resposta para o usuario..."
+                          rows={3}
+                          className="w-full bg-white/5 text-white placeholder-white/30 rounded-xl px-3 py-2 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm resize-none mb-2"
+                        />
+                        <button
+                          onClick={async () => {
+                            const text = (replyText[suggestion.id] ?? '').trim();
+                            if (!text) return;
+                            setReplyLoading((prev) => ({ ...prev, [suggestion.id]: true }));
+                            const newStatus = suggestion.status === 'pending' ? 'read' : suggestion.status;
+                            await handleUpdateWithFeedback(suggestion.id, newStatus, text);
+                            setReplyLoading((prev) => ({ ...prev, [suggestion.id]: false }));
+                          }}
+                          disabled={!(replyText[suggestion.id] ?? '').trim() || replyLoading[suggestion.id]}
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white text-xs font-medium transition-colors"
+                        >
+                          {replyLoading[suggestion.id] ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <Send size={14} />
+                          )}
+                          Responder
+                        </button>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>

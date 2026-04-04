@@ -414,6 +414,18 @@ export async function getAllSuggestions(
   return (data || []) as Suggestion[];
 }
 
+export async function getUserSuggestions(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<Suggestion[]> {
+  const { data } = await supabase
+    .from('suggestions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  return (data || []) as Suggestion[];
+}
+
 export async function updateSuggestionStatus(
   supabase: SupabaseClient,
   suggestionId: string,
