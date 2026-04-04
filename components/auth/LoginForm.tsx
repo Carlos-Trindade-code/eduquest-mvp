@@ -85,10 +85,10 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             transition={{ delay: 0.6, duration: 0.5 }}
             className="mt-8"
           >
-            <h2 className="text-gray-900 text-2xl font-bold mb-2">
+            <h2 className="text-white text-2xl font-bold mb-2">
               Que bom te ver de volta!
             </h2>
-            <p className="text-gray-500 text-sm max-w-xs mx-auto">
+            <p className="text-white/50 text-sm max-w-xs mx-auto">
               Continue sua jornada de aprendizado com o Edu, seu tutor inteligente.
             </p>
           </motion.div>
@@ -131,11 +131,11 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
           <motion.div className="text-center mb-8" variants={fadeInUp('medium')} initial="hidden" animate="visible">
             <Link href="/" className="inline-flex items-center gap-2 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                <span className="text-gray-900 text-lg font-black">S</span>
+                <span className="text-white text-lg font-black">S</span>
               </div>
-              <span className="text-gray-900 font-bold text-2xl">Studdo</span>
+              <span className="text-white font-bold text-2xl">Studdo</span>
             </Link>
-            <h1 className="text-gray-900 text-xl font-bold">Bem-vindo de volta!</h1>
+            <h1 className="text-white text-xl font-bold">Bem-vindo de volta!</h1>
             <p className="text-[var(--eq-text-secondary)] text-sm mt-1">
               Entre na sua conta para continuar estudando
             </p>
@@ -191,7 +191,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             <div className="space-y-1.5">
               <label htmlFor="login-email" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
               <div className="relative group">
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
+                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                 <input
                   id="login-email"
                   name="email"
@@ -201,7 +201,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
-                  className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                  className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                   required
                 />
               </div>
@@ -220,7 +220,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
                 </button>
               </div>
               <div className="relative group">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                 <input
                   id="login-password"
                   name="password"
@@ -229,14 +229,14 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                  className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors p-2"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors p-2"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -260,7 +260,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             <motion.button
               type="submit"
               disabled={loading || !email || !password}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-gray-900 font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
               whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.35)' }}
               whileTap={{ scale: 0.98 }}
             >
@@ -283,14 +283,14 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
                 <div className="w-full border-t border-white/8" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-[var(--eq-surface)] px-3 text-gray-400">ou</span>
+                <span className="bg-[var(--eq-surface)] px-3 text-white/30">ou</span>
               </div>
             </div>
 
             <motion.button
               type="button"
               onClick={onGoogleLogin}
-              className="w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 text-sm border border-gray-200 flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-3 bg-white/5 text-white/80 font-semibold rounded-xl hover:bg-white/10 text-sm border border-white/10 flex items-center justify-center gap-2 transition-colors"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
             >

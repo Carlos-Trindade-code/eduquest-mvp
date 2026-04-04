@@ -8,8 +8,6 @@ import {
   Calendar, Target, Sparkles, ChevronRight, Trash2, Share2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
-import { AvatarCustomizer } from '@/components/avatar/AvatarCustomizer';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { getUserStats, getUserBadges } from '@/lib/supabase/queries';
@@ -97,8 +95,6 @@ export default function PerfilPage() {
     }
   };
   const totalSessions = stats?.sessions_completed || 0;
-  const [showAvatarCustomizer, setShowAvatarCustomizer] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || null);
 
   return (
     <AgeThemeProvider ageGroup={ageGroup}>
@@ -131,20 +127,13 @@ export default function PerfilPage() {
           >
             {/* Avatar */}
             <motion.div
-              className="mx-auto mb-2 cursor-pointer"
+              className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-purple-500/30 mb-4"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
-              onClick={() => setShowAvatarCustomizer(true)}
             >
-              <AvatarDisplay avatarUrl={avatarUrl} name={profile?.name || ''} size={80} />
+              {profile?.name?.charAt(0).toUpperCase() || '?'}
             </motion.div>
-            <button
-              onClick={() => setShowAvatarCustomizer(true)}
-              className="text-purple-400 text-xs hover:text-purple-300 transition-colors mb-3"
-            >
-              Personalizar avatar
-            </button>
 
             <h1 className="text-white text-xl font-extrabold">{profile?.name}</h1>
             <p className="text-white/40 text-sm mt-0.5">
@@ -378,15 +367,6 @@ export default function PerfilPage() {
           )}
         </AnimatePresence>
       </div>
-      {showAvatarCustomizer && profile && (
-        <AvatarCustomizer
-          currentAvatarUrl={avatarUrl}
-          profileId={profile.id}
-          userName={profile.name || ''}
-          onSave={(newUrl) => { setAvatarUrl(newUrl); setShowAvatarCustomizer(false); }}
-          onClose={() => setShowAvatarCustomizer(false)}
-        />
-      )}
     </AgeThemeProvider>
   );
 }

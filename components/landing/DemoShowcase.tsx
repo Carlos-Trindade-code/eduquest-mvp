@@ -75,16 +75,16 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
       <div className="absolute -inset-4 bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 rounded-[3rem] blur-2xl" />
 
       {/* Phone body */}
-      <div className="relative bg-[#0D0D1A] rounded-[2.5rem] border border-gray-200 shadow-2xl shadow-purple-500/10 p-2 overflow-hidden">
+      <div className="relative bg-[#0D0D1A] rounded-[2.5rem] border border-white/10 shadow-2xl shadow-purple-500/10 p-2 overflow-hidden">
         {/* Notch */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#0D0D1A] rounded-b-2xl z-20" />
 
         {/* Status bar */}
         <div className="relative z-10 flex items-center justify-between px-6 pt-2 pb-1">
-          <span className="text-[10px] text-gray-400 font-medium">9:41</span>
+          <span className="text-[10px] text-white/40 font-medium">9:41</span>
           <div className="flex gap-1">
-            <div className="w-4 h-2 bg-gray-500 rounded-sm" />
-            <div className="w-3 h-2 bg-gray-500 rounded-sm" />
+            <div className="w-4 h-2 bg-white/30 rounded-sm" />
+            <div className="w-3 h-2 bg-white/30 rounded-sm" />
           </div>
         </div>
 
@@ -112,7 +112,7 @@ function PhotoScene() {
       </div>
 
       <div className="text-center mb-5">
-        <p className="text-gray-500 text-xs mb-1">Escolha a matéria</p>
+        <p className="text-white/60 text-xs mb-1">Escolha a matéria</p>
         <div className="flex justify-center gap-2 flex-wrap">
           {['História', 'Matemática', 'Ciências'].map((s, i) => (
             <motion.span
@@ -120,7 +120,7 @@ function PhotoScene() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
                 i === 0
                   ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                  : 'bg-gray-100 text-gray-400 border border-gray-200'
+                  : 'bg-white/5 text-white/40 border border-white/10'
               }`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -146,19 +146,19 @@ function PhotoScene() {
         >
           <Camera className="w-7 h-7 text-purple-400" />
         </motion.div>
-        <p className="text-gray-400 text-xs text-center px-4">
+        <p className="text-white/40 text-xs text-center px-4">
           Tire uma foto da tarefa ou<br />digite o exercício
         </p>
       </motion.div>
 
       {/* Simulated input */}
       <motion.div
-        className="bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-2"
+        className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-2"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
       >
-        <span className="text-gray-400 text-xs flex-1">Causas da Revolução Francesa...</span>
+        <span className="text-white/30 text-xs flex-1">Causas da Revolução Francesa...</span>
         <motion.div
           className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center"
           animate={{ scale: [1, 1.15, 1] }}
@@ -197,10 +197,10 @@ function ChatScene() {
   return (
     <div className="p-4 flex flex-col h-full">
       {/* Chat header */}
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
+      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
         <MascotOwl expression="thinking" size="sm" />
         <div>
-          <p className="text-gray-900 text-xs font-bold">Edu - Tutor IA</p>
+          <p className="text-white text-xs font-bold">Edu - Tutor IA</p>
           <p className="text-green-400 text-[10px]">Online</p>
         </div>
       </div>
@@ -220,7 +220,7 @@ function ChatScene() {
                 className={`max-w-[85%] px-3 py-2 rounded-2xl text-xs leading-relaxed ${
                   msg.role === 'user'
                     ? 'bg-purple-600 text-white rounded-br-md'
-                    : 'bg-white/8 text-gray-700 rounded-bl-md border border-gray-200'
+                    : 'bg-white/8 text-white/80 rounded-bl-md border border-white/5'
                 }`}
               >
                 {msg.text}
@@ -247,7 +247,7 @@ function ChatScene() {
             animate={{ opacity: 1 }}
             className="flex justify-start"
           >
-            <div className="bg-white/8 rounded-2xl rounded-bl-md px-3 py-2 border border-gray-200">
+            <div className="bg-white/8 rounded-2xl rounded-bl-md px-3 py-2 border border-white/5">
               <div className="flex gap-1">
                 {[0, 1, 2].map((d) => (
                   <motion.div
@@ -311,17 +311,17 @@ function GamificationScene() {
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mx-auto mb-2 flex items-center justify-center text-2xl">
           <MascotOwl expression="celebrating" size="sm" />
         </div>
-        <p className="text-gray-900 font-bold text-sm">João Pedro</p>
-        <p className="text-gray-400 text-[10px]">10 anos - 5o ano</p>
+        <p className="text-white font-bold text-sm">João Pedro</p>
+        <p className="text-white/40 text-[10px]">10 anos - 5o ano</p>
       </motion.div>
 
       {/* XP Bar */}
       <div className="w-full mb-6">
         <div className="flex justify-between text-[10px] mb-1">
           <span className="text-purple-400 font-bold">Nível {level}</span>
-          <span className="text-gray-400">{xp}/100 XP</span>
+          <span className="text-white/40">{xp}/100 XP</span>
         </div>
-        <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+        <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
           <motion.div
             className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full relative"
             animate={{ width: `${xp}%` }}
@@ -345,14 +345,14 @@ function GamificationScene() {
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
-            className="bg-gray-100 rounded-xl p-3 text-center border border-gray-200"
+            className="bg-white/5 rounded-xl p-3 text-center border border-white/5"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 + i * 0.2 }}
           >
             <stat.icon className="w-4 h-4 mx-auto mb-1" style={{ color: stat.color }} />
-            <p className="text-gray-900 font-bold text-xs">{stat.value}</p>
-            <p className="text-gray-400 text-[9px]">{stat.label}</p>
+            <p className="text-white font-bold text-xs">{stat.value}</p>
+            <p className="text-white/30 text-[9px]">{stat.label}</p>
           </motion.div>
         ))}
       </div>
@@ -375,7 +375,7 @@ function GamificationScene() {
               <Trophy className="w-8 h-8 text-amber-400 mx-auto" />
             </motion.div>
             <p className="text-amber-400 font-bold text-sm">Novo Badge!</p>
-            <p className="text-gray-500 text-[10px]">Explorador de História</p>
+            <p className="text-white/50 text-[10px]">Explorador de História</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -392,17 +392,17 @@ function ParentScene() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-gray-900 font-bold text-sm">Dashboard</p>
-          <p className="text-gray-400 text-[10px]">Olá, Maria!</p>
+          <p className="text-white font-bold text-sm">Dashboard</p>
+          <p className="text-white/40 text-[10px]">Olá, Maria!</p>
         </div>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-gray-900 text-[10px] font-bold">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-[10px] font-bold">
           M
         </div>
       </div>
 
       {/* Child card */}
       <motion.div
-        className="bg-gray-100 rounded-xl p-3 border border-gray-200 mb-4"
+        className="bg-white/5 rounded-xl p-3 border border-white/5 mb-4"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -412,15 +412,15 @@ function ParentScene() {
             <MascotOwl expression="waving" size="sm" />
           </div>
           <div>
-            <p className="text-gray-900 text-xs font-bold">João Pedro</p>
-            <p className="text-gray-400 text-[9px]">Nível 5 - 450 XP</p>
+            <p className="text-white text-xs font-bold">João Pedro</p>
+            <p className="text-white/40 text-[9px]">Nível 5 - 450 XP</p>
           </div>
           <div className="ml-auto flex items-center gap-1 text-green-400 text-[10px]">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
             Ativo hoje
           </div>
         </div>
-        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
             initial={{ width: 0 }}
@@ -432,12 +432,12 @@ function ParentScene() {
 
       {/* Mini chart */}
       <motion.div
-        className="bg-gray-100 rounded-xl p-3 border border-gray-200 mb-4"
+        className="bg-white/5 rounded-xl p-3 border border-white/5 mb-4"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <p className="text-gray-500 text-[10px] mb-2 font-medium">Sessões esta semana</p>
+        <p className="text-white/60 text-[10px] mb-2 font-medium">Sessões esta semana</p>
         <div className="flex items-end gap-1 h-16">
           {[40, 65, 30, 80, 55, 90, 45].map((h, i) => (
             <motion.div
@@ -451,7 +451,7 @@ function ParentScene() {
         </div>
         <div className="flex justify-between mt-1">
           {['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((d, i) => (
-            <span key={i} className="flex-1 text-center text-[8px] text-gray-400">{d}</span>
+            <span key={i} className="flex-1 text-center text-[8px] text-white/30">{d}</span>
           ))}
         </div>
       </motion.div>
@@ -467,7 +467,7 @@ function ParentScene() {
           <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div>
             <p className="text-amber-400 text-[10px] font-bold">Alerta Inteligente</p>
-            <p className="text-gray-500 text-[9px]">João completou 7 dias seguidos! Parabéns!</p>
+            <p className="text-white/50 text-[9px]">João completou 7 dias seguidos! Parabéns!</p>
           </div>
         </div>
       </motion.div>
@@ -537,7 +537,7 @@ export function DemoShowcase() {
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
-            className="mt-4 text-gray-500 text-lg"
+            className="mt-4 text-white/50 text-lg"
           >
             Uma experiência fluida: envie a tarefa, converse com o tutor IA,
             ganhe XP e os pais acompanham tudo.
@@ -589,26 +589,26 @@ export function DemoShowcase() {
                     className={`w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all ${
                       isActive
                         ? 'bg-purple-500/10 border border-purple-500/20'
-                        : 'bg-white/[0.02] border border-transparent hover:bg-gray-100 hover:border-gray-200'
+                        : 'bg-white/[0.02] border border-transparent hover:bg-white/5 hover:border-white/5'
                     }`}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                   >
                     <div
                       className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                        isActive ? 'bg-purple-500/20' : 'bg-gray-100'
+                        isActive ? 'bg-purple-500/20' : 'bg-white/5'
                       }`}
                     >
                       <scene.icon
-                        className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-gray-400'}`}
+                        className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/40'}`}
                       />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className={`font-semibold text-sm ${isActive ? 'text-white' : 'text-gray-500'}`}>
+                      <p className={`font-semibold text-sm ${isActive ? 'text-white' : 'text-white/60'}`}>
                         {scene.label}
                       </p>
-                      <p className="text-gray-400 text-xs mt-0.5">
+                      <p className="text-white/40 text-xs mt-0.5">
                         {scene.id === 'photo' && 'Foto, upload ou digitação — a IA extrai o texto'}
                         {scene.id === 'chat' && 'Método socrático: perguntas que guiam o raciocínio'}
                         {scene.id === 'gamification' && 'XP, níveis, streaks e badges que motivam'}
@@ -617,7 +617,7 @@ export function DemoShowcase() {
                     </div>
 
                     <ChevronRight
-                      className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-400' : 'text-gray-300'}`}
+                      className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-400' : 'text-white/20'}`}
                     />
 
                     {/* Progress bar for auto-play */}
@@ -641,12 +641,12 @@ export function DemoShowcase() {
                 className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                   autoPlay
                     ? 'bg-purple-500/20 text-purple-300 border border-purple-500/20'
-                    : 'bg-gray-100 text-gray-400 border border-gray-200'
+                    : 'bg-white/5 text-white/40 border border-white/10'
                 }`}
               >
                 {autoPlay ? 'Auto-play ativo' : 'Auto-play pausado'}
               </button>
-              <span className="text-gray-300 text-xs">Clique em qualquer cena para explorar</span>
+              <span className="text-white/20 text-xs">Clique em qualquer cena para explorar</span>
             </div>
           </motion.div>
         </div>

@@ -63,8 +63,8 @@ export function ParentDashboardPreview() {
               </Link>
               <Link
                 href="/tutor"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-gray-100"
-                style={{ color: 'rgba(30,41,59,0.7)', border: '1px solid rgba(0,0,0,0.05)' }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-white/10"
+                style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
               >
                 Testar como aluno
               </Link>
@@ -78,12 +78,12 @@ export function ParentDashboardPreview() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
           >
-            <div className="rounded-2xl p-6 shadow-2xl" style={{ background: '#1A2E42', border: '1px solid rgba(0,0,0,0.04)' }}>
+            <div className="rounded-2xl p-6 shadow-2xl" style={{ background: '#1A2E42', border: '1px solid rgba(255,255,255,0.08)' }}>
               {/* Mock header */}
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <div className="text-gray-900 font-bold">Dashboard</div>
-                  <div className="text-xs mt-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>Beatriz, 11 anos</div>
+                  <div className="text-white font-bold">Dashboard</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'rgba(240,244,248,0.4)' }}>Beatriz, 11 anos</div>
                 </div>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm" style={{ background: 'rgba(0,180,216,0.2)' }}>
                   👧
@@ -93,21 +93,21 @@ export function ParentDashboardPreview() {
               {/* Stat cards */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 {mockStats.map((s) => (
-                  <div key={s.label} className="rounded-xl p-4" style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.04)' }}>
+                  <div key={s.label} className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <s.icon size={16} style={{ color: s.color }} className="mb-2" />
                     <div className="text-2xl font-extrabold text-white">{s.value}</div>
-                    <div className="text-xs mt-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>{s.label}</div>
+                    <div className="text-xs mt-0.5" style={{ color: 'rgba(240,244,248,0.4)' }}>{s.label}</div>
                   </div>
                 ))}
               </div>
 
               {/* Mock XP bar */}
-              <div className="rounded-xl p-4" style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.04)' }}>
+              <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-gray-900 font-medium">Nível 4 — Explorador</span>
+                  <span className="text-xs text-white font-medium">Nível 4 — Explorador</span>
                   <span className="text-xs" style={{ color: '#F5A623' }}>840 / 1000 XP</span>
                 </div>
-                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.04)' }}>
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
                   <motion.div
                     className="h-full rounded-full"
                     style={{ background: 'linear-gradient(90deg, #F5A623, #FBBF24)' }}

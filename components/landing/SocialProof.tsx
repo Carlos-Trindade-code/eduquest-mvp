@@ -80,7 +80,7 @@ export function SocialProof() {
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
-            className="mt-4 text-gray-500 text-lg"
+            className="mt-4 text-white/50 text-lg"
           >
             Não inventamos a roda. Combinamos os métodos de ensino mais eficazes
             do mundo com inteligência artificial de última geração.
@@ -99,7 +99,7 @@ export function SocialProof() {
             <motion.div
               key={method.title}
               variants={fadeInUp('medium')}
-              className="group relative glass rounded-2xl p-6 hover:bg-white/[0.06] transition-all duration-300 border border-gray-200 hover:border-gray-200"
+              className="group relative glass rounded-2xl p-6 hover:bg-white/[0.06] transition-all duration-300 border border-white/5 hover:border-white/10"
             >
               {/* Badge */}
               <span
@@ -123,7 +123,7 @@ export function SocialProof() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-1 break-words">{method.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{method.description}</p>
+                  <p className="text-white/50 text-sm leading-relaxed">{method.description}</p>
                 </div>
               </div>
             </motion.div>
@@ -147,10 +147,10 @@ export function SocialProof() {
               <motion.div
                 key={i}
                 variants={fadeInUp('medium')}
-                className="flex items-center gap-3 bg-white/[0.02] rounded-xl px-4 py-3 border border-gray-200"
+                className="flex items-center gap-3 bg-white/[0.02] rounded-xl px-4 py-3 border border-white/5"
               >
                 <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
-                <span className="text-gray-600 text-sm">{item}</span>
+                <span className="text-white/70 text-sm">{item}</span>
               </motion.div>
             ))}
           </div>

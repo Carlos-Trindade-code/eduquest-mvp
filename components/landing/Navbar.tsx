@@ -30,7 +30,7 @@ export function Navbar() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled
-          ? 'bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm'
+          ? 'bg-[#0F172A]/90 backdrop-blur-xl border-b border-white/10 shadow-lg'
           : 'bg-transparent'
       )}
       initial={{ y: -80 }}
@@ -44,8 +44,8 @@ export function Navbar() {
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">
-              Stud<span className="text-purple-600">do</span>
+            <span className="text-xl font-bold text-white">
+              Stud<span className="text-purple-400">do</span>
             </span>
           </Link>
 
@@ -55,7 +55,7 @@ export function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-sm text-white/60 hover:text-white transition-colors"
               >
                 {link.label}
               </a>
@@ -74,7 +74,7 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-gray-600 hover:text-gray-900 p-2"
+            className="md:hidden text-white/70 hover:text-white p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
           >
@@ -86,7 +86,7 @@ export function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <motion.div
-          className="md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-200"
+          className="md:hidden bg-[#0F172A]/95 backdrop-blur-xl border-t border-white/10"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
@@ -96,13 +96,13 @@ export function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="block text-gray-700 hover:text-gray-900 py-2"
+                className="block text-white/70 hover:text-white py-2"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </a>
             ))}
-            <div className="flex flex-col gap-2 pt-3 border-t border-gray-200">
+            <div className="flex flex-col gap-2 pt-3 border-t border-white/10">
               <Button variant="primary" size="md" asChild>
                 <Link href="/tutor">Testar tutor grátis</Link>
               </Button>

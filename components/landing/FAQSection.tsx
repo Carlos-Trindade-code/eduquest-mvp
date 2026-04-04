@@ -64,7 +64,7 @@ function FAQItem({ item, isOpen, onClick }: {
         onClick={onClick}
         className="w-full flex items-center justify-between p-4 text-left"
       >
-        <span className="text-gray-900 font-medium text-sm pr-4">{item.question}</span>
+        <span className="text-white font-medium text-sm pr-4">{item.question}</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
@@ -81,7 +81,7 @@ function FAQItem({ item, isOpen, onClick }: {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <div className="px-4 pb-4 text-gray-500 text-sm leading-relaxed">
+            <div className="px-4 pb-4 text-white/50 text-sm leading-relaxed">
               {item.answer}
             </div>
           </motion.div>
@@ -203,11 +203,11 @@ export function FAQSection() {
           <div className="flex items-center gap-3 mb-4">
             <MascotOwl expression="thinking" size="sm" animated />
             <div>
-              <h3 className="text-gray-900 font-bold text-lg flex items-center gap-2">
+              <h3 className="text-white font-bold text-lg flex items-center gap-2">
                 <Sparkles size={16} className="text-purple-400" />
                 Pergunte ao Edu
               </h3>
-              <p className="text-gray-400 text-xs">Nosso assistente IA responde suas dúvidas</p>
+              <p className="text-white/40 text-xs">Nosso assistente IA responde suas dúvidas</p>
             </div>
           </div>
 
@@ -218,7 +218,7 @@ export function FAQSection() {
               onChange={(e) => setAIQuestion(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAskAI()}
               placeholder="Ex: Como meu filho de 8 anos pode usar?"
-              className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50"
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-purple-500/50"
             />
             <motion.button
               onClick={handleAskAI}
@@ -244,7 +244,7 @@ export function FAQSection() {
                 exit={{ opacity: 0, y: -8 }}
                 className="mt-4 bg-purple-500/10 border border-purple-500/20 rounded-xl p-4"
               >
-                <p className="text-gray-700 text-sm leading-relaxed">{aiAnswer}</p>
+                <p className="text-white/80 text-sm leading-relaxed">{aiAnswer}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -260,9 +260,9 @@ export function FAQSection() {
         >
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb size={20} className="text-amber-400" />
-            <h3 className="text-gray-900 font-bold text-lg">Envie uma Sugestão</h3>
+            <h3 className="text-white font-bold text-lg">Envie uma Sugestão</h3>
           </div>
-          <p className="text-gray-400 text-xs mb-4">
+          <p className="text-white/40 text-xs mb-4">
             Sua opinião nos ajuda a melhorar! Conte o que gostaria de ver no Studdo.
           </p>
 
@@ -272,14 +272,14 @@ export function FAQSection() {
               value={suggName}
               onChange={(e) => setSuggName(e.target.value)}
               placeholder="Seu nome (opcional)"
-              className="bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50"
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-purple-500/50"
             />
             <input
               type="email"
               value={suggEmail}
               onChange={(e) => setSuggEmail(e.target.value)}
               placeholder="Seu email (opcional)"
-              className="bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50"
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-purple-500/50"
             />
           </div>
 
@@ -288,7 +288,7 @@ export function FAQSection() {
             onChange={(e) => setSuggestion(e.target.value)}
             placeholder="Descreva sua sugestão aqui..."
             rows={3}
-            className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50 resize-none mb-3"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-purple-500/50 resize-none mb-3"
           />
 
           <div className="flex items-center justify-between">

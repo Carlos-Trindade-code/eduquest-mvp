@@ -84,16 +84,6 @@ body {
   min-height: 100vh;
 }
 
-/* ===== Light Theme (landing, login, register) ===== */
-.theme-light {
-  --background: #F8FAFC;
-  --foreground: #1E293B;
-  --navy: #F8FAFC;
-  --navy-card: #FFFFFF;
-  background: linear-gradient(145deg, #F8FAFC 0%, #EEF2FF 50%, #F0F9FF 100%);
-  color: #1E293B;
-}
-
 /* ===== Keyframe Animations ===== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }

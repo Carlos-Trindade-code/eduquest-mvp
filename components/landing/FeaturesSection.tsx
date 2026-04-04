@@ -83,7 +83,7 @@ export function FeaturesSection() {
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
-            className="mt-4 text-gray-500 text-lg"
+            className="mt-4 text-white/50 text-lg"
           >
             Combinamos ciência cognitiva, gamificação e inteligência artificial para criar
             a melhor experiência de aprendizado.
@@ -113,7 +113,7 @@ export function FeaturesSection() {
                 <h3 className="text-lg font-semibold text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed">
+                <p className="text-white/50 text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </Card>
