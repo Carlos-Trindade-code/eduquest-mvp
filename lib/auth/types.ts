@@ -38,6 +38,9 @@ export interface Profile {
   age_group: AgeGroup;
   behavioral_profile: BehavioralProfile;
   invite_code: string | null;
+  daily_time_limit_minutes: number | null;
+  weekly_session_goal: number | null;
+  weekly_subject_focus: string | null;
   created_at: string;
   updated_at: string;
 }

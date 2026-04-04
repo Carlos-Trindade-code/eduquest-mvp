@@ -16,6 +16,8 @@ import { getBuildForSubject, TOTAL_PIECES } from '@/lib/gamification/builds';
 import { createClient } from '@/lib/supabase/client';
 import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPendingTasks, completeParentTask, getKidActivities } from '@/lib/supabase/queries';
 import { updateStreakTracking } from '@/components/gamification/StreakReminder';
+import { markDailyChallengeCompleted, isDailyChallengeCompleted } from '@/lib/gamification/daily-challenge';
+import { XP_REWARDS } from '@/lib/gamification/xp';
 import type { AgeGroup, BehavioralProfile, ParentTask, GuidedActivity } from '@/lib/auth/types';
 
 const TRIAL_KEY = 'studdo_trial_sessions';
@@ -131,6 +133,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [elapsedMinutes, setElapsedMinutes] = useState(0);
   const finishCalledRef = useRef(false);
+  const [dailyChallengeActive, setDailyChallengeActive] = useState(false);
   const { profile, loading: authLoading } = useAuth();
   const isGuest = !profile;
 
@@ -311,6 +314,13 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     setShowSummary(true);
     onSessionEnd?.();
 
+    // Award daily challenge bonus XP
+    if (dailyChallengeActive && !isDailyChallengeCompleted()) {
+      markDailyChallengeCompleted();
+      handleXPEarned(XP_REWARDS.DAILY_CHALLENGE_BONUS);
+      setDailyChallengeActive(false);
+    }
+
     const sessionData = await finishSession();
     const userMessageCount = messages.filter((m) => m.role === 'user').length;
     setSessionMessageCount(userMessageCount);
@@ -427,7 +437,8 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
           ageGroup={ageGroup}
           behavioralProfile={behavioralProfile}
           profileId={profile?.id}
-          onStart={handleStart}
+          onStart={(config) => { setDailyChallengeActive(false); handleStart(config); }}
+          onStartDailyChallenge={(config) => { setDailyChallengeActive(true); handleStart(config); }}
           onStartFromTask={handleStartFromTask}
           onSetActiveQuiz={setActiveQuiz}
           onQuizComplete={handleQuizComplete}

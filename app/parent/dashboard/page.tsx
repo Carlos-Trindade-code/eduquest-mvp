@@ -26,6 +26,7 @@ import { SessionDetail } from '@/components/parent/SessionDetail';
 import { TasksTab } from '@/components/parent/TasksTab';
 import { MaterialsTab } from '@/components/parent/MaterialsTab';
 import { StudyTogetherTab } from '@/components/parent/StudyTogetherTab';
+import { KidSettings } from '@/components/parent/KidSettings';
 import dynamic from 'next/dynamic';
 
 const SessionsChart = dynamic(() => import('@/components/parent/charts/SessionsChart').then(m => m.SessionsChart), {
@@ -37,7 +38,7 @@ const SubjectsChart = dynamic(() => import('@/components/parent/charts/SubjectsC
 import { getSubjectById } from '@/lib/subjects/config';
 import { badges as allBadges } from '@/lib/gamification/badges';
 import { InviteCodeCard } from '@/components/parent/InviteCodeCard';
-import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell, RefreshCw, Loader2, Plus, FolderOpen, Heart } from 'lucide-react';
+import { Sparkles, Users, BookOpen, Trophy, BarChart3, LogOut, Home, Shield, GraduationCap, ClipboardList, Bell, RefreshCw, Loader2, Plus, FolderOpen, Heart, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import type { Profile, UserStats, Badge, Session, SessionSummary, KidStudyStats, ParentTask } from '@/lib/auth/types';
@@ -464,6 +465,15 @@ export default function ParentDashboard() {
                   Estudar Juntos
                 </span>
               </Tabs.Trigger>
+              <Tabs.Trigger
+                value="settings"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white/50 hover:text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <Settings size={15} />
+                  Config
+                </span>
+              </Tabs.Trigger>
             </Tabs.List>
 
             {/* Tab 1: Visao Geral */}
@@ -738,6 +748,15 @@ export default function ParentDashboard() {
                   parentId={profile.id}
                   kidId={selectedKid.id}
                   kidName={selectedKid.name?.split(' ')[0] || 'filho'}
+                />
+              )}
+            </Tabs.Content>
+
+            <Tabs.Content value="settings">
+              {selectedKid && (
+                <KidSettings
+                  kid={selectedKid}
+                  onUpdated={() => loadKidData(selectedKid.id)}
                 />
               )}
             </Tabs.Content>

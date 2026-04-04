@@ -4,6 +4,7 @@ export const XP_REWARDS = {
   SESSION_COMPLETED: 50,
   QUICK_CORRECT: 100,
   STREAK_BONUS: 25, // per day of streak
+  DAILY_CHALLENGE_BONUS: 50,
 } as const;
 
 // Level thresholds (XP needed for each level)

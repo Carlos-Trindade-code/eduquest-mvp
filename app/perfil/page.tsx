@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Flame, Trophy, Star, Zap, BookOpen,
-  Calendar, Target, Sparkles, ChevronRight, Trash2,
+  Calendar, Target, Sparkles, ChevronRight, Trash2, Share2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
@@ -85,6 +85,15 @@ export default function PerfilPage() {
   const level = stats ? getLevel(stats.total_xp) : 1;
   const levelTitle = getLevelTitle(level);
   const earnedBadgeIds = earnedBadges.map((b) => b.badge_type);
+
+  const shareBadge = async (badgeName: string) => {
+    const text = `🏆 Conquistei o badge "${badgeName}" no Studdo! Estou no nível ${level} (${levelTitle}). Vem estudar comigo! 🦉\n\nhttps://www.studdo.com.br`;
+    if (navigator.share) {
+      await navigator.share({ title: 'Studdo - Conquista!', text }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+  };
   const totalSessions = stats?.sessions_completed || 0;
 
   return (
@@ -244,15 +253,25 @@ export default function PerfilPage() {
                 const earned = earnedBadgeIds.includes(badge.id);
                 const earnedData = earnedBadges.find((b) => b.badge_type === badge.id);
                 return (
-                  <BadgeCard
-                    key={badge.id}
-                    icon={badge.icon}
-                    name={badge.name}
-                    description={badge.description}
-                    earned={earned}
-                    earnedAt={earnedData?.earned_at}
-                    rarity={badge.rarity}
-                  />
+                  <div key={badge.id} className="relative">
+                    <BadgeCard
+                      icon={badge.icon}
+                      name={badge.name}
+                      description={badge.description}
+                      earned={earned}
+                      earnedAt={earnedData?.earned_at}
+                      rarity={badge.rarity}
+                    />
+                    {earned && (
+                      <button
+                        onClick={() => shareBadge(badge.name)}
+                        className="absolute top-2 right-2 text-white/30 hover:text-white/60 transition-colors p-1"
+                        title="Compartilhar"
+                      >
+                        <Share2 size={14} />
+                      </button>
+                    )}
+                  </div>
                 );
               })}
             </div>

@@ -6,6 +6,7 @@ import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { UserPlus, ClipboardList, Sparkles } from 'lucide-react';
 import { HomeworkSetup } from './HomeworkSetup';
+import { DailyChallenge } from '@/components/gamification/DailyChallenge';
 import { ActivityCard } from '@/components/activities/ActivityCard';
 import { QuizPlayer } from '@/components/activities/QuizPlayer';
 import { getSubjectById } from '@/lib/subjects/config';
@@ -27,6 +28,12 @@ interface HomeworkSetupViewProps {
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
   }) => void;
+  onStartDailyChallenge?: (config: {
+    homework: string;
+    subject: string;
+    ageGroup: AgeGroup;
+    behavioralProfile: BehavioralProfile;
+  }) => void;
   onStartFromTask: (task: ParentTask) => void;
   onSetActiveQuiz: (quiz: GuidedActivity | null) => void;
   onQuizComplete: (activityId: string, xpEarned: number) => Promise<void>;
@@ -42,6 +49,7 @@ export const HomeworkSetupView = memo(function HomeworkSetupView({
   behavioralProfile,
   profileId,
   onStart,
+  onStartDailyChallenge,
   onStartFromTask,
   onSetActiveQuiz,
   onQuizComplete,
@@ -49,6 +57,19 @@ export const HomeworkSetupView = memo(function HomeworkSetupView({
 }: HomeworkSetupViewProps) {
   return (
     <>
+      {/* Daily Challenge */}
+      {!isGuest && (
+        <DailyChallenge
+          ageGroup={ageGroup}
+          onAccept={(subject, topic) => (onStartDailyChallenge ?? onStart)({
+            homework: topic,
+            subject,
+            ageGroup,
+            behavioralProfile,
+          })}
+        />
+      )}
+
       {/* Guest trial banner */}
       {isGuest && (
         <div
