@@ -258,6 +258,12 @@ export default function ProfessorPage() {
                         >
                           <Copy size={12} />Copiar relatório
                         </button>
+                        <button
+                          onClick={() => window.open(`/api/classroom-report?classroomId=${selectedClassroom.id}`, '_blank')}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors"
+                        >
+                          <FileText size={12} />Gerar PDF
+                        </button>
                       </div>
                     )}
                   </div>
