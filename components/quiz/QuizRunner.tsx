@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, XCircle, ArrowRight, Trophy, RotateCcw, Sparkles, BookOpen, Share2, LogOut } from 'lucide-react';
+import { ExamTimer } from '@/components/exam/ExamTimer';
 import type { ExamData } from '@/components/exam/ExamGenerator';
 import { getSubjectById } from '@/lib/subjects/config';
 
@@ -10,11 +11,12 @@ interface QuizRunnerProps {
   exam: ExamData;
   onFinish: (score: number, total: number) => void;
   onRestart: () => void;
+  timerMinutes?: number;
 }
 
 type QuestionState = 'unanswered' | 'correct' | 'incorrect';
 
-export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
+export function QuizRunner({ exam, onFinish, onRestart, timerMinutes = 0 }: QuizRunnerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [questionState, setQuestionState] = useState<QuestionState>('unanswered');
@@ -22,6 +24,14 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
   const [showResult, setShowResult] = useState(false);
   const [answers, setAnswers] = useState<{ selected: string; correct: boolean }[]>([]);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
+
+  const handleTimeUp = () => {
+    if (showResult) return;
+    setTimedOut(true);
+    setShowResult(true);
+    onFinish(score, total);
+  };
 
   const mcQuestions = exam.questions.filter((q) => q.type === 'multiple_choice');
   const question = mcQuestions[currentIndex];
@@ -219,6 +229,9 @@ export function QuizRunner({ exam, onFinish, onRestart }: QuizRunnerProps) {
             <span className="text-white/40 text-xs">
               {score} acerto{score !== 1 ? 's' : ''}
             </span>
+            {timerMinutes > 0 && !showResult && (
+              <ExamTimer totalMinutes={timerMinutes} onTimeUp={handleTimeUp} />
+            )}
             <button
               onClick={() => setShowExitConfirm(true)}
               className="text-white/30 hover:text-red-400/70 text-xs transition-colors flex items-center gap-1"

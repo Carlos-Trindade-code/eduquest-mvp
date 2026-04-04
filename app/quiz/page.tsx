@@ -12,11 +12,13 @@ import type { ExamData } from '@/components/exam/ExamGenerator';
 
 export default function QuizPage() {
   const [exam, setExam] = useState<ExamData | null>(null);
+  const [timerMinutes, setTimerMinutes] = useState(0);
   const { profile } = useAuth();
 
-  const handleQuizReady = (examData: ExamData) => {
-    trackEvent('session_started', { subject: examData.subject, mode: 'quiz' });
+  const handleQuizReady = (examData: ExamData, minutes: number) => {
+    trackEvent('session_started', { subject: examData.subject, mode: 'quiz', timer: minutes });
     setExam(examData);
+    setTimerMinutes(minutes);
   };
 
   const handleFinish = useCallback(async (score: number, total: number) => {
@@ -38,7 +40,7 @@ export default function QuizPage() {
       <Header />
       <main className="flex-1 flex flex-col overflow-hidden">
         {exam ? (
-          <QuizRunner exam={exam} onFinish={handleFinish} onRestart={handleRestart} />
+          <QuizRunner exam={exam} onFinish={handleFinish} onRestart={handleRestart} timerMinutes={timerMinutes} />
         ) : (
           <QuizSetup onQuizReady={handleQuizReady} />
         )}

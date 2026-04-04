@@ -9,10 +9,11 @@ import { AgeGroupSelector } from '@/components/tutor/AgeGroupSelector';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import type { AgeGroup } from '@/lib/auth/types';
+import { TimerSelector } from '@/components/exam/ExamTimer';
 import type { ExamData } from '@/components/exam/ExamGenerator';
 
 interface QuizSetupProps {
-  onQuizReady: (exam: ExamData) => void;
+  onQuizReady: (exam: ExamData, timerMinutes: number) => void;
 }
 
 export function QuizSetup({ onQuizReady }: QuizSetupProps) {
@@ -20,6 +21,7 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
   const [subject, setSubject] = useState('math');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
   const [questionCount, setQuestionCount] = useState(5);
+  const [timerMinutes, setTimerMinutes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -45,7 +47,7 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      onQuizReady(data.exam);
+      onQuizReady(data.exam, timerMinutes);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao gerar quiz');
     } finally {
@@ -116,6 +118,9 @@ export function QuizSetup({ onQuizReady }: QuizSetupProps) {
             ))}
           </div>
         </div>
+
+        {/* Timer */}
+        <TimerSelector selected={timerMinutes} onSelect={setTimerMinutes} />
 
         {error && (
           <p className="text-red-400 text-xs text-center" role="alert">{error}</p>
