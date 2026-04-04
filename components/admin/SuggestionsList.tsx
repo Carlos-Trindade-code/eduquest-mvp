@@ -181,8 +181,8 @@ export function SuggestionsList({ suggestions, onUpdateStatus }: SuggestionsList
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-white/80 text-sm line-clamp-2">{suggestion.content}</p>
-                      <div className="flex items-center gap-4 mt-2 text-white/30 text-xs">
+                      <p className="text-white text-sm line-clamp-2">{suggestion.content}</p>
+                      <div className="flex items-center gap-4 mt-2 text-white/50 text-xs">
                         {suggestion.user_name && <span>{suggestion.user_name}</span>}
                         {suggestion.user_email && <span>{suggestion.user_email}</span>}
                         <span>{new Date(suggestion.created_at).toLocaleDateString('pt-BR')}</span>
