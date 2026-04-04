@@ -7,6 +7,7 @@ import { ChatInterface } from '@/components/tutor/ChatInterface';
 import { FeedbackButton } from '@/components/feedback/FeedbackButton';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { StreakReminder } from '@/components/gamification/StreakReminder';
+import { AgeThemeProvider } from '@/components/providers/AgeThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
 
 function TutorLoadingSkeleton() {
@@ -16,8 +17,8 @@ function TutorLoadingSkeleton() {
     >
       <MascotOwl expression="thinking" size="lg" animated />
       <div className="text-center">
-        <p className="text-white font-bold text-lg mb-1">Preparando sua sessão...</p>
-        <p className="text-sm" style={{ color: 'rgba(240,244,248,0.4)' }}>
+        <p className="text-[var(--eq-text)] font-bold text-lg mb-1">Preparando sua sessão...</p>
+        <p className="text-sm text-[var(--eq-text-muted)]">
           O Edu já está quase pronto!
         </p>
       </div>
@@ -41,9 +42,11 @@ export default function TutorPage() {
   const [showBreak, setShowBreak] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
   const finishRef = useRef<(() => void) | null>(null);
-  const { loading: authLoading } = useAuth();
+  const { loading: authLoading, profile } = useAuth();
+  const ageGroup = profile?.age_group || '10-12';
 
   return (
+    <AgeThemeProvider ageGroup={ageGroup}>
     <div className="min-h-screen bg-gradient-app flex flex-col">
       <StreakReminder />
       <Header
@@ -107,5 +110,6 @@ export default function TutorPage() {
       </main>
       <FeedbackButton />
     </div>
+    </AgeThemeProvider>
   );
 }
