@@ -1,8 +1,13 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Send } from 'lucide-react';
+import { Send, Mic, MicOff } from 'lucide-react';
+import { useAgeTheme } from '@/components/providers/AgeThemeProvider';
 import { cn } from '@/lib/utils';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SpeechRecognitionInstance = any;
 
 interface MessageInputProps {
   value: string;
@@ -20,9 +25,73 @@ export function MessageInput({
   placeholder = 'Digite sua resposta...',
 }: MessageInputProps) {
   const canSend = !disabled && value.trim().length > 0;
+  const { ageGroup } = useAgeTheme();
+  const isYoungKid = ageGroup === '4-6';
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionInstance>(null);
+
+  useEffect(() => {
+    const SR = typeof window !== 'undefined'
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      : null;
+    setSpeechSupported(!!SR);
+  }, []);
+
+  const startListening = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) return;
+
+    const recognition = new SR();
+    recognition.lang = 'pt-BR';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: { results: { [key: number]: { [key: number]: { transcript: string } } }; resultIndex: number }) => {
+      const transcript = event.results[event.resultIndex][0].transcript;
+      onChange(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+      // Auto-send if there's content
+      setTimeout(() => {
+        const input = document.querySelector<HTMLInputElement>('input[data-studdo-input]');
+        if (input && input.value.trim()) {
+          onSend();
+        }
+      }, 100);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  };
+
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    setIsListening(false);
+  };
+
+  const showMic = isYoungKid && speechSupported;
 
   return (
     <div className="flex gap-2 mt-3 shrink-0">
+      {/* Listening indicator */}
+      {isListening && (
+        <div className="absolute -top-8 left-0 right-0 flex items-center justify-center gap-2 text-xs text-red-400 animate-pulse">
+          <span className="w-2 h-2 rounded-full bg-red-500" />
+          Escutando...
+        </div>
+      )}
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -32,7 +101,8 @@ export function MessageInput({
             onSend();
           }
         }}
-        placeholder={placeholder}
+        placeholder={isListening ? 'Escutando...' : placeholder}
+        data-studdo-input
         className={cn(
           'flex-1 bg-[var(--eq-surface)] text-[var(--eq-text)] placeholder:text-[var(--eq-text-muted)]',
           'rounded-[var(--eq-radius-sm)] px-4 py-3',
@@ -41,6 +111,22 @@ export function MessageInput({
           'text-[var(--eq-bubble-font-size)] transition-all backdrop-blur-md'
         )}
       />
+      {showMic && (
+        <motion.button
+          onClick={isListening ? stopListening : startListening}
+          disabled={disabled}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={cn(
+            'rounded-[var(--eq-radius-sm)] px-3 transition-all',
+            'disabled:opacity-30 disabled:cursor-not-allowed',
+            isListening ? 'bg-red-500 text-white' : 'bg-white/10 text-white/60 hover:text-white',
+          )}
+          aria-label={isListening ? 'Parar de ouvir' : 'Falar com o Edu'}
+        >
+          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+        </motion.button>
+      )}
       <motion.button
         onClick={onSend}
         disabled={!canSend}

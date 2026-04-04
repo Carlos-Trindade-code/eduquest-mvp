@@ -1,13 +1,25 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { Volume2 } from 'lucide-react';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { useAgeTheme } from '@/components/providers/AgeThemeProvider';
 import { chatMessageVariants } from '@/lib/design/animations';
 import { cn } from '@/lib/utils';
 import type { ChatMessage as ChatMessageType } from '@/lib/auth/types';
+
+function speak(text: string) {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const clean = text.replace(/[*_#`~\[\]()>]/g, '').replace(/\n+/g, '. ');
+  const utterance = new SpeechSynthesisUtterance(clean);
+  utterance.lang = 'pt-BR';
+  utterance.rate = 0.85;
+  utterance.pitch = 1.2;
+  window.speechSynthesis.speak(utterance);
+}
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -16,9 +28,29 @@ interface ChatMessageProps {
 
 export const ChatMessage = memo(function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const isUser = message.role === 'user';
-  const { tokens } = useAgeTheme();
+  const { ageGroup, tokens } = useAgeTheme();
   const shouldReduceMotion = useReducedMotion();
   const variants = chatMessageVariants(tokens.animationIntensity);
+  const isYoungKid = ageGroup === '4-6';
+  const hasTTS = typeof window !== 'undefined' && 'speechSynthesis' in window;
+  const spokenRef = useRef(false);
+  const [speaking, setSpeaking] = useState(false);
+
+  // Auto-speak new assistant messages for 4-6 age group
+  useEffect(() => {
+    if (!isUser && isYoungKid && hasTTS && message.content && !isStreaming && !spokenRef.current) {
+      spokenRef.current = true;
+      speak(message.content);
+    }
+  }, [isUser, isYoungKid, hasTTS, message.content, isStreaming]);
+
+  const handleSpeak = () => {
+    setSpeaking(true);
+    speak(message.content);
+    const check = setInterval(() => {
+      if (!window.speechSynthesis.speaking) { setSpeaking(false); clearInterval(check); }
+    }, 200);
+  };
 
   return (
     <motion.div
@@ -84,6 +116,18 @@ export const ChatMessage = memo(function ChatMessage({ message, isStreaming }: C
         )}
         {isStreaming && !isUser && (
           <span className="inline-block w-0.5 h-4 bg-purple-400 animate-pulse ml-0.5 align-text-bottom" />
+        )}
+        {!isUser && isYoungKid && hasTTS && !isStreaming && (
+          <button
+            onClick={handleSpeak}
+            className={cn(
+              'mt-1.5 flex items-center gap-1 text-xs transition-colors',
+              speaking ? 'text-purple-400' : 'text-white/30 hover:text-white/60',
+            )}
+          >
+            <Volume2 size={14} />
+            {speaking ? 'Falando...' : 'Ouvir'}
+          </button>
         )}
       </div>
     </motion.div>
