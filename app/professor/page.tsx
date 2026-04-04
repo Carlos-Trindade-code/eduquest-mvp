@@ -84,6 +84,7 @@ export default function ProfessorPage() {
   const [studentAnalytics, setStudentAnalytics] = useState<Record<string, StudentAnalytics>>({});
   const [classroomStats, setClassroomStats] = useState<ClassroomStatsResult | null>(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [schoolStats, setSchoolStats] = useState<{ totalStudents: number; sessionsWeek: number; avgXP: number; topClassroom: string } | null>(null);
 
   const supabase = createClient();
 
@@ -98,6 +99,32 @@ export default function ProfessorPage() {
     setClassrooms((data || []) as Classroom[]);
     if (data && data.length > 0 && !selectedClassroom) setSelectedClassroom(data[0] as Classroom);
     setLoading(false);
+
+    // Load school-wide stats
+    if (data && data.length > 0) {
+      const classroomIds = data.map((c: Classroom) => c.id);
+      const { data: allMembers } = await supabase.from('classroom_members').select('student_id, classroom_id').in('classroom_id', classroomIds);
+      const studentIds = [...new Set((allMembers || []).map((m: { student_id: string }) => m.student_id))];
+      if (studentIds.length > 0) {
+        const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+        const { data: sessions } = await supabase.from('sessions').select('kid_id, xp_earned, started_at').in('kid_id', studentIds).gte('started_at', weekAgo);
+        const sessionsByClassroom: Record<string, number> = {};
+        let totalXP = 0;
+        for (const s of sessions || []) {
+          totalXP += s.xp_earned || 0;
+          const member = (allMembers || []).find((m: { student_id: string }) => m.student_id === s.kid_id);
+          if (member) sessionsByClassroom[member.classroom_id] = (sessionsByClassroom[member.classroom_id] || 0) + 1;
+        }
+        const topId = Object.entries(sessionsByClassroom).sort((a, b) => b[1] - a[1])[0]?.[0];
+        const topName = topId ? (data.find((c: Classroom) => c.id === topId)?.name || '—') : '—';
+        setSchoolStats({
+          totalStudents: studentIds.length,
+          sessionsWeek: (sessions || []).length,
+          avgXP: studentIds.length > 0 ? Math.round(totalXP / studentIds.length) : 0,
+          topClassroom: topName,
+        });
+      }
+    }
   };
 
   const loadClassroomData = async (classroomId: string) => {
@@ -158,6 +185,23 @@ export default function ProfessorPage() {
             <Plus size={16} />Nova turma
           </motion.button>
         </div>
+
+        {/* School Overview */}
+        {schoolStats && classrooms.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            {[
+              { label: 'Total de Alunos', value: schoolStats.totalStudents, color: '#8B5CF6' },
+              { label: 'Sessões esta semana', value: schoolStats.sessionsWeek, color: '#3B82F6' },
+              { label: 'XP médio/aluno', value: schoolStats.avgXP, color: '#10B981' },
+              { label: 'Turma mais ativa', value: schoolStats.topClassroom, color: '#F59E0B' },
+            ].map((card) => (
+              <div key={card.label} className="glass rounded-xl p-4 text-center">
+                <div className="text-xl font-bold" style={{ color: card.color }}>{card.value}</div>
+                <div className="text-white/40 text-xs mt-1">{card.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {classrooms.length === 0 ? (
           <EmptyState onCreateClick={() => setShowCreateModal(true)} />

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
 import { JoinClassroom } from '@/components/classroom/JoinClassroom';
+import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -101,9 +102,7 @@ export function Header({
               {user && (
                 <div className="px-4 py-3 border-b border-white/10">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-                      {displayName.charAt(0).toUpperCase()}
-                    </div>
+                    <AvatarDisplay avatarUrl={profile?.avatar_url || null} name={displayName} size={36} />
                     <div className="min-w-0">
                       <p className="text-white font-semibold text-sm truncate">{displayName}</p>
                       <p className="text-white/50 text-xs truncate">{displayEmail}</p>
