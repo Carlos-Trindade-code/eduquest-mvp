@@ -122,10 +122,10 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mt-8"
           >
-            <h2 className="text-white text-2xl font-bold mb-2">
+            <h2 className="text-gray-900 text-2xl font-bold mb-2">
               Comece sua jornada!
             </h2>
-            <p className="text-white/50 text-sm max-w-xs mx-auto">
+            <p className="text-gray-500 text-sm max-w-xs mx-auto">
               Milhares de estudantes já aprendem de verdade com o Studdo.
             </p>
           </motion.div>
@@ -167,11 +167,11 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
           <motion.div className="text-center mb-6" variants={fadeInUp('medium')} initial="hidden" animate="visible">
             <Link href="/" className="inline-flex items-center gap-2 mb-5">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                <span className="text-white text-lg font-black">S</span>
+                <span className="text-gray-900 text-lg font-black">S</span>
               </div>
-              <span className="text-white font-bold text-2xl">Studdo</span>
+              <span className="text-gray-900 font-bold text-2xl">Studdo</span>
             </Link>
-            <h1 className="text-white text-xl font-bold">Crie sua conta</h1>
+            <h1 className="text-gray-900 text-xl font-bold">Crie sua conta</h1>
             <p className="text-[var(--eq-text-secondary)] text-sm mt-1">
               Comece sua jornada de aprendizado
             </p>
@@ -179,8 +179,8 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
 
           {/* Progress indicator */}
           <div className="flex items-center gap-2 mb-5 px-1">
-            <div className={`flex-1 h-1.5 rounded-full transition-colors duration-300 ${step >= 1 ? 'bg-purple-500' : 'bg-white/10'}`} />
-            <div className={`flex-1 h-1.5 rounded-full transition-colors duration-300 ${step >= 2 ? 'bg-purple-500' : 'bg-white/10'}`} />
+            <div className={`flex-1 h-1.5 rounded-full transition-colors duration-300 ${step >= 1 ? 'bg-purple-500' : 'bg-gray-100'}`} />
+            <div className={`flex-1 h-1.5 rounded-full transition-colors duration-300 ${step >= 2 ? 'bg-purple-500' : 'bg-gray-100'}`} />
           </div>
 
           {/* Mobile mascot */}
@@ -226,7 +226,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
 
                   <motion.button
                     onClick={() => handleTypeSelect('kid')}
-                    className="w-full flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
+                    className="w-full flex items-center gap-4 p-4 bg-gray-100 hover:bg-gray-100 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -234,7 +234,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <GraduationCap size={24} className="text-amber-400" />
                     </div>
                     <div className="text-left flex-1">
-                      <p className="text-white font-semibold text-sm">Sou estudante</p>
+                      <p className="text-gray-900 font-semibold text-sm">Sou estudante</p>
                       <p className="text-[var(--eq-text-muted)] text-xs">Quero estudar com o tutor IA</p>
                     </div>
                     <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
@@ -242,7 +242,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
 
                   <motion.button
                     onClick={() => handleTypeSelect('parent')}
-                    className="w-full flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
+                    className="w-full flex items-center gap-4 p-4 bg-gray-100 hover:bg-gray-100 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -250,7 +250,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <Users size={24} className="text-blue-400" />
                     </div>
                     <div className="text-left flex-1">
-                      <p className="text-white font-semibold text-sm">Sou pai/mãe</p>
+                      <p className="text-gray-900 font-semibold text-sm">Sou pai/mãe</p>
                       <p className="text-[var(--eq-text-muted)] text-xs">Quero acompanhar o progresso do meu filho</p>
                     </div>
                     <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
@@ -258,7 +258,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
 
                   <motion.button
                     onClick={() => handleTypeSelect('teacher')}
-                    className="w-full flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
+                    className="w-full flex items-center gap-4 p-4 bg-gray-100 hover:bg-gray-100 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -266,7 +266,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <BookOpen size={24} className="text-green-400" />
                     </div>
                     <div className="text-left flex-1">
-                      <p className="text-white font-semibold text-sm">Sou professor(a)</p>
+                      <p className="text-gray-900 font-semibold text-sm">Sou professor(a)</p>
                       <p className="text-[var(--eq-text-muted)] text-xs">Quero criar turmas e enviar materiais</p>
                     </div>
                     <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
@@ -277,14 +277,14 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       <div className="w-full border-t border-white/8" />
                     </div>
                     <div className="relative flex justify-center text-xs">
-                      <span className="bg-[var(--eq-surface)] px-3 text-white/30">ou</span>
+                      <span className="bg-[var(--eq-surface)] px-3 text-gray-400">ou</span>
                     </div>
                   </div>
 
                   <motion.button
                     type="button"
                     onClick={onGoogleRegister}
-                    className="w-full py-3 bg-white/5 text-white/80 font-semibold rounded-xl hover:bg-white/10 text-sm border border-white/10 flex items-center justify-center gap-2 transition-colors"
+                    className="w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 text-sm border border-gray-200 flex items-center justify-center gap-2 transition-colors"
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -321,7 +321,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   <div className="space-y-1.5">
                     <label htmlFor="register-name" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Nome</label>
                     <div className="relative group">
-                      <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                      <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-name"
                         name="name"
@@ -330,7 +330,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder={userType === 'kid' ? 'Seu nome ou apelido' : 'Seu nome'}
-                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                       />
                     </div>
@@ -339,7 +339,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   <div className="space-y-1.5">
                     <label htmlFor="register-email" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
                     <div className="relative group">
-                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-email"
                         name="email"
@@ -349,7 +349,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="seu@email.com"
-                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                       />
                     </div>
@@ -373,7 +373,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                             value={age}
                             onChange={(e) => setAge(e.target.value)}
                             placeholder="12"
-                            className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                            className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                           />
                         </div>
                         <div className="space-y-1.5">
@@ -384,7 +384,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                             value={grade}
                             onChange={(e) => setGrade(e.target.value)}
                             placeholder="7o ano"
-                            className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                            className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                           />
                         </div>
                       </div>
@@ -393,7 +393,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         <button
                           type="button"
                           onClick={() => setInviteCode(inviteCode ? '' : ' ')}
-                          className="flex items-center gap-1.5 text-white/30 hover:text-white/50 text-xs transition-colors"
+                          className="flex items-center gap-1.5 text-gray-400 hover:text-gray-500 text-xs transition-colors"
                         >
                           <Ticket size={12} />
                           {inviteCode.trim() ? 'Esconder código de convite' : 'Tem código de convite? (opcional)'}
@@ -407,7 +407,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                               className="overflow-hidden"
                             >
                               <div className="mt-2 relative group">
-                                <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                                <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
                                 <input
                                   id="register-invite-code"
                                   type="text"
@@ -423,10 +423,10 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                                   }}
                                   placeholder="EQ-XXXX"
                                   maxLength={7}
-                                  className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
+                                  className="w-full bg-gray-100 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
                                 />
                               </div>
-                              <p className="text-white/30 text-[11px] mt-1 pl-1">Código do pai/mãe para vincular contas</p>
+                              <p className="text-gray-400 text-[11px] mt-1 pl-1">Código do pai/mãe para vincular contas</p>
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -437,7 +437,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   <div className="space-y-1.5">
                     <label htmlFor="register-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>
                     <div className="relative group">
-                      <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                      <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-password"
                         name="password"
@@ -446,7 +446,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Mínimo 6 caracteres"
-                        className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
+                        className="w-full bg-gray-100 text-white placeholder-white/50 rounded-xl pl-10 pr-12 py-3 border border-gray-200 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                         required
                         minLength={6}
                       />
@@ -454,7 +454,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors p-2"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors p-2"
                       >
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -464,7 +464,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   <div className="space-y-1.5">
                     <label htmlFor="register-confirm-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Confirmar senha</label>
                     <div className="relative group">
-                      <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                      <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         id="register-confirm-password"
                         name="confirm-password"
@@ -474,10 +474,10 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         onBlur={() => setConfirmTouched(true)}
                         placeholder="Digite a senha novamente"
-                        className={`w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border focus:outline-none focus:bg-white/8 text-sm transition-all ${
+                        className={`w-full bg-gray-100 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border focus:outline-none focus:bg-white/8 text-sm transition-all ${
                           confirmTouched && confirmPassword && password !== confirmPassword
                             ? 'border-red-500/50 focus:border-red-500/50'
-                            : 'border-white/10 focus:border-purple-500/50'
+                            : 'border-gray-200 focus:border-purple-500/50'
                         }`}
                         required
                       />
@@ -490,7 +490,7 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   <motion.button
                     type="submit"
                     disabled={loading || !email || !password || !name}
-                    className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
+                    className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-gray-900 font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
                     whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.35)' }}
                     whileTap={{ scale: 0.98 }}
                   >

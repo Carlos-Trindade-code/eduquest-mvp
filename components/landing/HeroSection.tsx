@@ -24,11 +24,11 @@ function MobileChatPreview() {
     >
       <div
         className="relative rounded-2xl overflow-hidden"
-        style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ background: '#0D1B2A', border: '1px solid rgba(0,0,0,0.04)' }}
       >
         <div
           className="flex items-center gap-3 px-4 py-2.5"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+          style={{ borderBottom: '1px solid rgba(0,0,0,0.04)', background: 'rgba(255,255,255,0.02)' }}
         >
           <MascotOwl expression="waving" size="sm" animated={false} decorative />
           <div>
@@ -58,7 +58,7 @@ function MobileChatPreview() {
                 style={
                   msg.role === 'kid'
                     ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
-                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
+                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(30,41,59,0.9)', borderBottomLeftRadius: 4 }
                 }
               >
                 {msg.text}
@@ -66,8 +66,8 @@ function MobileChatPreview() {
             </motion.div>
           ))}
         </div>
-        <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-[10px] text-center" style={{ color: 'rgba(240,244,248,0.5)' }}>
+        <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+          <p className="text-[10px] text-center" style={{ color: 'rgba(30,41,59,0.5)' }}>
             Experimente — pergunte algo ao Edu no desktop
           </p>
         </div>
@@ -148,12 +148,12 @@ function ChatPreview() {
     >
       <div
         className="relative rounded-[2rem] overflow-hidden"
-        style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ background: '#0D1B2A', border: '1px solid rgba(0,0,0,0.04)' }}
       >
         {/* Chat header */}
         <div
           className="flex items-center gap-3 px-4 py-3"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+          style={{ borderBottom: '1px solid rgba(0,0,0,0.04)', background: 'rgba(255,255,255,0.02)' }}
         >
           <MascotOwl expression="waving" size="sm" animated />
           <div>
@@ -192,7 +192,7 @@ function ChatPreview() {
                 style={
                   msg.role === 'kid'
                     ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
-                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
+                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(30,41,59,0.9)', borderBottomLeftRadius: 4 }
                 }
               >
                 {msg.text}
@@ -206,7 +206,7 @@ function ChatPreview() {
               </div>
               <div className="flex gap-1 px-3 py-2 rounded-2xl" style={{ background: 'rgba(255,255,255,0.07)' }}>
                 {[0, 0.2, 0.4].map((d, j) => (
-                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(240,244,248,0.4)' }}
+                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(30,41,59,0.4)' }}
                     animate={{ y: [0, -3, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: d }} />
                 ))}
               </div>
@@ -216,7 +216,7 @@ function ChatPreview() {
         </div>
 
         {/* Input */}
-        <div className="px-3 pb-4 pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="px-3 pb-4 pt-2" style={{ borderTop: '1px solid rgba(0,0,0,0.04)' }}>
           <div className="flex gap-2">
             <input
               type="text"
@@ -224,7 +224,7 @@ function ChatPreview() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Pergunte algo ao Edu..."
-              className="flex-1 bg-white/5 text-white placeholder-white/40 rounded-xl px-3 py-2 text-xs border border-white/10 focus:outline-none focus:border-purple-500/50"
+              className="flex-1 bg-gray-100 text-white placeholder-white/40 rounded-xl px-3 py-2 text-xs border border-gray-200 focus:outline-none focus:border-purple-500/50"
             />
             <motion.button
               onClick={handleSend}
@@ -237,7 +237,7 @@ function ChatPreview() {
             </motion.button>
           </div>
           {!interacted && (
-            <p className="text-[10px] text-center mt-2" style={{ color: 'rgba(240,244,248,0.5)' }}>
+            <p className="text-[10px] text-center mt-2" style={{ color: 'rgba(30,41,59,0.5)' }}>
               Experimente — digite uma pergunta real
             </p>
           )}
@@ -283,7 +283,7 @@ export function HeroSection() {
       <div
         className="absolute inset-0 opacity-[0.025]"
         style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)',
           backgroundSize: '72px 72px',
         }}
       />
@@ -328,7 +328,7 @@ export function HeroSection() {
             {/* Trust checklist */}
             <motion.ul variants={fadeInUp('high')} className="mt-6 space-y-2">
               {trustItems.map((item) => (
-                <li key={item} className="flex items-center gap-2 text-sm" style={{ color: 'rgba(240,244,248,0.55)' }}>
+                <li key={item} className="flex items-center gap-2 text-sm" style={{ color: 'rgba(30,41,59,0.6)' }}>
                   <CheckCircle size={15} style={{ color: '#F5A623', flexShrink: 0 }} />
                   {item}
                 </li>
@@ -358,7 +358,7 @@ export function HeroSection() {
             <motion.div
               variants={fadeInUp('high')}
               className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ borderTop: '1px solid rgba(0,0,0,0.04)' }}
             >
               {stats.map((s) => (
                 <div key={s.label}>

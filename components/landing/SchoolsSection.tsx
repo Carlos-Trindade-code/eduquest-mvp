@@ -63,7 +63,7 @@ export function SchoolsSection() {
           <motion.p
             variants={fadeInUp('high')}
             className="mt-4 text-lg max-w-2xl mx-auto"
-            style={{ color: 'rgba(240,244,248,0.55)' }}
+            style={{ color: 'rgba(30,41,59,0.6)' }}
           >
             Tecnologia educacional que complementa sua sala de aula
           </motion.p>
@@ -83,7 +83,7 @@ export function SchoolsSection() {
               variants={fadeInUp('high')}
               className="group relative rounded-2xl p-6 transition-all duration-300 hover:scale-[1.03]"
               style={{
-                background: 'rgba(255,255,255,0.03)',
+                background: 'rgba(0,0,0,0.02)',
                 border: '1px solid rgba(16,185,129,0.12)',
                 backdropFilter: 'blur(12px)',
               }}
@@ -95,7 +95,7 @@ export function SchoolsSection() {
               <div className="relative">
                 <div className="text-4xl mb-4">{feature.emoji}</div>
                 <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(240,244,248,0.55)' }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(30,41,59,0.6)' }}>
                   {feature.description}
                 </p>
               </div>

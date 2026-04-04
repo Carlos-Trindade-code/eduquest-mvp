@@ -107,12 +107,12 @@ export function HowItWorks() {
               key={step.number}
               variants={fadeInUp('medium')}
               className="relative rounded-2xl p-6 text-center"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.04)' }}
             >
               {/* Connector */}
               {i < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-10 left-[calc(100%+12px)] w-6 h-px"
-                  style={{ background: 'rgba(255,255,255,0.1)' }} />
+                  style={{ background: 'rgba(0,0,0,0.05)' }} />
               )}
 
               <div className="text-4xl mb-4">{step.emoji}</div>
@@ -121,7 +121,7 @@ export function HowItWorks() {
                 {i + 1}
               </div>
               <h3 className="font-bold text-white mb-2">{step.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(240,244,248,0.5)' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(30,41,59,0.5)' }}>
                 {step.description}
               </p>
             </motion.div>

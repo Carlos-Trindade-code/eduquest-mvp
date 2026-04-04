@@ -45,7 +45,7 @@ export function ParentTestimonials() {
           <motion.div variants={fadeInUp('medium')} className="mb-3">
             <span className="inline-flex items-center gap-1 text-sm font-medium" style={{ color: '#F5A623' }}>
               {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="#F5A623" color="#F5A623" />)}
-              <span className="ml-2" style={{ color: 'rgba(240,244,248,0.5)' }}>4.9 nas primeiras semanas</span>
+              <span className="ml-2" style={{ color: 'rgba(30,41,59,0.5)' }}>4.9 nas primeiras semanas</span>
             </span>
           </motion.div>
           <motion.h2
@@ -54,7 +54,7 @@ export function ParentTestimonials() {
           >
             Pais que viram a diferença
           </motion.h2>
-          <motion.p variants={fadeInUp('medium')} className="mt-3 text-base" style={{ color: 'rgba(240,244,248,0.5)' }}>
+          <motion.p variants={fadeInUp('medium')} className="mt-3 text-base" style={{ color: 'rgba(30,41,59,0.5)' }}>
             Histórias reais de famílias que usam o Studdo
           </motion.p>
         </motion.div>
@@ -71,7 +71,7 @@ export function ParentTestimonials() {
               key={t.name}
               variants={fadeInUp('medium')}
               className="rounded-2xl p-6 flex flex-col gap-4"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+              style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
             >
               {/* Stars */}
               <div className="flex gap-0.5">
@@ -86,14 +86,14 @@ export function ParentTestimonials() {
               </p>
 
               {/* Author */}
-              <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(0,0,0,0.04)' }}>
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
                   style={{ background: 'rgba(0,180,216,0.15)' }}>
                   {t.avatar}
                 </div>
                 <div>
-                  <div className="text-white font-semibold text-sm">{t.name}</div>
-                  <div className="text-xs" style={{ color: 'rgba(240,244,248,0.4)' }}>{t.childAge} · {t.location}</div>
+                  <div className="text-gray-900 font-semibold text-sm">{t.name}</div>
+                  <div className="text-xs" style={{ color: 'rgba(30,41,59,0.4)' }}>{t.childAge} · {t.location}</div>
                 </div>
               </div>
             </motion.div>
