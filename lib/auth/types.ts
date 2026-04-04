@@ -250,6 +250,25 @@ export interface GuidedActivity {
   created_at: string;
 }
 
+export interface TeacherTask {
+  id: string;
+  classroom_id: string;
+  teacher_id: string;
+  title: string;
+  description: string | null;
+  subject: string;
+  due_date: string | null;
+  created_at: string;
+}
+
+export interface TeacherTaskCompletion {
+  id: string;
+  task_id: string;
+  student_id: string;
+  completed_at: string;
+  session_id: string | null;
+}
+
 export type ParentTaskStatus = 'pending' | 'in_progress' | 'completed';
 
 export interface ParentTask {

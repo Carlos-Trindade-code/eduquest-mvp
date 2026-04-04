@@ -7,6 +7,7 @@ import { SubjectSelector } from '@/components/tutor/SubjectSelector';
 import { AgeGroupSelector } from '@/components/tutor/AgeGroupSelector';
 import { PhotoUpload } from '@/components/tutor/PhotoUpload';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
+import { TimerSelector } from '@/components/exam/ExamTimer';
 import { Button } from '@/components/ui/button';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
 import type { AgeGroup } from '@/lib/auth/types';
@@ -28,7 +29,7 @@ export interface ExamData {
 }
 
 interface ExamGeneratorProps {
-  onExamGenerated: (exam: ExamData) => void;
+  onExamGenerated: (exam: ExamData, timerMinutes: number) => void;
 }
 
 const questionCountOptions = [
@@ -43,6 +44,7 @@ export function ExamGenerator({ onExamGenerated }: ExamGeneratorProps) {
   const [subject, setSubject] = useState('other');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
   const [questionCount, setQuestionCount] = useState(10);
+  const [timerMinutes, setTimerMinutes] = useState(0);
   const [fileContent, setFileContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -75,7 +77,7 @@ export function ExamGenerator({ onExamGenerated }: ExamGeneratorProps) {
         throw new Error(data.error || 'Erro ao gerar prova');
       }
 
-      onExamGenerated(data.exam);
+      onExamGenerated(data.exam, timerMinutes);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao gerar prova');
     } finally {
@@ -168,6 +170,11 @@ export function ExamGenerator({ onExamGenerated }: ExamGeneratorProps) {
             </button>
           ))}
         </div>
+      </motion.div>
+
+      {/* Timer */}
+      <motion.div variants={fadeInUp('medium')} className="mt-5">
+        <TimerSelector selected={timerMinutes} onSelect={setTimerMinutes} />
       </motion.div>
 
       {/* Error */}
