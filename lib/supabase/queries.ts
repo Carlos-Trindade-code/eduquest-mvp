@@ -215,56 +215,35 @@ export async function awardBadge(
 // ==========================================
 
 export async function createKidAccount(
-  supabase: SupabaseClient,
-  parentId: string,
+  _supabase: SupabaseClient,
+  _parentId: string,
   kidName: string,
   kidUsername: string,
   kidPassword: string,
   kidAge?: number,
   kidGrade?: string
 ): Promise<{ success: boolean; kid_id?: string; username?: string; error?: string }> {
-  const { data, error } = await supabase.rpc('create_kid_account', {
-    p_parent_id: parentId,
-    p_kid_name: kidName,
-    p_kid_username: kidUsername,
-    p_kid_password: kidPassword,
-    p_kid_age: kidAge ?? null,
-    p_kid_grade: kidGrade ?? null,
-  });
+  try {
+    const res = await fetch('/api/create-kid', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kidName, kidUsername, kidPassword, kidAge, kidGrade }),
+    });
 
-  if (error) {
-    const msg = error.message?.toLowerCase() || '';
-    if (msg.includes('username') && msg.includes('taken')) {
-      return { success: false, error: 'Este nome de usuário já está em uso.' };
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, error: data.error || 'Erro ao criar conta.' };
     }
-    if (msg.includes('duplicate')) {
-      return { success: false, error: 'Este nome de usuário já está em uso.' };
-    }
-    return { success: false, error: 'Erro ao criar conta. Tente novamente.' };
+
+    return {
+      success: true,
+      kid_id: data.kid_id,
+      username: data.username,
+    };
+  } catch {
+    return { success: false, error: 'Erro de conexao. Tente novamente.' };
   }
-
-  if (data && !data.success) {
-    const rpcError = (data.error || '').toLowerCase();
-    let friendlyError = 'Erro ao criar conta. Tente novamente.';
-    if (rpcError.includes('username') && rpcError.includes('taken')) {
-      friendlyError = 'Este nome de usuário já está em uso.';
-    } else if (rpcError.includes('at least 3')) {
-      friendlyError = 'O nome de usuário precisa ter pelo menos 3 caracteres.';
-    } else if (rpcError.includes('at most 30')) {
-      friendlyError = 'O nome de usuário pode ter no máximo 30 caracteres.';
-    } else if (rpcError.includes('only contain')) {
-      friendlyError = 'O nome de usuário só pode conter letras, números, pontos, hífens e underlines.';
-    } else if (rpcError.includes('password')) {
-      friendlyError = 'A senha precisa ter pelo menos 6 caracteres.';
-    }
-    return { success: false, error: friendlyError };
-  }
-
-  return {
-    success: true,
-    kid_id: data?.kid_id,
-    username: data?.username,
-  };
 }
 
 export async function getEmailByUsername(

@@ -34,6 +34,20 @@ export async function createServerSupabaseClient() {
   );
 }
 
+// Admin client with service_role key — for server-side operations that bypass RLS
+// NEVER expose this on the client side
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+
+export function createAdminClient() {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY not set');
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceRoleKey,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+}
+
 // For Route Handlers — reads cookies directly from the request object,
 // which already has refreshed tokens from the middleware.
 export function createRouteHandlerClient(request: NextRequest) {
