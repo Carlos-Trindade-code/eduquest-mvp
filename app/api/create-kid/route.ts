@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { createRouteHandlerClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/server';
+import { createRouteHandlerClient, createAdminClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
 const createKidSchema = z.object({
@@ -47,8 +46,9 @@ export async function POST(request: NextRequest) {
     const cleanUsername = kidUsername.toLowerCase().trim();
     const syntheticEmail = `${cleanUsername}@studdo.app`;
 
-    // Check username uniqueness
-    const { data: existing } = await supabase
+    // Check username uniqueness via admin client (bypasses RLS)
+    const admin = createAdminClient();
+    const { data: existing } = await admin
       .from('profiles')
       .select('id')
       .eq('username', cleanUsername)
@@ -58,8 +58,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Este nome de usuario ja esta em uso' }, { status: 409 });
     }
 
-    // Create auth user via Admin API (proper GoTrue user)
-    const admin = createAdminClient();
+    // Create auth user via Admin API
     const { data: newUser, error: createError } = await admin.auth.admin.createUser({
       email: syntheticEmail,
       password: kidPassword,
@@ -83,8 +82,8 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Erro ao criar conta' }, { status: 500 });
     }
 
-    // Wait a moment for the trigger to create the profile
-    // Then update it with username, age, grade
+    // The handle_new_user trigger creates the profile automatically.
+    // Update it with username, age, grade.
     const { data: kidProfile } = await admin
       .from('profiles')
       .select('id')
@@ -100,14 +99,12 @@ export async function POST(request: NextRequest) {
       // Link kid to parent
       await admin
         .from('parent_kid_links')
-        .insert({ id: crypto.randomUUID(), parent_id: profile.id, kid_id: kidProfile.id })
-        .select();
+        .insert({ id: crypto.randomUUID(), parent_id: profile.id, kid_id: kidProfile.id });
 
       // Create user_stats
       await admin
         .from('user_stats')
-        .insert({ user_id: kidProfile.id })
-        .select();
+        .insert({ user_id: kidProfile.id });
     }
 
     return Response.json({
