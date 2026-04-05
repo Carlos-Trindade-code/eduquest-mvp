@@ -26,14 +26,26 @@ function getProvider(): AIProvider {
 // ============================================================
 // GEMINI
 // ============================================================
-async function generateWithGemini(options: GenerateOptions): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
-  // Convert all messages to Gemini Content format
-  const contents = options.messages.map((m) => ({
+// Gemini requires the first message to be 'user', not 'model'.
+// The greeting message added by initSession is 'assistant' (UI-only)
+// and must be stripped before sending to the API.
+function sanitizeMessagesForGemini(messages: ChatMessage[]) {
+  // Drop leading assistant messages so first message is always 'user'
+  let start = 0;
+  while (start < messages.length && messages[start].role === 'assistant') {
+    start++;
+  }
+  return messages.slice(start).map((m) => ({
     role: m.role === 'assistant' ? ('model' as const) : ('user' as const),
     parts: [{ text: m.content }],
   }));
+}
+
+async function generateWithGemini(options: GenerateOptions): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+  const contents = sanitizeMessagesForGemini(options.messages);
 
   const response = await ai.models.generateContent({
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
@@ -77,10 +89,7 @@ async function generateWithAnthropic(options: GenerateOptions): Promise<string> 
 async function* streamWithGemini(options: GenerateOptions): AsyncGenerator<string> {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
-  const contents = options.messages.map((m) => ({
-    role: m.role === 'assistant' ? ('model' as const) : ('user' as const),
-    parts: [{ text: m.content }],
-  }));
+  const contents = sanitizeMessagesForGemini(options.messages);
 
   const response = await ai.models.generateContentStream({
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',

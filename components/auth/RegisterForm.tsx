@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, Users, Ticket, BookOpen } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, Users, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { fadeInUp } from '@/lib/design/animations';
@@ -43,9 +43,9 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [age, setAge] = useState('');
-  const [grade, setGrade] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
+  const [age] = useState('');
+  const [grade] = useState('');
+  const [inviteCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [confirmTouched, setConfirmTouched] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -225,22 +225,6 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                   <p className="text-[var(--eq-text-secondary)] text-sm text-center mb-2">Quem é você?</p>
 
                   <motion.button
-                    onClick={() => handleTypeSelect('kid')}
-                    className="w-full flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center shrink-0">
-                      <GraduationCap size={24} className="text-amber-400" />
-                    </div>
-                    <div className="text-left flex-1">
-                      <p className="text-white font-semibold text-sm">Sou estudante</p>
-                      <p className="text-[var(--eq-text-muted)] text-xs">Quero estudar com o tutor IA</p>
-                    </div>
-                    <ArrowRight size={16} className="text-white/20 group-hover:text-purple-400 transition-colors" />
-                  </motion.button>
-
-                  <motion.button
                     onClick={() => handleTypeSelect('parent')}
                     className="w-full flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl border-2 border-transparent hover:border-purple-500/50 transition-all group"
                     whileHover={{ scale: 1.01 }}
@@ -354,85 +338,6 @@ export function RegisterForm({ onRegister, onGoogleRegister }: RegisterFormProps
                       />
                     </div>
                   </div>
-
-                  {userType === 'kid' && (
-                    <motion.div
-                      className="space-y-3"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                          <label htmlFor="register-age" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Idade</label>
-                          <input
-                            id="register-age"
-                            type="number"
-                            min="4"
-                            max="18"
-                            value={age}
-                            onChange={(e) => setAge(e.target.value)}
-                            placeholder="12"
-                            className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label htmlFor="register-grade" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Série/Ano</label>
-                          <input
-                            id="register-grade"
-                            type="text"
-                            value={grade}
-                            onChange={(e) => setGrade(e.target.value)}
-                            placeholder="7o ano"
-                            className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => setInviteCode(inviteCode ? '' : ' ')}
-                          className="flex items-center gap-1.5 text-white/30 hover:text-white/50 text-xs transition-colors"
-                        >
-                          <Ticket size={12} />
-                          {inviteCode.trim() ? 'Esconder código de convite' : 'Tem código de convite? (opcional)'}
-                        </button>
-                        <AnimatePresence>
-                          {inviteCode && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="mt-2 relative group">
-                                <Ticket size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
-                                <input
-                                  id="register-invite-code"
-                                  type="text"
-                                  value={inviteCode.trim()}
-                                  onChange={(e) => {
-                                    let val = e.target.value.toUpperCase();
-                                    if (val.length > 0 && !val.startsWith('EQ-') && !val.startsWith('EQ') && !val.startsWith('E')) {
-                                      val = 'EQ-' + val;
-                                    }
-                                    if (val.length <= 7) {
-                                      setInviteCode(val);
-                                    }
-                                  }}
-                                  placeholder="EQ-XXXX"
-                                  maxLength={7}
-                                  className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all uppercase tracking-widest font-mono"
-                                />
-                              </div>
-                              <p className="text-white/30 text-[11px] mt-1 pl-1">Código do pai/mãe para vincular contas</p>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </motion.div>
-                  )}
 
                   <div className="space-y-1.5">
                     <label htmlFor="register-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>

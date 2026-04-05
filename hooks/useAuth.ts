@@ -1,10 +1,14 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { getProfile } from '@/lib/supabase/queries';
+import { getProfile, getEmailByUsername } from '@/lib/supabase/queries';
 import { trackEvent } from '@/lib/analytics/track';
 import type { Profile, UserType } from '@/lib/auth/types';
 import type { User } from '@supabase/supabase-js';
+
+function isEmail(value: string): boolean {
+  return value.includes('@');
+}
 
 interface UseAuthReturn {
   user: User | null;
@@ -98,12 +102,24 @@ export function useAuth(): UseAuthReturn {
   );
 
   const signIn = useCallback(
-    async (email: string, password: string) => {
+    async (emailOrUsername: string, password: string) => {
+      // If it's not an email, resolve username to synthetic email
+      let email = emailOrUsername;
+      if (!isEmail(emailOrUsername)) {
+        email = await getEmailByUsername(supabase, emailOrUsername);
+      }
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) return { error: translateError(error.message) };
+      if (error) {
+        // Translate for username context too
+        const msg = error.message;
+        if (msg.includes('Invalid login credentials')) {
+          return { error: isEmail(emailOrUsername) ? 'Email ou senha incorretos' : 'Usuário ou senha incorretos' };
+        }
+        return { error: translateError(msg) };
+      }
       trackEvent('login');
       return { error: null };
     },

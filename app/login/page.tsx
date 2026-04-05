@@ -13,8 +13,8 @@ function LoginContent() {
   const authError = searchParams.get('error');
   const successMsg = searchParams.get('msg');
 
-  const handleLogin = async (email: string, password: string) => {
-    const { error } = await signIn(email, password);
+  const handleLogin = async (emailOrUsername: string, password: string) => {
+    const { error } = await signIn(emailOrUsername, password);
     if (error) throw new Error(error);
     // Read user type to route correctly
     const supabase = createClient();

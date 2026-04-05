@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
@@ -15,6 +15,7 @@ import {
   getKidSessionSummaries,
   getKidStudyStats,
   getParentTasks,
+  createKidAccount,
 } from '@/lib/supabase/queries';
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakDisplay } from '@/components/gamification/StreakDisplay';
@@ -123,6 +124,301 @@ function generateAlerts(
   }
 
   return alerts;
+}
+
+function AddKidInline({ profile, inviteCode, onKidCreated }: { profile: Profile; inviteCode: string | null; onKidCreated: () => void }) {
+  const [showForm, setShowForm] = useState(false);
+  const [kidName, setKidName] = useState('');
+  const [kidUsername, setKidUsername] = useState('');
+  const [kidPassword, setKidPassword] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const supabase = createClient();
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!kidName.trim() || !kidUsername.trim() || kidPassword.length < 6) return;
+    setCreating(true);
+    setError('');
+    const result = await createKidAccount(supabase, profile.id, kidName.trim(), kidUsername.trim(), kidPassword);
+    if (!result.success) {
+      setError(result.error || 'Erro ao criar conta');
+      setCreating(false);
+      return;
+    }
+    setSuccess(`${kidName} cadastrado! Usuario: ${result.username}`);
+    setCreating(false);
+    setKidName('');
+    setKidUsername('');
+    setKidPassword('');
+    setTimeout(() => { onKidCreated(); setShowForm(false); setSuccess(''); }, 2000);
+  };
+
+  return (
+    <div className="mb-6">
+      {!showForm ? (
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-purple-600/20 text-purple-300 hover:bg-purple-600/30 border border-purple-500/20 transition-colors"
+          >
+            <Plus size={16} />
+            Cadastrar outro filho
+          </button>
+          {inviteCode && <InviteCodeCard code={inviteCode} hasKids />}
+        </div>
+      ) : (
+        <form onSubmit={handleCreate} className="glass rounded-xl p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-white font-bold text-sm flex items-center gap-2">
+              <Plus size={14} className="text-purple-400" />
+              Cadastrar outro filho
+            </h3>
+            <button type="button" onClick={() => setShowForm(false)} className="text-white/30 hover:text-white/60 text-sm">Cancelar</button>
+          </div>
+          {error && <p className="text-red-300 text-xs bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+          {success && <p className="text-green-300 text-xs bg-green-500/10 rounded-lg px-3 py-2">{success}</p>}
+          <div className="grid grid-cols-3 gap-3">
+            <input
+              type="text"
+              value={kidName}
+              onChange={(e) => setKidName(e.target.value)}
+              placeholder="Nome"
+              className="bg-white/5 text-white placeholder-white/40 rounded-xl px-3 py-2.5 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+              required
+            />
+            <input
+              type="text"
+              value={kidUsername}
+              onChange={(e) => setKidUsername(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ''))}
+              placeholder="Usuario"
+              maxLength={30}
+              className="bg-white/5 text-white placeholder-white/40 rounded-xl px-3 py-2.5 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm font-mono"
+              required
+            />
+            <input
+              type="password"
+              value={kidPassword}
+              onChange={(e) => setKidPassword(e.target.value)}
+              placeholder="Senha (min 6)"
+              minLength={6}
+              className="bg-white/5 text-white placeholder-white/40 rounded-xl px-3 py-2.5 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={creating || !kidName.trim() || kidUsername.trim().length < 3 || kidPassword.length < 6}
+            className="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl disabled:opacity-40 text-sm"
+          >
+            {creating ? 'Criando...' : 'Criar conta'}
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function CreateKidSection({ profile, inviteCode, onKidCreated }: { profile: Profile; inviteCode: string | null; onKidCreated: () => void }) {
+  const [kidName, setKidName] = useState('');
+  const [kidUsername, setKidUsername] = useState('');
+  const [kidPassword, setKidPassword] = useState('');
+  const [kidAge, setKidAge] = useState('');
+  const [kidGrade, setKidGrade] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const supabase = createClient();
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!kidName.trim() || !kidUsername.trim() || !kidPassword) return;
+    if (kidPassword.length < 6) {
+      setError('A senha precisa ter pelo menos 6 caracteres');
+      return;
+    }
+    setCreating(true);
+    setError('');
+    setSuccess('');
+
+    const result = await createKidAccount(
+      supabase,
+      profile.id,
+      kidName.trim(),
+      kidUsername.trim(),
+      kidPassword,
+      kidAge ? parseInt(kidAge) : undefined,
+      kidGrade || undefined
+    );
+
+    if (!result.success) {
+      setError(result.error || 'Erro ao criar conta');
+      setCreating(false);
+      return;
+    }
+
+    setSuccess(`Conta criada! ${kidName} pode entrar com o usuário "${result.username}" e a senha que você definiu.`);
+    setCreating(false);
+
+    // Reload kids list after short delay
+    setTimeout(onKidCreated, 1500);
+  };
+
+  return (
+    <div className="max-w-lg mx-auto mt-4 space-y-6">
+      <div className="text-center">
+        <div className="text-5xl mb-3">👋</div>
+        <h2 className="text-white text-xl font-bold mb-1">Ola, {profile?.name?.split(' ')[0]}!</h2>
+        <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
+          Cadastre seu filho para ele comecar a estudar
+        </p>
+      </div>
+
+      <form onSubmit={handleCreate} className="glass rounded-2xl p-6 space-y-4">
+        <h3 className="text-white font-bold text-sm flex items-center gap-2">
+          <Plus size={16} className="text-purple-400" />
+          Criar conta do filho
+        </h3>
+
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+              className="bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3"
+            >
+              {error}
+            </motion.div>
+          )}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+              className="bg-green-500/15 border border-green-500/30 text-green-300 text-sm rounded-xl px-4 py-3"
+            >
+              {success}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="space-y-1.5">
+          <label className="text-[var(--eq-text-secondary)] text-xs font-medium block">Nome do filho</label>
+          <input
+            type="text"
+            value={kidName}
+            onChange={(e) => setKidName(e.target.value)}
+            placeholder="Ex: Maria"
+            className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+            required
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-[var(--eq-text-secondary)] text-xs font-medium block">Nome de usuario (para login)</label>
+          <input
+            type="text"
+            value={kidUsername}
+            onChange={(e) => setKidUsername(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ''))}
+            placeholder="Ex: maria.estudos"
+            maxLength={30}
+            className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm font-mono"
+            required
+          />
+          <p className="text-[var(--eq-text-muted)] text-[11px]">Letras, numeros, pontos, hifens e underlines. Minimo 3 caracteres.</p>
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-[var(--eq-text-secondary)] text-xs font-medium block">Senha</label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={kidPassword}
+              onChange={(e) => setKidPassword(e.target.value)}
+              placeholder="Minimo 6 caracteres"
+              minLength={6}
+              className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 pr-12 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
+            >
+              {showPassword ? '🙈' : '👁'}
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <label className="text-[var(--eq-text-secondary)] text-xs font-medium block">Idade (opcional)</label>
+            <input
+              type="number"
+              min="4"
+              max="18"
+              value={kidAge}
+              onChange={(e) => setKidAge(e.target.value)}
+              placeholder="12"
+              className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[var(--eq-text-secondary)] text-xs font-medium block">Serie (opcional)</label>
+            <input
+              type="text"
+              value={kidGrade}
+              onChange={(e) => setKidGrade(e.target.value)}
+              placeholder="7o ano"
+              className="w-full bg-white/5 text-white placeholder-white/40 rounded-xl px-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 text-sm"
+            />
+          </div>
+        </div>
+
+        <motion.button
+          type="submit"
+          disabled={creating || !kidName.trim() || !kidUsername.trim() || kidUsername.trim().length < 3 || !kidPassword || kidPassword.length < 6}
+          className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          {creating ? (
+            <motion.div
+              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+            />
+          ) : (
+            <>
+              <Plus size={16} />
+              Criar conta do filho
+            </>
+          )}
+        </motion.button>
+      </form>
+
+      {inviteCode && (
+        <div className="space-y-2">
+          <p className="text-[var(--eq-text-secondary)] text-xs text-center">
+            Ou compartilhe seu codigo de convite se o filho ja tiver conta:
+          </p>
+          <InviteCodeCard code={inviteCode} />
+        </div>
+      )}
+
+      <Link
+        href="/tutorial"
+        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
+        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <GraduationCap size={18} className="text-purple-400 shrink-0" />
+        <span>Veja como o tutor funciona</span>
+      </Link>
+    </div>
+  );
 }
 
 export default function ParentDashboard() {
@@ -361,10 +657,8 @@ export default function ParentDashboard() {
         </div>
       )}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        {inviteCode && kids.length > 0 && (
-          <div className="mb-6">
-            <InviteCodeCard code={inviteCode} hasKids />
-          </div>
+        {kids.length > 0 && (
+          <AddKidInline profile={profile!} inviteCode={inviteCode} onKidCreated={loadKids} />
         )}
         {selectedKid && (
           <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
@@ -764,69 +1058,11 @@ export default function ParentDashboard() {
         )}
 
         {kids.length === 0 && (
-          <div className="max-w-lg mx-auto mt-4 space-y-6">
-            {/* Welcome message */}
-            <div className="text-center">
-              <div className="text-5xl mb-3">👋</div>
-              <h2 className="text-white text-xl font-bold mb-1">Ola, {profile?.name?.split(' ')[0]}!</h2>
-              <p className="text-sm" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                3 passos para vincular seu filho
-              </p>
-            </div>
-
-            {/* Step 1: invite code with share */}
-            <div>
-              <p className="text-white/50 text-xs font-bold mb-2 flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-purple-600 text-white text-[10px] font-bold flex items-center justify-center">1</span>
-                Copie seu código de convite
-              </p>
-              {inviteCode && <InviteCodeCard code={inviteCode} />}
-            </div>
-
-            {/* Steps 2 & 3 */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(0,180,216,0.06)', border: '1px solid rgba(0,180,216,0.12)' }}>
-                <p className="text-white text-sm font-semibold mb-1 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-cyan-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
-                  Filho cria conta
-                </p>
-                <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Acessa <strong className="text-white/70">studdo.com.br</strong> e digita o código
-                </p>
-              </div>
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.12)' }}>
-                <p className="text-white text-sm font-semibold mb-1 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
-                  Pronto!
-                </p>
-                <p className="text-xs" style={{ color: 'rgba(240,244,248,0.5)' }}>
-                  Ele aparece aqui e você acompanha tudo em tempo real
-                </p>
-              </div>
-            </div>
-
-            {/* CTA: see how tutor works */}
-            <Link
-              href="/tutorial"
-              className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-            >
-              <GraduationCap size={18} className="text-purple-400 shrink-0" />
-              <span>Veja como o tutor funciona</span>
-            </Link>
-
-            {/* Auto-refresh hint */}
-            <p className="text-center text-xs flex items-center justify-center gap-1.5" style={{ color: 'rgba(240,244,248,0.4)' }}>
-              <motion.span
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                className="inline-block"
-              >
-                ↻
-              </motion.span>
-              Atualiza automaticamente quando seu filho criar a conta
-            </p>
-          </div>
+          <CreateKidSection
+            profile={profile!}
+            inviteCode={inviteCode}
+            onKidCreated={loadKids}
+          />
         )}
       </main>
       <FeedbackButton />

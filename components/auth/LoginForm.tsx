@@ -1,13 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, LogIn } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, LogIn, User } from 'lucide-react';
 import Link from 'next/link';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { fadeInUp, fadeIn } from '@/lib/design/animations';
 
 interface LoginFormProps {
-  onLogin?: (email: string, password: string) => Promise<void>;
+  onLogin?: (emailOrUsername: string, password: string) => Promise<void>;
   onGoogleLogin?: () => Promise<void>;
   onForgotPassword?: (email: string) => Promise<void>;
   initialError?: string;
@@ -15,7 +15,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialError, initialSuccess }: LoginFormProps) {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,13 +24,16 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
   const [success, setSuccess] = useState(initialSuccess || '');
   const [resetSent, setResetSent] = useState(false);
 
+  const isEmailInput = identifier.includes('@');
+  const IdentifierIcon = isEmailInput ? Mail : User;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!identifier || !password) return;
     setLoading(true);
     setError('');
     try {
-      await onLogin?.(email, password);
+      await onLogin?.(identifier, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao entrar');
     } finally {
@@ -39,14 +42,14 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
   };
 
   const handleForgotPassword = async () => {
-    if (!email) {
-      setError('Digite seu email primeiro para recuperar a senha');
+    if (!identifier || !isEmailInput) {
+      setError('Digite seu email para recuperar a senha');
       return;
     }
     setResetLoading(true);
     setError('');
     try {
-      await onForgotPassword?.(email);
+      await onForgotPassword?.(identifier);
       setResetSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao enviar email');
@@ -189,18 +192,20 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="login-email" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Email</label>
+              <label htmlFor="login-identifier" className="text-[var(--eq-text-secondary)] text-sm font-medium block">
+                {isEmailInput ? 'Email' : 'Usuário ou Email'}
+              </label>
               <div className="relative group">
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
+                <IdentifierIcon size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
                 <input
-                  id="login-email"
-                  name="email"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
+                  id="login-identifier"
+                  name="username"
+                  type="text"
+                  inputMode="text"
+                  autoComplete="username"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder="usuário ou email"
                   className="w-full bg-white/5 text-white placeholder-white/50 rounded-xl pl-10 pr-4 py-3 border border-white/10 focus:outline-none focus:border-purple-500/50 focus:bg-white/8 text-sm transition-all"
                   required
                 />
@@ -210,14 +215,16 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label htmlFor="login-password" className="text-[var(--eq-text-secondary)] text-sm font-medium block">Senha</label>
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  disabled={resetLoading}
-                  className="text-purple-400 hover:text-purple-300 text-xs font-medium transition-colors disabled:opacity-50"
-                >
-                  {resetLoading ? 'Enviando...' : 'Esqueci a senha'}
-                </button>
+                {isEmailInput && (
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={resetLoading}
+                    className="text-purple-400 hover:text-purple-300 text-xs font-medium transition-colors disabled:opacity-50"
+                  >
+                    {resetLoading ? 'Enviando...' : 'Esqueci a senha'}
+                  </button>
+                )}
               </div>
               <div className="relative group">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors" />
@@ -259,7 +266,7 @@ export function LoginForm({ onLogin, onGoogleLogin, onForgotPassword, initialErr
 
             <motion.button
               type="submit"
-              disabled={loading || !email || !password}
+              disabled={loading || !identifier || !password}
               className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-600/25"
               whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.35)' }}
               whileTap={{ scale: 0.98 }}
