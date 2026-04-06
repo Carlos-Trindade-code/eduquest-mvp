@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { safeRedirectPath } from '@/lib/auth/constants';
+import { sendWelcomeEmail } from '@/lib/email/resend';
 
 function getOrigin(request: Request): string {
   const headers = new Headers(request.headers);
@@ -28,6 +29,17 @@ export async function GET(request: Request) {
       // Route by role (safe default), allow override only with validated path
       const { data: { user } } = await supabase.auth.getUser();
       const userType = user?.user_metadata?.user_type;
+
+      // Send welcome email on first login (fire-and-forget)
+      if (user?.email && user?.created_at) {
+        const createdAt = new Date(user.created_at).getTime();
+        const isNewUser = Date.now() - createdAt < 60_000; // created less than 1 min ago
+        if (isNewUser) {
+          const name = user.user_metadata?.name || user.email.split('@')[0];
+          sendWelcomeEmail(user.email, name).catch(() => {});
+        }
+      }
+
       const roleDefault = userType === 'parent' ? '/parent/dashboard' : '/tutor';
       const destination = safeRedirectPath(rawRedirect, roleDefault);
       return NextResponse.redirect(`${origin}${destination}`);

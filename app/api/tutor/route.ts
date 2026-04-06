@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { buildSystemPrompt } from '@/lib/subjects/prompts';
 import { generateTutorResponse, streamTutorResponse, getCurrentProvider, RateLimitError } from '@/lib/ai/provider';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
@@ -93,6 +94,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ message, provider });
   } catch (error) {
     console.error('Tutor API error:', error);
+    if (!(error instanceof RateLimitError)) {
+      Sentry.captureException(error);
+    }
 
     if (error instanceof RateLimitError) {
       return Response.json(

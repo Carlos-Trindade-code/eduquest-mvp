@@ -81,7 +81,7 @@ export function MessageInput({
     setIsListening(false);
   };
 
-  const showMic = isYoungKid && speechSupported;
+  const showMic = speechSupported;
 
   return (
     <div className="flex gap-2 mt-3 shrink-0">

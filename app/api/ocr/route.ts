@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextRequest } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import mammoth from 'mammoth';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
@@ -104,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     // Use Gemini Vision to extract text
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
       contents: [
         {
           role: 'user',
@@ -138,6 +139,7 @@ Retorne APENAS o texto extraído, sem explicações adicionais.`,
     return Response.json({ text });
   } catch (error) {
     console.error('OCR error:', error);
+    Sentry.captureException(error);
     return Response.json(
       { error: 'Ocorreu um erro no servidor ao processar a imagem. Tente novamente mais tarde.' },
       { status: 500 }
