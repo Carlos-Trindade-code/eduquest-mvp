@@ -58,7 +58,7 @@ RETORNE APENAS um JSON válido neste formato (sem markdown, sem explicação ext
 }`;
 
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
     });
 

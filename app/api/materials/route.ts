@@ -35,7 +35,7 @@ async function extractText(file: File): Promise<string | null> {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const base64 = Buffer.from(bytes).toString('base64');
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
       contents: [{
         role: 'user',
         parts: [

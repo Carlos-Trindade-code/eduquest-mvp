@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { SubjectSelector } from './SubjectSelector';
 import { AgeGroupSelector } from './AgeGroupSelector';
 import { PhotoUpload } from './PhotoUpload';
+import { ContentActions } from '@/components/content/ContentActions';
 import { MascotOwl } from '@/components/illustrations/MascotOwl';
 import { Button } from '@/components/ui/button';
 import { fadeInUp, staggerContainer } from '@/lib/design/animations';
@@ -220,30 +221,43 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
         <PhotoUpload onTextExtracted={setPhotoText} />
         {photoText && (
           <p className="text-xs mt-1.5" style={{ color: 'rgba(240,244,248,0.4)' }}>
-            ✓ Foto lida — o Edu vai perguntar sobre ela
+            ✓ Foto lida — escolha o que fazer abaixo
           </p>
         )}
       </motion.div>
 
-      {/* Submit — always enabled (no homework text required) */}
+      {/* Content actions (when material is available) or simple start button */}
       <motion.div variants={fadeInUp('medium')} className="space-y-3 mt-4">
-        <Button
-          onClick={() => {
-            const context = [
+        {(photoText || selectedMaterial || selectedPersonalMaterial) ? (
+          <ContentActions
+            materialText={[
               selectedMaterial?.content_text ? `[Material do professor: ${selectedMaterial.title}]\n${selectedMaterial.content_text}` : '',
               selectedPersonalMaterial?.content_text ? `[Meu material: ${selectedPersonalMaterial.title}]\n${selectedPersonalMaterial.content_text}` : '',
               photoText,
-            ].filter(Boolean).join('\n\n');
-            onStart({ homework: context, subject, ageGroup, behavioralProfile });
-          }}
-          variant="primary"
-          size="lg"
-          rounded="lg"
-          className="w-full gap-2"
-        >
-          <Sparkles className="w-4 h-4" />
-          Começar com o Edu ✨
-        </Button>
+            ].filter(Boolean).join('\n\n')}
+            subject={subject}
+            ageGroup={ageGroup}
+            onStudyWithTutor={() => {
+              const context = [
+                selectedMaterial?.content_text ? `[Material do professor: ${selectedMaterial.title}]\n${selectedMaterial.content_text}` : '',
+                selectedPersonalMaterial?.content_text ? `[Meu material: ${selectedPersonalMaterial.title}]\n${selectedPersonalMaterial.content_text}` : '',
+                photoText,
+              ].filter(Boolean).join('\n\n');
+              onStart({ homework: context, subject, ageGroup, behavioralProfile });
+            }}
+          />
+        ) : (
+          <Button
+            onClick={() => onStart({ homework: '', subject, ageGroup, behavioralProfile })}
+            variant="primary"
+            size="lg"
+            rounded="lg"
+            className="w-full gap-2"
+          >
+            <Sparkles className="w-4 h-4" />
+            Começar com o Edu ✨
+          </Button>
+        )}
         <Link
           href="/"
           className="flex items-center justify-center gap-1.5 text-white/40 hover:text-white/70 text-xs transition-colors py-1"
