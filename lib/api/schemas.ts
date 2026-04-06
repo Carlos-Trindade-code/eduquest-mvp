@@ -11,7 +11,7 @@ const messageSchema = z.object({
 // /api/tutor
 export const tutorSchema = z.object({
   messages: z.array(messageSchema).min(1).max(100),
-  homework: z.string().max(5000).default(''),
+  homework: z.string().max(15000).default(''),
   subject: z.string().max(50).default('other'),
   ageGroup: ageGroupEnum.default('10-12'),
   behavioralProfile: behavioralProfileEnum.default('default'),

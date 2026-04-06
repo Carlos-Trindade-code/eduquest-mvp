@@ -261,10 +261,13 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     onSessionStart?.();
 
     if (config.homework) {
-      // Photo was uploaded — start with photo content
+      // Photo/material was uploaded — include content in greeting so it's visible in chat history
+      const truncated = config.homework.length > 800
+        ? config.homework.slice(0, 800) + '...'
+        : config.homework;
       initSession(
         config.homework,
-        `Oi! 👋 Li o que está na foto. Vamos explorar esse conteúdo?\n\nPor onde você quer começar?`,
+        `Oi! 👋 Li o conteúdo que você enviou:\n\n> ${truncated.split('\n').join('\n> ')}\n\nPor onde você quer começar?`,
         config.subject,
       );
     } else {
