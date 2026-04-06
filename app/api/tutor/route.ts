@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { buildSystemPrompt } from '@/lib/subjects/prompts';
-import { generateTutorResponse, streamTutorResponse, getCurrentProvider } from '@/lib/ai/provider';
+import { generateTutorResponse, streamTutorResponse, getCurrentProvider, RateLimitError } from '@/lib/ai/provider';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { tutorSchema } from '@/lib/api/schemas';
@@ -65,7 +65,10 @@ export async function POST(request: NextRequest) {
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, fullText })}\n\n`));
             controller.close();
           } catch (err) {
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: 'Erro no tutor. Tente novamente.' })}\n\n`));
+            const msg = err instanceof RateLimitError
+              ? 'O Edu está descansando um pouquinho. Tente de novo em 1 minuto! ⏳'
+              : 'Erro no tutor. Tente novamente.';
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`));
             controller.close();
           }
         },
@@ -90,6 +93,13 @@ export async function POST(request: NextRequest) {
     return Response.json({ message, provider });
   } catch (error) {
     console.error('Tutor API error:', error);
+
+    if (error instanceof RateLimitError) {
+      return Response.json(
+        { error: 'O Edu está descansando um pouquinho. Tente de novo em 1 minuto! ⏳' },
+        { status: 429 }
+      );
+    }
 
     const errorMessage =
       error instanceof Error && error.message.includes('API key')

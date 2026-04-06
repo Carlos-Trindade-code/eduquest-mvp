@@ -6,6 +6,13 @@ import { GoogleGenAI } from '@google/genai';
 
 export type AIProvider = 'gemini' | 'anthropic';
 
+// Model fallback chain: if primary model hits rate limit, try next
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+];
+
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -17,10 +24,38 @@ interface GenerateOptions {
   maxTokens?: number;
 }
 
+export class RateLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RateLimitError';
+  }
+}
+
 function getProvider(): AIProvider {
   if (process.env.GEMINI_API_KEY) return 'gemini';
   if (process.env.ANTHROPIC_API_KEY) return 'anthropic';
   throw new Error('Nenhuma API key configurada. Defina GEMINI_API_KEY ou ANTHROPIC_API_KEY no .env.local');
+}
+
+function getGeminiModel(): string {
+  return process.env.GEMINI_MODEL || GEMINI_MODELS[0];
+}
+
+function getModelFallbackChain(): string[] {
+  const primary = getGeminiModel();
+  // Put the configured model first, then add fallbacks
+  const chain = [primary];
+  for (const m of GEMINI_MODELS) {
+    if (!chain.includes(m)) chain.push(m);
+  }
+  return chain;
+}
+
+function isRateLimitError(err: unknown): boolean {
+  if (err instanceof Error) {
+    return err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED') || err.message.includes('quota');
+  }
+  return false;
 }
 
 // ============================================================
@@ -42,13 +77,11 @@ function sanitizeMessagesForGemini(messages: ChatMessage[]) {
   }));
 }
 
-async function generateWithGemini(options: GenerateOptions): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-
+async function generateWithGeminiModel(ai: GoogleGenAI, model: string, options: GenerateOptions): Promise<string> {
   const contents = sanitizeMessagesForGemini(options.messages);
 
   const response = await ai.models.generateContent({
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+    model,
     config: {
       systemInstruction: options.systemPrompt,
       maxOutputTokens: options.maxTokens || 1024,
@@ -58,6 +91,25 @@ async function generateWithGemini(options: GenerateOptions): Promise<string> {
   });
 
   return response.text || 'Não consegui responder. Tenta de novo!';
+}
+
+async function generateWithGemini(options: GenerateOptions): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+  const models = getModelFallbackChain();
+
+  for (let i = 0; i < models.length; i++) {
+    try {
+      return await generateWithGeminiModel(ai, models[i], options);
+    } catch (err) {
+      if (isRateLimitError(err) && i < models.length - 1) {
+        console.warn(`[AI] ${models[i]} rate limited, trying ${models[i + 1]}...`);
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw new RateLimitError('Todos os modelos estão com limite excedido. Tente novamente em alguns minutos.');
 }
 
 // ============================================================
@@ -86,13 +138,11 @@ async function generateWithAnthropic(options: GenerateOptions): Promise<string> 
 // ============================================================
 // GEMINI STREAMING
 // ============================================================
-async function* streamWithGemini(options: GenerateOptions): AsyncGenerator<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-
+async function* streamWithGeminiModel(ai: GoogleGenAI, model: string, options: GenerateOptions): AsyncGenerator<string> {
   const contents = sanitizeMessagesForGemini(options.messages);
 
   const response = await ai.models.generateContentStream({
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
+    model,
     config: {
       systemInstruction: options.systemPrompt,
       maxOutputTokens: options.maxTokens || 1024,
@@ -105,6 +155,26 @@ async function* streamWithGemini(options: GenerateOptions): AsyncGenerator<strin
     const text = chunk.text;
     if (text) yield text;
   }
+}
+
+async function* streamWithGemini(options: GenerateOptions): AsyncGenerator<string> {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+  const models = getModelFallbackChain();
+
+  for (let i = 0; i < models.length; i++) {
+    try {
+      yield* streamWithGeminiModel(ai, models[i], options);
+      return;
+    } catch (err) {
+      if (isRateLimitError(err) && i < models.length - 1) {
+        console.warn(`[AI] ${models[i]} rate limited (stream), trying ${models[i + 1]}...`);
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw new RateLimitError('Todos os modelos estão com limite excedido. Tente novamente em alguns minutos.');
 }
 
 // ============================================================
