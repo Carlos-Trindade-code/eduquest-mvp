@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { getModelForTier, type PlanTier } from './tiers';
 
 // ============================================================
 // AI Provider abstraction — supports Gemini (free) and Anthropic
@@ -22,6 +23,7 @@ interface GenerateOptions {
   systemPrompt: string;
   messages: ChatMessage[];
   maxTokens?: number;
+  planTier?: PlanTier;
 }
 
 export class RateLimitError extends Error {
@@ -79,9 +81,10 @@ function sanitizeMessagesForGemini(messages: ChatMessage[]) {
 
 async function generateWithGeminiModel(ai: GoogleGenAI, model: string, options: GenerateOptions): Promise<string> {
   const contents = sanitizeMessagesForGemini(options.messages);
+  const effectiveModel = options.planTier ? getModelForTier(options.planTier) : model;
 
   const response = await ai.models.generateContent({
-    model,
+    model: effectiveModel,
     config: {
       systemInstruction: options.systemPrompt,
       maxOutputTokens: options.maxTokens || 1024,

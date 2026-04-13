@@ -1,12 +1,13 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square, HelpCircle, FolderOpen, FileText, Trophy } from 'lucide-react';
+import { Sparkles, LogOut, BarChart3, Menu, X, Home, BookOpen, User, Zap, Square, HelpCircle, FolderOpen, FileText, Trophy, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PomodoroTimer } from '@/components/tutor/PomodoroTimer';
 import { SessionHistory } from '@/components/tutor/SessionHistory';
 import { JoinClassroom } from '@/components/classroom/JoinClassroom';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
+import { isAdminEmail } from '@/lib/auth/constants';
 
 interface HeaderProps {
   appName?: string;
@@ -69,7 +70,11 @@ export function Header({
         <div className="flex items-center gap-1">
           {/* Logo — navigates home */}
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(
+              userType === 'parent' ? '/parent/dashboard' :
+              userType === 'teacher' ? '/professor' :
+              user ? '/tutor' : '/'
+            )}
             aria-label="Ir para página inicial"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity p-1 -ml-1"
           >
@@ -191,6 +196,17 @@ export function Header({
                   Ajuda e FAQ
                 </button>
               </div>
+
+              {/* Admin */}
+              {isAdminEmail(user?.email) && (
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 text-sm transition-colors"
+                >
+                  <Shield size={16} />
+                  Admin
+                </button>
+              )}
 
               {/* Logout */}
               {user && (

@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/nextjs';
 import mammoth from 'mammoth';
 import { createRouteHandlerClient } from '@/lib/supabase/server';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
+import { getModelForTier } from '@/lib/ai/tiers';
 
 const DOCX_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
 
     // Use Gemini Vision to extract text
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+      model: getModelForTier(),
       contents: [
         {
           role: 'user',

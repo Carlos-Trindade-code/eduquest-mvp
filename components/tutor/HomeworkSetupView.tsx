@@ -12,7 +12,7 @@ import { QuizPlayer } from '@/components/activities/QuizPlayer';
 import { getSubjectById } from '@/lib/subjects/config';
 import { createClient } from '@/lib/supabase/client';
 import { addXP, updateActivityStatus } from '@/lib/supabase/queries';
-import type { AgeGroup, BehavioralProfile, ParentTask, GuidedActivity } from '@/lib/auth/types';
+import type { AgeGroup, BehavioralProfile, DifficultyLevel, ParentTask, GuidedActivity } from '@/lib/auth/types';
 
 interface HomeworkSetupViewProps {
   isGuest: boolean;
@@ -27,12 +27,14 @@ interface HomeworkSetupViewProps {
     subject: string;
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
+    difficultyLevel?: DifficultyLevel;
   }) => void;
   onStartDailyChallenge?: (config: {
     homework: string;
     subject: string;
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
+    difficultyLevel?: DifficultyLevel;
   }) => void;
   onStartFromTask: (task: ParentTask) => void;
   onSetActiveQuiz: (quiz: GuidedActivity | null) => void;

@@ -4,7 +4,7 @@ import { XP_REWARDS } from '@/lib/gamification/xp';
 import { createClient } from '@/lib/supabase/client';
 import { createSession, endSession, saveMessage } from '@/lib/supabase/queries';
 import { trackEvent } from '@/lib/analytics/track';
-import type { ChatMessage, AgeGroup, BehavioralProfile } from '@/lib/auth/types';
+import type { ChatMessage, AgeGroup, BehavioralProfile, DifficultyLevel } from '@/lib/auth/types';
 
 interface FinishSessionResult {
   sessionId: string | null;
@@ -33,7 +33,8 @@ export function useChatSession(
   ageGroup: AgeGroup = '10-12',
   behavioralProfile: BehavioralProfile = 'default',
   onXPEarned?: (xp: number) => void,
-  userId?: string | null
+  userId?: string | null,
+  difficultyLevel: DifficultyLevel = 'intermediario',
 ): UseChatSessionReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -126,6 +127,7 @@ export function useChatSession(
       subject,
       ageGroup,
       behavioralProfile,
+      difficultyLevel,
     });
 
     // Try streaming first
@@ -188,7 +190,7 @@ export function useChatSession(
       setStreaming(false);
       return null;
     }
-  }, [homework, subject, ageGroup, behavioralProfile]);
+  }, [homework, subject, ageGroup, behavioralProfile, difficultyLevel]);
 
   const handleAssistantResponse = useCallback((fullText: string | null) => {
     if (fullText) {

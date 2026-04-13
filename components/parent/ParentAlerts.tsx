@@ -16,7 +16,7 @@ interface ParentAlertsProps {
 
 interface Alert {
   id: string;
-  type: 'no-activity' | 'difficulty' | 'streak-risk' | 'congrats';
+  type: 'no-activity' | 'difficulty' | 'streak-risk' | 'congrats' | 'accuracy-high' | 'accuracy-low';
   severity: 'success' | 'warning' | 'info';
   icon: React.ReactNode;
   title: string;
@@ -162,6 +162,32 @@ export function ParentAlerts({ kidName, kidId, sessions, stats, onNavigateToTask
           ? { label: 'Criar tarefa de reforço', action: onNavigateToTasks }
           : undefined,
       });
+    }
+
+    // 5. Accuracy-based alerts
+    if (mostRecent && mostRecent.estimated_accuracy != null) {
+      if (mostRecent.estimated_accuracy >= 80) {
+        result.push({
+          id: `${kidId}:accuracy-high`,
+          type: 'accuracy-high',
+          severity: 'success',
+          icon: <CheckCircle size={18} />,
+          title: 'Otimo aproveitamento!',
+          description: `${kidName} teve ${mostRecent.estimated_accuracy}% de aproveitamento na ultima sessao. Excelente!`,
+        });
+      } else if (mostRecent.estimated_accuracy < 50) {
+        result.push({
+          id: `${kidId}:accuracy-low`,
+          type: 'accuracy-low',
+          severity: 'warning',
+          icon: <AlertTriangle size={18} />,
+          title: 'Aproveitamento baixo',
+          description: `${kidName} teve ${mostRecent.estimated_accuracy}% de aproveitamento na ultima sessao. Considere reforcar o conteudo.`,
+          cta: onNavigateToTasks
+            ? { label: 'Criar tarefa de reforco', action: onNavigateToTasks }
+            : undefined,
+        });
+      }
     }
 
     return result;

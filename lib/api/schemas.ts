@@ -20,6 +20,7 @@ export const tutorSchema = z.object({
   grade: z.string().max(30).optional(),
   knownDifficulties: z.array(z.string().max(200)).max(10).optional(),
   errorPatterns: z.array(z.string().max(200)).max(10).optional(),
+  difficultyLevel: z.enum(['basico', 'intermediario', 'avancado']).optional(),
 });
 
 // /api/faq

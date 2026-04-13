@@ -16,7 +16,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { getKidMaterials } from '@/lib/supabase/queries';
 import { getFileIcon } from '@/lib/storage/materials';
-import type { AgeGroup, BehavioralProfile, Material } from '@/lib/auth/types';
+import type { AgeGroup, BehavioralProfile, DifficultyLevel, Material } from '@/lib/auth/types';
 
 interface ClassroomMaterial {
   id: string;
@@ -26,12 +26,19 @@ interface ClassroomMaterial {
   classroom_name?: string;
 }
 
+const DIFFICULTY_OPTIONS: { value: DifficultyLevel; label: string; icon: string; desc: string }[] = [
+  { value: 'basico', label: 'Basico', icon: '\u{1F4D7}', desc: 'Fundamentos e conceitos essenciais' },
+  { value: 'intermediario', label: 'Intermediario', icon: '\u{1F4D8}', desc: 'Aplicacao e pensamento critico' },
+  { value: 'avancado', label: 'Avancado', icon: '\u{1F4D5}', desc: 'Analise profunda e desafios' },
+];
+
 interface HomeworkSetupProps {
   onStart: (config: {
     homework: string;
     subject: string;
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
+    difficultyLevel: DifficultyLevel;
   }) => void;
 }
 
@@ -40,6 +47,7 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
   const [photoText, setPhotoText] = useState('');
   const [behavioralProfile] = useState<BehavioralProfile>('default');
+  const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('intermediario');
   const [materials, setMaterials] = useState<ClassroomMaterial[]>([]);
   const [selectedMaterial, setSelectedMaterial] = useState<ClassroomMaterial | null>(null);
   const [personalMaterials, setPersonalMaterials] = useState<Material[]>([]);
@@ -115,6 +123,30 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
       {/* Step 2: Age Group */}
       <motion.div variants={fadeInUp('medium')}>
         <AgeGroupSelector selected={ageGroup} onSelect={setAgeGroup} label="2. Qual sua idade?" />
+      </motion.div>
+
+      {/* Step 3: Difficulty Level */}
+      <motion.div variants={fadeInUp('medium')} className="mb-1">
+        <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">3. Nivel de dificuldade</p>
+        <div className="grid grid-cols-3 gap-2">
+          {DIFFICULTY_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => setDifficultyLevel(opt.value)}
+              className={`rounded-xl p-3 text-center transition-all ${
+                difficultyLevel === opt.value ? 'ring-1 ring-purple-500' : ''
+              }`}
+              style={{
+                background: difficultyLevel === opt.value ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${difficultyLevel === opt.value ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.05)'}`,
+              }}
+            >
+              <span className="text-lg">{opt.icon}</span>
+              <p className="text-white text-xs font-medium mt-1">{opt.label}</p>
+              <p className="text-white/30 text-[10px] mt-0.5">{opt.desc}</p>
+            </button>
+          ))}
+        </div>
       </motion.div>
 
       {/* Classroom materials */}
@@ -216,7 +248,7 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
       {/* Photo Upload — optional */}
       <motion.div variants={fadeInUp('medium')} className="mb-1">
         <p className="text-[var(--eq-text-secondary)] text-sm mb-2 font-medium">
-          {personalMaterials.length > 0 || materials.length > 0 ? '4' : '3'}. Tem foto da tarefa? (opcional)
+          {personalMaterials.length > 0 || materials.length > 0 ? '5' : '4'}. Tem foto da tarefa? (opcional)
         </p>
         <PhotoUpload onTextExtracted={setPhotoText} />
         {photoText && (
@@ -243,12 +275,12 @@ export function HomeworkSetup({ onStart }: HomeworkSetupProps) {
                 selectedPersonalMaterial?.content_text ? `[Meu material: ${selectedPersonalMaterial.title}]\n${selectedPersonalMaterial.content_text}` : '',
                 photoText,
               ].filter(Boolean).join('\n\n');
-              onStart({ homework: context, subject, ageGroup, behavioralProfile });
+              onStart({ homework: context, subject, ageGroup, behavioralProfile, difficultyLevel });
             }}
           />
         ) : (
           <Button
-            onClick={() => onStart({ homework: '', subject, ageGroup, behavioralProfile })}
+            onClick={() => onStart({ homework: '', subject, ageGroup, behavioralProfile, difficultyLevel })}
             variant="primary"
             size="lg"
             rounded="lg"

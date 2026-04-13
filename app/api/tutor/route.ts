@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       grade,
       knownDifficulties,
       errorPatterns,
+      difficultyLevel,
     } = parsed.data;
 
     // Build the full evolutionary system prompt
@@ -48,6 +49,7 @@ export async function POST(request: NextRequest) {
       knownDifficulties,
       errorPatterns,
       homework,
+      difficultyLevel,
     });
 
     const provider = getCurrentProvider();

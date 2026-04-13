@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { ADMIN_EMAILS } from '@/lib/auth/constants';
+import { isAdminEmail } from '@/lib/auth/constants';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -40,7 +40,7 @@ export async function updateSession(request: NextRequest) {
 
   // --- Admin route: only accessible by specific email ---
   if (pathname.startsWith('/admin')) {
-    if (!user || !ADMIN_EMAILS.includes(user.email?.toLowerCase() || '')) {
+    if (!user || !isAdminEmail(user.email)) {
       const url = request.nextUrl.clone();
       url.pathname = '/';
       return NextResponse.redirect(url);

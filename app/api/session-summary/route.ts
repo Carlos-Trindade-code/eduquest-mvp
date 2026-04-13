@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { rateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 import { sessionSummarySchema } from '@/lib/api/schemas';
+import { getModelForTier } from '@/lib/ai/tiers';
 
 interface SessionSummary {
   topics_covered: string[];
@@ -9,6 +10,9 @@ interface SessionSummary {
   difficulties: string[];
   ai_suggestion: string;
   parent_tip: string;
+  estimated_accuracy: number | null;
+  correct_concepts: number | null;
+  struggled_concepts: number | null;
 }
 
 const FALLBACK_SUMMARY: SessionSummary = {
@@ -17,6 +21,9 @@ const FALLBACK_SUMMARY: SessionSummary = {
   difficulties: [],
   ai_suggestion: 'Continue praticando! Cada sessão te deixa mais preparado.',
   parent_tip: 'Incentive seu filho a manter uma rotina regular de estudos.',
+  estimated_accuracy: null,
+  correct_concepts: null,
+  struggled_concepts: null,
 };
 
 function buildAnalysisPrompt(
@@ -35,7 +42,10 @@ Retorne APENAS um JSON válido (sem markdown, sem crases, sem explicação) com 
   "strengths": ["ponto forte 1"],
   "difficulties": ["dificuldade 1"],
   "ai_suggestion": "sugestão encorajadora para o aluno",
-  "parent_tip": "dica prática para os pais"
+  "parent_tip": "dica prática para os pais",
+  "estimated_accuracy": 75,
+  "correct_concepts": 3,
+  "struggled_concepts": 1
 }
 
 Regras:
@@ -44,6 +54,9 @@ Regras:
 - difficulties: onde o aluno teve dificuldade (máximo 3, pode ser array vazio se não houve)
 - ai_suggestion: sugestão encorajadora de próximo passo para o aluno (máximo 2 frases)
 - parent_tip: dica prática para os pais acompanharem (máximo 2 frases)
+- estimated_accuracy: porcentagem estimada de acertos (0-100), baseada nas respostas do aluno
+- correct_concepts: número de conceitos que o aluno demonstrou domínio
+- struggled_concepts: número de conceitos em que o aluno teve dificuldade
 - Tudo em português (pt-BR), linguagem simples e positiva
 - RETORNE APENAS O JSON, nada mais`;
 }
@@ -113,7 +126,7 @@ export async function POST(request: NextRequest) {
       .join('\n');
 
     const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+      model: getModelForTier(),
       config: {
         systemInstruction: systemPrompt,
         maxOutputTokens: 1024,

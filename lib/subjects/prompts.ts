@@ -1,4 +1,4 @@
-import type { AgeGroup, BehavioralProfile } from '@/lib/auth/types';
+import type { AgeGroup, BehavioralProfile, DifficultyLevel } from '@/lib/auth/types';
 import { getAdjustedConfig } from '@/lib/age/config';
 
 // ============================================================
@@ -163,6 +163,35 @@ const subjectInstructions: Record<string, string> = {
 };
 
 // ============================================================
+// DIFFICULTY LEVEL INSTRUCTIONS
+// ============================================================
+const difficultyInstructions: Record<DifficultyLevel, string> = {
+  basico: `NIVEL DE DIFICULDADE: BASICO
+- Foque em fundamentos e conceitos essenciais.
+- Use exemplos simples, concretos e do dia a dia.
+- Maximo 2-3 passos de raciocinio por questao.
+- Celebre cada pequeno progresso com entusiasmo.
+- Nao avance para aplicacao antes de consolidar o basico.
+- Repita conceitos de formas diferentes se necessario.`,
+
+  intermediario: `NIVEL DE DIFICULDADE: INTERMEDIARIO
+- Aplique conceitos em contextos variados e situacoes reais.
+- 3-5 passos de raciocinio por questao.
+- Estimule pensamento critico e comparacoes entre conceitos.
+- Peca ao aluno que justifique suas respostas.
+- Introduza conexoes entre topicos relacionados.`,
+
+  avancado: `NIVEL DE DIFICULDADE: AVANCADO
+- Analise profunda, sintese e avaliacao critica.
+- 5+ passos de raciocinio complexo.
+- Va alem do curriculo quando o aluno demonstrar dominio.
+- Peca explicacoes com as proprias palavras (Metodo Feynman).
+- Desafie com perguntas que exigem conexao interdisciplinar.
+- Use vocabulario tecnico adequado a faixa etaria.
+- Ao detectar dominio consistente, diga ao aluno que ele esta preparado para provas sobre o tema.`,
+};
+
+// ============================================================
 // BUILD THE FULL SYSTEM PROMPT
 // ============================================================
 export interface PromptContext {
@@ -172,6 +201,7 @@ export interface PromptContext {
   grade?: string;
   subject: string;
   behavioralProfile: BehavioralProfile;
+  difficultyLevel?: DifficultyLevel;
   knownDifficulties?: string[];
   errorPatterns?: string[];
   homework: string;
@@ -224,6 +254,11 @@ export function buildSystemPrompt(ctx: PromptContext): string {
 
   // Subject-specific
   parts.push(`\n${subjectInstructions[ctx.subject] || subjectInstructions.other}`);
+
+  // Difficulty level
+  if (ctx.difficultyLevel) {
+    parts.push(`\n${difficultyInstructions[ctx.difficultyLevel]}`);
+  }
 
   // Known difficulties
   if (ctx.knownDifficulties && ctx.knownDifficulties.length > 0) {

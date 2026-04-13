@@ -25,6 +25,8 @@ export type AgeGroup = '4-6' | '7-9' | '10-12' | '13-15' | '16-18';
 
 export type BehavioralProfile = 'default' | 'tdah' | 'anxiety' | 'gifted';
 
+export type DifficultyLevel = 'basico' | 'intermediario' | 'avancado';
+
 export interface Profile {
   id: string;
   auth_id: string;
@@ -37,6 +39,7 @@ export interface Profile {
   grade: string | null;
   age_group: AgeGroup;
   behavioral_profile: BehavioralProfile;
+  plan_tier: 'free' | 'basic' | 'premium' | null;
   invite_code: string | null;
   daily_time_limit_minutes: number | null;
   weekly_session_goal: number | null;
@@ -186,6 +189,9 @@ export interface SessionSummary {
   difficulties: string[];
   ai_suggestion: string | null;
   parent_tip: string | null;
+  estimated_accuracy: number | null;
+  correct_concepts: number | null;
+  struggled_concepts: number | null;
   created_at: string;
 }
 

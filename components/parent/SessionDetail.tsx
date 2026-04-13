@@ -74,6 +74,46 @@ export function SessionDetail({ summary, onClose }: SessionDetailProps) {
         </button>
       </div>
 
+      {/* Estimated Accuracy */}
+      {summary.estimated_accuracy != null && (
+        <div>
+          <p className="text-white/40 text-xs font-medium mb-2 uppercase tracking-wider">Aproveitamento Estimado</p>
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${summary.estimated_accuracy}%`,
+                  background: summary.estimated_accuracy >= 70 ? '#10B981' : summary.estimated_accuracy >= 40 ? '#F59E0B' : '#EF4444',
+                }}
+              />
+            </div>
+            <span
+              className="text-sm font-bold"
+              style={{
+                color: summary.estimated_accuracy >= 70 ? '#10B981' : summary.estimated_accuracy >= 40 ? '#F59E0B' : '#EF4444',
+              }}
+            >
+              {summary.estimated_accuracy}%
+            </span>
+          </div>
+          <div className="flex gap-4 mt-2 text-xs text-white/40">
+            {summary.correct_concepts != null && (
+              <span className="flex items-center gap-1">
+                <CheckCircle size={10} className="text-emerald-400" />
+                {summary.correct_concepts} conceito{summary.correct_concepts !== 1 ? 's' : ''} dominado{summary.correct_concepts !== 1 ? 's' : ''}
+              </span>
+            )}
+            {summary.struggled_concepts != null && summary.struggled_concepts > 0 && (
+              <span className="flex items-center gap-1">
+                <AlertTriangle size={10} className="text-amber-400" />
+                {summary.struggled_concepts} com dificuldade
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Topics */}
       {summary.topics_covered && summary.topics_covered.length > 0 && (
         <div>

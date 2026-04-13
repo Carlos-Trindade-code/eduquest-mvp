@@ -18,7 +18,7 @@ import { getUserStats, addXP, checkAndAwardBadges, saveSessionSummary, getKidPen
 import { updateStreakTracking } from '@/components/gamification/StreakReminder';
 import { markDailyChallengeCompleted, isDailyChallengeCompleted } from '@/lib/gamification/daily-challenge';
 import { XP_REWARDS } from '@/lib/gamification/xp';
-import type { AgeGroup, BehavioralProfile, ParentTask, GuidedActivity } from '@/lib/auth/types';
+import type { AgeGroup, BehavioralProfile, DifficultyLevel, ParentTask, GuidedActivity } from '@/lib/auth/types';
 
 const TRIAL_KEY = 'studdo_trial_sessions';
 const TRIAL_FP_KEY = 'studdo_trial_fp';
@@ -107,6 +107,7 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
   const [subject, setSubject] = useState('math');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('10-12');
   const [behavioralProfile] = useState<BehavioralProfile>('default');
+  const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('intermediario');
   const [homeworkSet, setHomeworkSet] = useState(false);
   const [totalXp, setTotalXp] = useState(0);
   const [xpGained, setXpGained] = useState<number | null>(null);
@@ -238,14 +239,16 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
     initSession,
     resetSession,
     finishSession,
-  } = useChatSession(homework, subject, ageGroup, behavioralProfile, handleXPEarned, profile?.id);
+  } = useChatSession(homework, subject, ageGroup, behavioralProfile, handleXPEarned, profile?.id, difficultyLevel);
 
   const handleStart = (config: {
     homework: string;
     subject: string;
     ageGroup: AgeGroup;
     behavioralProfile: BehavioralProfile;
+    difficultyLevel?: DifficultyLevel;
   }) => {
+    if (config.difficultyLevel) setDifficultyLevel(config.difficultyLevel);
     const subjectInfo = getSubjectById(config.subject);
     const subjectName = subjectInfo?.name ?? 'esta matéria';
 
@@ -364,6 +367,9 @@ export function ChatInterface({ onSessionStart, onSessionEnd, finishRef }: ChatI
             difficulties: summary.difficulties ?? [],
             ai_suggestion: summary.ai_suggestion ?? null,
             parent_tip: summary.parent_tip ?? null,
+            estimated_accuracy: summary.estimated_accuracy ?? null,
+            correct_concepts: summary.correct_concepts ?? null,
+            struggled_concepts: summary.struggled_concepts ?? null,
           });
         }
       }
