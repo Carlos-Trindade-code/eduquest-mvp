@@ -48,7 +48,7 @@ export function SocialProof() {
   return (
     <section className="relative py-24 md:py-32 overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-950/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-50/50 to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -67,7 +67,7 @@ export function SocialProof() {
           </motion.span>
           <motion.h2
             variants={fadeInUp('medium')}
-            className="mt-3 text-3xl sm:text-4xl font-bold text-white"
+            className="mt-3 text-3xl sm:text-4xl font-bold text-[#1E1B4B]"
           >
             Baseado em{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
@@ -80,7 +80,7 @@ export function SocialProof() {
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
-            className="mt-4 text-white/50 text-lg"
+            className="mt-4 text-gray-500 text-lg"
           >
             Não inventamos a roda. Combinamos os métodos de ensino mais eficazes
             do mundo com inteligência artificial de última geração.
@@ -99,7 +99,7 @@ export function SocialProof() {
             <motion.div
               key={method.title}
               variants={fadeInUp('medium')}
-              className="group relative glass rounded-2xl p-6 hover:bg-white/[0.06] transition-all duration-300 border border-white/5 hover:border-white/10"
+              className="group relative rounded-2xl p-6 bg-white hover:bg-gray-50/50 transition-all duration-300 border border-gray-100 hover:border-gray-200 shadow-sm"
             >
               {/* Badge */}
               <span
@@ -122,8 +122,8 @@ export function SocialProof() {
                   <method.icon className="w-6 h-6" style={{ color: method.color }} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-1 break-words">{method.title}</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">{method.description}</p>
+                  <h3 className="text-lg font-semibold text-[#1E1B4B] mb-1 break-words">{method.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{method.description}</p>
                 </div>
               </div>
             </motion.div>
@@ -139,7 +139,7 @@ export function SocialProof() {
           viewport={{ once: true, margin: '-50px' }}
         >
           <motion.div variants={fadeInUp('medium')} className="text-center mb-8">
-            <h3 className="text-xl font-bold text-white">O que torna o Studdo único</h3>
+            <h3 className="text-xl font-bold text-[#1E1B4B]">O que torna o Studdo único</h3>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 gap-3">
@@ -147,10 +147,10 @@ export function SocialProof() {
               <motion.div
                 key={i}
                 variants={fadeInUp('medium')}
-                className="flex items-center gap-3 bg-white/[0.02] rounded-xl px-4 py-3 border border-white/5"
+                className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-100"
               >
                 <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
-                <span className="text-white/70 text-sm">{item}</span>
+                <span className="text-gray-500 text-sm">{item}</span>
               </motion.div>
             ))}
           </div>

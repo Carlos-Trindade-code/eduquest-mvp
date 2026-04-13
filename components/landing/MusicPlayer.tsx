@@ -66,25 +66,25 @@ export function MusicPlayer() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 left-6 z-50 bg-[#1a1a2e] border border-purple-500/30 rounded-2xl px-5 py-4 shadow-2xl flex flex-col gap-3 max-w-xs"
+            className="fixed bottom-6 left-6 z-50 bg-white border border-indigo-200 rounded-2xl px-5 py-4 shadow-lg flex flex-col gap-3 max-w-xs"
           >
             <div className="flex items-center gap-2">
-              <Music size={16} className="text-purple-400 shrink-0" />
-              <p className="text-white text-sm font-medium">Quer ouvir música ambiente enquanto navega?</p>
-              <button aria-label="Fechar" onClick={handleDecline} className="ml-auto text-white/30 hover:text-white">
+              <Music size={16} className="text-indigo-500 shrink-0" />
+              <p className="text-[#1E1B4B] text-sm font-medium">Quer ouvir música ambiente enquanto navega?</p>
+              <button aria-label="Fechar" onClick={handleDecline} className="ml-auto text-gray-300 hover:text-gray-600">
                 <X size={14} />
               </button>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={handleDecline}
-                className="flex-1 py-1.5 rounded-lg text-white/50 hover:text-white text-xs border border-white/10 hover:border-white/20 transition-colors"
+                className="flex-1 py-1.5 rounded-lg text-gray-400 hover:text-gray-600 text-xs border border-gray-200 hover:border-gray-300 transition-colors"
               >
                 Não, obrigado
               </button>
               <button
                 onClick={handleAccept}
-                className="flex-1 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition-colors"
+                className="flex-1 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-medium transition-colors"
               >
                 Sim, ligar 🎵
               </button>
@@ -100,7 +100,7 @@ export function MusicPlayer() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 left-6 z-50 bg-[#1a1a2e] border border-purple-500/20 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-3"
+            className="fixed bottom-6 left-6 z-50 bg-white border border-indigo-200 rounded-2xl px-4 py-2.5 shadow-lg flex items-center gap-3"
           >
             {/* iframe escondido — só áudio */}
             {playing && (
@@ -113,20 +113,20 @@ export function MusicPlayer() {
               />
             )}
 
-            <Music size={14} className="text-purple-400 shrink-0" />
-            <span className="text-white/60 text-xs truncate max-w-[100px]">{playlist[current].title}</span>
+            <Music size={14} className="text-indigo-500 shrink-0" />
+            <span className="text-gray-500 text-xs truncate max-w-[100px]">{playlist[current].title}</span>
 
-            <button aria-label={playing ? 'Pausar música' : 'Reproduzir música'} onClick={togglePlay} className="text-purple-400 hover:text-white transition-colors">
+            <button aria-label={playing ? 'Pausar música' : 'Reproduzir música'} onClick={togglePlay} className="text-indigo-500 hover:text-indigo-700 transition-colors">
               {playing ? <Pause size={14} /> : <Play size={14} />}
             </button>
 
-            <button aria-label={muted ? 'Ativar som' : 'Desativar som'} onClick={() => setMuted(m => !m)} className="text-purple-400 hover:text-white transition-colors">
+            <button aria-label={muted ? 'Ativar som' : 'Desativar som'} onClick={() => setMuted(m => !m)} className="text-indigo-500 hover:text-indigo-700 transition-colors">
               {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
             </button>
 
             <button
               onClick={() => setCurrent(c => (c + 1) % playlist.length)}
-              className="text-white/30 hover:text-white text-xs transition-colors"
+              className="text-gray-300 hover:text-gray-600 text-xs transition-colors"
               title="Próxima faixa"
             >
               ↷
@@ -135,7 +135,7 @@ export function MusicPlayer() {
             <button
               aria-label="Fechar player"
               onClick={() => { setEnabled(false); localStorage.setItem('musicEnabled', 'false'); }}
-              className="text-white/20 hover:text-white/60 transition-colors"
+              className="text-gray-200 hover:text-gray-400 transition-colors"
             >
               <X size={12} />
             </button>

@@ -33,7 +33,7 @@ const testimonials = [
 
 export function ParentTestimonials() {
   return (
-    <section className="relative py-24" style={{ background: 'rgba(26,46,66,0.5)' }}>
+    <section className="relative py-24" style={{ background: 'rgba(99,102,241,0.03)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-14"
@@ -45,16 +45,16 @@ export function ParentTestimonials() {
           <motion.div variants={fadeInUp('medium')} className="mb-3">
             <span className="inline-flex items-center gap-1 text-sm font-medium" style={{ color: '#F5A623' }}>
               {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="#F5A623" color="#F5A623" />)}
-              <span className="ml-2" style={{ color: 'rgba(240,244,248,0.5)' }}>4.9 nas primeiras semanas</span>
+              <span className="ml-2" style={{ color: '#6B7280' }}>4.9 nas primeiras semanas</span>
             </span>
           </motion.div>
           <motion.h2
             variants={fadeInUp('medium')}
-            className="text-3xl sm:text-4xl font-extrabold text-white"
+            className="text-3xl sm:text-4xl font-extrabold text-[#1E1B4B]"
           >
             Pais que viram a diferença
           </motion.h2>
-          <motion.p variants={fadeInUp('medium')} className="mt-3 text-base" style={{ color: 'rgba(240,244,248,0.5)' }}>
+          <motion.p variants={fadeInUp('medium')} className="mt-3 text-base" style={{ color: '#6B7280' }}>
             Histórias reais de famílias que usam o Studdo
           </motion.p>
         </motion.div>
@@ -71,7 +71,7 @@ export function ParentTestimonials() {
               key={t.name}
               variants={fadeInUp('medium')}
               className="rounded-2xl p-6 flex flex-col gap-4"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+              style={{ background: 'white', border: '1px solid rgba(99,102,241,0.08)', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
             >
               {/* Stars */}
               <div className="flex gap-0.5">
@@ -81,19 +81,19 @@ export function ParentTestimonials() {
               </div>
 
               {/* Quote */}
-              <p className="text-base leading-relaxed flex-1" style={{ color: 'rgba(240,244,248,0.85)' }}>
+              <p className="text-base leading-relaxed flex-1" style={{ color: '#1E1B4B' }}>
                 "{t.quote}"
               </p>
 
               {/* Author */}
-              <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(99,102,241,0.08)' }}>
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
-                  style={{ background: 'rgba(0,180,216,0.15)' }}>
+                  style={{ background: 'rgba(99,102,241,0.08)' }}>
                   {t.avatar}
                 </div>
                 <div>
-                  <div className="text-white font-semibold text-sm">{t.name}</div>
-                  <div className="text-xs" style={{ color: 'rgba(240,244,248,0.4)' }}>{t.childAge} · {t.location}</div>
+                  <div className="text-[#1E1B4B] font-semibold text-sm">{t.name}</div>
+                  <div className="text-xs" style={{ color: '#9CA3AF' }}>{t.childAge} · {t.location}</div>
                 </div>
               </div>
             </motion.div>
