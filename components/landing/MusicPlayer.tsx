@@ -71,14 +71,14 @@ export function MusicPlayer() {
             <div className="flex items-center gap-2">
               <Music size={16} className="text-indigo-500 shrink-0" />
               <p className="text-[#1E1B4B] text-sm font-medium">Quer ouvir música ambiente enquanto navega?</p>
-              <button aria-label="Fechar" onClick={handleDecline} className="ml-auto text-gray-300 hover:text-gray-600">
+              <button aria-label="Fechar" onClick={handleDecline} className="ml-auto text-gray-500 hover:text-gray-800">
                 <X size={14} />
               </button>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={handleDecline}
-                className="flex-1 py-1.5 rounded-lg text-gray-400 hover:text-gray-600 text-xs border border-gray-200 hover:border-gray-300 transition-colors"
+                className="flex-1 py-1.5 rounded-lg text-gray-600 hover:text-gray-800 text-xs border border-gray-200 hover:border-gray-300 transition-colors"
               >
                 Não, obrigado
               </button>
@@ -126,7 +126,7 @@ export function MusicPlayer() {
 
             <button
               onClick={() => setCurrent(c => (c + 1) % playlist.length)}
-              className="text-gray-300 hover:text-gray-600 text-xs transition-colors"
+              className="text-gray-500 hover:text-gray-800 text-xs transition-colors"
               title="Próxima faixa"
             >
               ↷
@@ -135,7 +135,7 @@ export function MusicPlayer() {
             <button
               aria-label="Fechar player"
               onClick={() => { setEnabled(false); localStorage.setItem('musicEnabled', 'false'); }}
-              className="text-gray-200 hover:text-gray-400 transition-colors"
+              className="text-gray-500 hover:text-gray-700 transition-colors"
             >
               <X size={12} />
             </button>

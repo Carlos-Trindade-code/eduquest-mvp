@@ -91,7 +91,7 @@ export function HowItWorks() {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1E1B4B]">Como funciona</h2>
-          <p className="mt-3 text-base" style={{ color: '#9CA3AF' }}>5 passos, resultado em minutos</p>
+          <p className="mt-3 text-base" style={{ color: '#6B7280' }}>5 passos, resultado em minutos</p>
         </motion.div>
 
         {/* Steps */}

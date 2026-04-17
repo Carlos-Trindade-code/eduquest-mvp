@@ -70,7 +70,7 @@ function FAQItem({ item, isOpen, onClick }: {
           transition={{ duration: 0.2 }}
           className="shrink-0"
         >
-          <ChevronDown size={18} className="text-purple-400" />
+          <ChevronDown size={18} className="text-purple-600" />
         </motion.div>
       </button>
       <AnimatePresence>
@@ -166,7 +166,7 @@ export function FAQSection() {
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
         >
-          <motion.span variants={fadeInUp('medium')} className="text-sm font-medium text-purple-400">
+          <motion.span variants={fadeInUp('medium')} className="text-sm font-medium text-purple-600">
             Dúvidas & Sugestões
           </motion.span>
           <motion.h2 variants={fadeInUp('medium')} className="mt-3 text-3xl sm:text-4xl font-bold text-[#1E1B4B]">
@@ -204,10 +204,10 @@ export function FAQSection() {
             <MascotOwl expression="thinking" size="sm" animated />
             <div>
               <h3 className="text-[#1E1B4B] font-bold text-lg flex items-center gap-2">
-                <Sparkles size={16} className="text-purple-400" />
+                <Sparkles size={16} className="text-purple-600" />
                 Pergunte ao Edu
               </h3>
-              <p className="text-gray-400 text-xs">Nosso assistente IA responde suas dúvidas</p>
+              <p className="text-gray-500 text-xs">Nosso assistente IA responde suas dúvidas</p>
             </div>
           </div>
 
@@ -218,7 +218,7 @@ export function FAQSection() {
               onChange={(e) => setAIQuestion(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAskAI()}
               placeholder="Ex: Como meu filho de 8 anos pode usar?"
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#1E1B4B] text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50"
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#1E1B4B] text-sm placeholder:text-gray-500 focus:outline-none focus:border-purple-500/50"
             />
             <motion.button
               onClick={handleAskAI}
@@ -262,7 +262,7 @@ export function FAQSection() {
             <Lightbulb size={20} className="text-amber-400" />
             <h3 className="text-[#1E1B4B] font-bold text-lg">Envie uma Sugestão</h3>
           </div>
-          <p className="text-gray-400 text-xs mb-4">
+          <p className="text-gray-500 text-xs mb-4">
             Sua opinião nos ajuda a melhorar! Conte o que gostaria de ver no Studdo.
           </p>
 
@@ -272,14 +272,14 @@ export function FAQSection() {
               value={suggName}
               onChange={(e) => setSuggName(e.target.value)}
               placeholder="Seu nome (opcional)"
-              className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#1E1B4B] text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50"
+              className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#1E1B4B] text-sm placeholder:text-gray-500 focus:outline-none focus:border-purple-500/50"
             />
             <input
               type="email"
               value={suggEmail}
               onChange={(e) => setSuggEmail(e.target.value)}
               placeholder="Seu email (opcional)"
-              className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#1E1B4B] text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50"
+              className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#1E1B4B] text-sm placeholder:text-gray-500 focus:outline-none focus:border-purple-500/50"
             />
           </div>
 
@@ -288,7 +288,7 @@ export function FAQSection() {
             onChange={(e) => setSuggestion(e.target.value)}
             placeholder="Descreva sua sugestão aqui..."
             rows={3}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#1E1B4B] text-sm placeholder:text-gray-400 focus:outline-none focus:border-purple-500/50 resize-none mb-3"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#1E1B4B] text-sm placeholder:text-gray-500 focus:outline-none focus:border-purple-500/50 resize-none mb-3"
           />
 
           <div className="flex items-center justify-between">

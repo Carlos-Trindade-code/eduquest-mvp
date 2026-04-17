@@ -600,7 +600,7 @@ export function DemoShowcase() {
                       }`}
                     >
                       <scene.icon
-                        className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-gray-400'}`}
+                        className={`w-5 h-5 ${isActive ? 'text-purple-600' : 'text-gray-500'}`}
                       />
                     </div>
 
@@ -608,7 +608,7 @@ export function DemoShowcase() {
                       <p className={`font-semibold text-sm ${isActive ? 'text-[#1E1B4B]' : 'text-gray-500'}`}>
                         {scene.label}
                       </p>
-                      <p className="text-gray-400 text-xs mt-0.5">
+                      <p className="text-gray-500 text-xs mt-0.5">
                         {scene.id === 'photo' && 'Foto, upload ou digitação — a IA extrai o texto'}
                         {scene.id === 'chat' && 'Método socrático: perguntas que guiam o raciocínio'}
                         {scene.id === 'gamification' && 'XP, níveis, streaks e badges que motivam'}
@@ -617,7 +617,7 @@ export function DemoShowcase() {
                     </div>
 
                     <ChevronRight
-                      className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-400' : 'text-gray-300'}`}
+                      className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-600' : 'text-gray-500'}`}
                     />
 
                     {/* Progress bar for auto-play */}
@@ -641,12 +641,12 @@ export function DemoShowcase() {
                 className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                   autoPlay
                     ? 'bg-purple-500/20 text-purple-600 border border-purple-500/20'
-                    : 'bg-gray-50 text-gray-400 border border-gray-200'
+                    : 'bg-gray-50 text-gray-600 border border-gray-200'
                 }`}
               >
                 {autoPlay ? 'Auto-play ativo' : 'Auto-play pausado'}
               </button>
-              <span className="text-gray-300 text-xs">Clique em qualquer cena para explorar</span>
+              <span className="text-gray-500 text-xs">Clique em qualquer cena para explorar</span>
             </div>
           </motion.div>
         </div>

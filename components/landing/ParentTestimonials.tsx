@@ -93,7 +93,7 @@ export function ParentTestimonials() {
                 </div>
                 <div>
                   <div className="text-[#1E1B4B] font-semibold text-sm">{t.name}</div>
-                  <div className="text-xs" style={{ color: '#9CA3AF' }}>{t.childAge} · {t.location}</div>
+                  <div className="text-xs" style={{ color: '#6B7280' }}>{t.childAge} · {t.location}</div>
                 </div>
               </div>
             </motion.div>

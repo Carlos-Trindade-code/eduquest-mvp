@@ -35,7 +35,7 @@ function MobileChatPreview() {
             <div className="text-sm font-semibold text-[#1E1B4B]">Edu</div>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-xs text-gray-400">online</span>
+              <span className="text-xs text-gray-500">online</span>
             </div>
           </div>
         </div>
@@ -160,7 +160,7 @@ function ChatPreview() {
             <div className="text-sm font-semibold text-[#1E1B4B]">Edu</div>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-500">
                 {interacted ? 'respondendo ao vivo' : 'online'}
               </span>
             </div>
@@ -206,7 +206,7 @@ function ChatPreview() {
               </div>
               <div className="flex gap-1 px-3 py-2 rounded-2xl" style={{ background: 'rgba(99,102,241,0.06)' }}>
                 {[0, 0.2, 0.4].map((d, j) => (
-                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: '#9CA3AF' }}
+                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: '#6B7280' }}
                     animate={{ y: [0, -3, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: d }} />
                 ))}
               </div>
@@ -363,7 +363,7 @@ export function HeroSection() {
               {stats.map((s) => (
                 <div key={s.label}>
                   <div className="text-3xl sm:text-4xl font-extrabold" style={{ color: '#6366F1' }}>{s.value}</div>
-                  <div className="text-xs mt-1 leading-snug" style={{ color: '#9CA3AF' }}>{s.label}</div>
+                  <div className="text-xs mt-1 leading-snug" style={{ color: '#6B7280' }}>{s.label}</div>
                 </div>
               ))}
             </motion.div>

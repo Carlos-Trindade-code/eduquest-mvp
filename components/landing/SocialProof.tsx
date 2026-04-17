@@ -61,7 +61,7 @@ export function SocialProof() {
         >
           <motion.span
             variants={fadeInUp('medium')}
-            className="text-sm font-medium text-purple-400"
+            className="text-sm font-medium text-purple-600"
           >
             Por que funciona
           </motion.span>

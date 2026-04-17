@@ -34,7 +34,7 @@ export function Footer() {
               Criar conta
             </Link>
           </div>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs" style={{ color: '#9CA3AF' }}>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs" style={{ color: '#6B7280' }}>
             <span>🧠 Método socrático</span>
             <span>🎮 Gamificação</span>
             <span>👨‍👩‍👧 Dashboard pais</span>
@@ -54,7 +54,7 @@ export function Footer() {
               Stud<span style={{ color: '#6366F1' }}>do</span>
             </span>
           </Link>
-          <div className="flex items-center gap-6 text-sm" style={{ color: '#9CA3AF' }}>
+          <div className="flex items-center gap-6 text-sm" style={{ color: '#6B7280' }}>
             <Link href="/como-funciona" className="hover:text-[#1E1B4B] transition-colors">Como funciona</Link>
             <Link href="/metodo-socratico" className="hover:text-[#1E1B4B] transition-colors">Método socrático</Link>
             <Link href="/escolas" className="hover:text-[#1E1B4B] transition-colors">Para Escolas</Link>
@@ -62,13 +62,13 @@ export function Footer() {
             <Link href="/privacidade" className="hover:text-[#1E1B4B] transition-colors">Privacidade</Link>
           </div>
           <div className="flex items-center gap-4">
-            <a href="https://instagram.com/studdo.br" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#1E1B4B]" style={{ color: '#9CA3AF' }}>
+            <a href="https://instagram.com/studdo.br" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#1E1B4B]" style={{ color: '#6B7280' }}>
               <Instagram size={18} />
             </a>
-            <a href="https://linkedin.com/company/studdo" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#1E1B4B]" style={{ color: '#9CA3AF' }}>
+            <a href="https://linkedin.com/company/studdo" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#1E1B4B]" style={{ color: '#6B7280' }}>
               <Linkedin size={18} />
             </a>
-            <a href="mailto:contato@studdo.com.br" className="transition-colors hover:text-[#1E1B4B]" style={{ color: '#9CA3AF' }}>
+            <a href="mailto:contato@studdo.com.br" className="transition-colors hover:text-[#1E1B4B]" style={{ color: '#6B7280' }}>
               <Mail size={18} />
             </a>
           </div>
