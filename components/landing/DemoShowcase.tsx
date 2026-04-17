@@ -524,20 +524,20 @@ export function DemoShowcase() {
           viewport={{ once: true, margin: '-100px' }}
         >
           <motion.div variants={fadeInUp('medium')} className="mb-3">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 text-sm">
               <Play className="w-3 h-3" />
               Demonstração ao vivo
             </span>
           </motion.div>
           <motion.h2
             variants={fadeInUp('medium')}
-            className="text-3xl sm:text-4xl font-bold text-white"
+            className="text-3xl sm:text-4xl font-bold text-[#1E1B4B]"
           >
             Veja o Studdo em ação
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
-            className="mt-4 text-white/50 text-lg"
+            className="mt-4 text-gray-500 text-lg"
           >
             Uma experiência fluida: envie a tarefa, converse com o tutor IA,
             ganhe XP e os pais acompanham tudo.
@@ -589,26 +589,26 @@ export function DemoShowcase() {
                     className={`w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all ${
                       isActive
                         ? 'bg-purple-500/10 border border-purple-500/20'
-                        : 'bg-white/[0.02] border border-transparent hover:bg-white/5 hover:border-white/5'
+                        : 'bg-white border border-gray-100 hover:bg-gray-50 hover:border-gray-200'
                     }`}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                   >
                     <div
                       className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                        isActive ? 'bg-purple-500/20' : 'bg-white/5'
+                        isActive ? 'bg-purple-500/20' : 'bg-gray-50'
                       }`}
                     >
                       <scene.icon
-                        className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/40'}`}
+                        className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-gray-400'}`}
                       />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className={`font-semibold text-sm ${isActive ? 'text-white' : 'text-white/60'}`}>
+                      <p className={`font-semibold text-sm ${isActive ? 'text-[#1E1B4B]' : 'text-gray-500'}`}>
                         {scene.label}
                       </p>
-                      <p className="text-white/40 text-xs mt-0.5">
+                      <p className="text-gray-400 text-xs mt-0.5">
                         {scene.id === 'photo' && 'Foto, upload ou digitação — a IA extrai o texto'}
                         {scene.id === 'chat' && 'Método socrático: perguntas que guiam o raciocínio'}
                         {scene.id === 'gamification' && 'XP, níveis, streaks e badges que motivam'}
@@ -617,7 +617,7 @@ export function DemoShowcase() {
                     </div>
 
                     <ChevronRight
-                      className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-400' : 'text-white/20'}`}
+                      className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-400' : 'text-gray-300'}`}
                     />
 
                     {/* Progress bar for auto-play */}
@@ -640,13 +640,13 @@ export function DemoShowcase() {
                 onClick={() => setAutoPlay(!autoPlay)}
                 className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                   autoPlay
-                    ? 'bg-purple-500/20 text-purple-300 border border-purple-500/20'
-                    : 'bg-white/5 text-white/40 border border-white/10'
+                    ? 'bg-purple-500/20 text-purple-600 border border-purple-500/20'
+                    : 'bg-gray-50 text-gray-400 border border-gray-200'
                 }`}
               >
                 {autoPlay ? 'Auto-play ativo' : 'Auto-play pausado'}
               </button>
-              <span className="text-white/20 text-xs">Clique em qualquer cena para explorar</span>
+              <span className="text-gray-300 text-xs">Clique em qualquer cena para explorar</span>
             </div>
           </motion.div>
         </div>

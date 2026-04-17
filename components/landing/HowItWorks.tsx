@@ -63,8 +63,8 @@ export function HowItWorks() {
             style={{ background: 'rgba(255,100,100,0.05)', border: '1px solid rgba(255,100,100,0.1)' }}
           >
             <div className="text-3xl mb-4">😓</div>
-            <h3 className="text-xl font-bold text-white mb-3">O problema que você conhece</h3>
-            <p className="text-base leading-relaxed" style={{ color: 'rgba(240,244,248,0.6)' }}>
+            <h3 className="text-xl font-bold text-[#1E1B4B] mb-3">O problema que você conhece</h3>
+            <p className="text-base leading-relaxed" style={{ color: '#6B7280' }}>
               Seu filho chega da escola com dúvida. Você não sabe explicar — ou explica e ele não entende do seu jeito. Ele vai dormir sem entender. E amanhã é a mesma coisa.
             </p>
           </motion.div>
@@ -76,8 +76,8 @@ export function HowItWorks() {
             style={{ background: 'rgba(0,180,216,0.06)', border: '1px solid rgba(0,180,216,0.15)' }}
           >
             <div className="text-3xl mb-4">✨</div>
-            <h3 className="text-xl font-bold text-white mb-3">A solução que funciona</h3>
-            <p className="text-base leading-relaxed" style={{ color: 'rgba(240,244,248,0.6)' }}>
+            <h3 className="text-xl font-bold text-[#1E1B4B] mb-3">A solução que funciona</h3>
+            <p className="text-base leading-relaxed" style={{ color: '#6B7280' }}>
               Em 12 minutos, seu filho explica a matéria pra você. Não porque decorou — porque o Edu fez as perguntas certas até ele entender sozinho.
             </p>
           </motion.div>
@@ -90,8 +90,8 @@ export function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Como funciona</h2>
-          <p className="mt-3 text-base" style={{ color: 'rgba(240,244,248,0.45)' }}>5 passos, resultado em minutos</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1E1B4B]">Como funciona</h2>
+          <p className="mt-3 text-base" style={{ color: '#9CA3AF' }}>5 passos, resultado em minutos</p>
         </motion.div>
 
         {/* Steps */}
@@ -107,12 +107,12 @@ export function HowItWorks() {
               key={step.number}
               variants={fadeInUp('medium')}
               className="relative rounded-2xl p-6 text-center"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ background: 'white', border: '1px solid rgba(99,102,241,0.08)', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
             >
               {/* Connector */}
               {i < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-10 left-[calc(100%+12px)] w-6 h-px"
-                  style={{ background: 'rgba(255,255,255,0.1)' }} />
+                  style={{ background: 'rgba(99,102,241,0.15)' }} />
               )}
 
               <div className="text-4xl mb-4">{step.emoji}</div>
@@ -120,8 +120,8 @@ export function HowItWorks() {
                 style={{ background: step.color }}>
                 {i + 1}
               </div>
-              <h3 className="font-bold text-white mb-2">{step.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(240,244,248,0.5)' }}>
+              <h3 className="font-bold text-[#1E1B4B] mb-2">{step.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>
                 {step.description}
               </p>
             </motion.div>

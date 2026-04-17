@@ -21,7 +21,7 @@ const features = [
 
 export function ParentDashboardPreview() {
   return (
-    <section className="relative py-24 md:py-32" style={{ background: 'linear-gradient(180deg, transparent, rgba(26,46,66,0.6), transparent)' }}>
+    <section className="relative py-24 md:py-32" style={{ background: 'linear-gradient(180deg, transparent, rgba(99,102,241,0.04), transparent)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
 
@@ -35,17 +35,17 @@ export function ParentDashboardPreview() {
             <motion.span variants={fadeInUp('medium')} className="text-sm font-medium" style={{ color: '#00B4D8' }}>
               Para os pais
             </motion.span>
-            <motion.h2 variants={fadeInUp('medium')} className="mt-3 text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+            <motion.h2 variants={fadeInUp('medium')} className="mt-3 text-3xl sm:text-4xl font-extrabold text-[#1E1B4B] leading-tight">
               Você acompanha tudo.<br />
               <span style={{ color: '#F5A623' }}>Em tempo real.</span>
             </motion.h2>
-            <motion.p variants={fadeInUp('medium')} className="mt-4 text-lg leading-relaxed" style={{ color: 'rgba(240,244,248,0.6)' }}>
+            <motion.p variants={fadeInUp('medium')} className="mt-4 text-lg leading-relaxed" style={{ color: '#6B7280' }}>
               Sem precisar perguntar "fez a lição?". O dashboard mostra exatamente o que seu filho estudou, por quanto tempo, e onde tem dificuldade.
             </motion.p>
 
             <motion.ul variants={staggerContainer} className="mt-6 space-y-3">
               {features.map((f) => (
-                <motion.li key={f} variants={fadeInUp('medium')} className="flex items-center gap-3 text-sm" style={{ color: 'rgba(240,244,248,0.65)' }}>
+                <motion.li key={f} variants={fadeInUp('medium')} className="flex items-center gap-3 text-sm" style={{ color: '#6B7280' }}>
                   <CheckCircle size={16} style={{ color: '#F5A623', flexShrink: 0 }} />
                   {f}
                 </motion.li>
@@ -63,8 +63,8 @@ export function ParentDashboardPreview() {
               </Link>
               <Link
                 href="/tutor"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-white/10"
-                style={{ color: 'rgba(240,244,248,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-gray-100"
+                style={{ color: '#6B7280', border: '1px solid rgba(99,102,241,0.15)' }}
               >
                 Testar como aluno
               </Link>

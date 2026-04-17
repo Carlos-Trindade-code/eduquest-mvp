@@ -32,7 +32,7 @@ export function SchoolsSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #0A0A1A 0%, #0D1B2A 50%, #0A0A1A 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #FAFAFA 0%, #F5F3FF 50%, #FAFAFA 100%)' }} />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.06),transparent_60%)]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,14 +56,14 @@ export function SchoolsSection() {
 
           <motion.h2
             variants={fadeInUp('high')}
-            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white"
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1E1B4B]"
           >
             Para Escolas e Professores
           </motion.h2>
           <motion.p
             variants={fadeInUp('high')}
             className="mt-4 text-lg max-w-2xl mx-auto"
-            style={{ color: 'rgba(240,244,248,0.55)' }}
+            style={{ color: '#6B7280' }}
           >
             Tecnologia educacional que complementa sua sala de aula
           </motion.p>
@@ -83,9 +83,9 @@ export function SchoolsSection() {
               variants={fadeInUp('high')}
               className="group relative rounded-2xl p-6 transition-all duration-300 hover:scale-[1.03]"
               style={{
-                background: 'rgba(255,255,255,0.03)',
+                background: 'white',
                 border: '1px solid rgba(16,185,129,0.12)',
-                backdropFilter: 'blur(12px)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
               }}
             >
               <div
@@ -94,8 +94,8 @@ export function SchoolsSection() {
               />
               <div className="relative">
                 <div className="text-4xl mb-4">{feature.emoji}</div>
-                <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(240,244,248,0.55)' }}>
+                <h3 className="text-lg font-bold text-[#1E1B4B] mb-2">{feature.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>
                   {feature.description}
                 </p>
               </div>

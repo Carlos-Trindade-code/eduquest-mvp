@@ -33,6 +33,14 @@
   --eq-radius-sm: 0.625rem;
 }
 
+/* Landing page light theme overrides */
+.landing-light {
+  --landing-bg: #FAFAFA;
+  --landing-text: #1E1B4B;
+  --landing-text-secondary: #6B7280;
+  --landing-text-muted: #9CA3AF;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

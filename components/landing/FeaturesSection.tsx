@@ -77,13 +77,13 @@ export function FeaturesSection() {
           </motion.span>
           <motion.h2
             variants={fadeInUp('medium')}
-            className="mt-3 text-3xl sm:text-4xl font-bold text-white"
+            className="mt-3 text-3xl sm:text-4xl font-bold text-[#1E1B4B]"
           >
             Tudo que seu filho precisa para aprender de verdade
           </motion.h2>
           <motion.p
             variants={fadeInUp('medium')}
-            className="mt-4 text-white/50 text-lg"
+            className="mt-4 text-gray-500 text-lg"
           >
             Combinamos ciência cognitiva, gamificação e inteligência artificial para criar
             a melhor experiência de aprendizado.
@@ -100,7 +100,7 @@ export function FeaturesSection() {
         >
           {features.map((feature) => (
             <motion.div key={feature.title} variants={fadeInUp('medium')}>
-              <Card className="h-full group hover:bg-white/[0.08] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20">
+              <Card className="h-full group bg-white hover:bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/5 border border-gray-100">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
                   style={{ background: `${feature.color}20` }}
@@ -110,10 +110,10 @@ export function FeaturesSection() {
                     style={{ color: feature.color }}
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-[#1E1B4B] mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-white/50 text-sm leading-relaxed">
+                <p className="text-gray-500 text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </Card>

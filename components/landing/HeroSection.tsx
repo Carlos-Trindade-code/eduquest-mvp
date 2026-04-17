@@ -24,18 +24,18 @@ function MobileChatPreview() {
     >
       <div
         className="relative rounded-2xl overflow-hidden"
-        style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ background: 'white', border: '1px solid rgba(99,102,241,0.12)', boxShadow: '0 4px 24px rgba(99,102,241,0.08)' }}
       >
         <div
           className="flex items-center gap-3 px-4 py-2.5"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+          style={{ borderBottom: '1px solid rgba(99,102,241,0.08)', background: 'rgba(99,102,241,0.04)' }}
         >
           <MascotOwl expression="waving" size="sm" animated={false} decorative />
           <div>
-            <div className="text-sm font-semibold text-white">Edu</div>
+            <div className="text-sm font-semibold text-[#1E1B4B]">Edu</div>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-xs" style={{ color: 'rgba(240,244,248,0.45)' }}>online</span>
+              <span className="text-xs text-gray-400">online</span>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ function MobileChatPreview() {
                 style={
                   msg.role === 'kid'
                     ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
-                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
+                    : { background: 'rgba(99,102,241,0.06)', color: '#1E1B4B', borderBottomLeftRadius: 4 }
                 }
               >
                 {msg.text}
@@ -66,8 +66,8 @@ function MobileChatPreview() {
             </motion.div>
           ))}
         </div>
-        <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-[10px] text-center" style={{ color: 'rgba(240,244,248,0.5)' }}>
+        <div className="px-4 pb-3 pt-1" style={{ borderTop: '1px solid rgba(99,102,241,0.08)' }}>
+          <p className="text-[10px] text-center text-gray-500">
             Experimente — pergunte algo ao Edu no desktop
           </p>
         </div>
@@ -144,23 +144,23 @@ function ChatPreview() {
   return (
     <div
       className="relative w-full max-w-sm mx-auto"
-      style={{ filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.5))' }}
+      style={{ filter: 'drop-shadow(0 32px 64px rgba(99,102,241,0.15))' }}
     >
       <div
         className="relative rounded-[2rem] overflow-hidden"
-        style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ background: 'white', border: '1px solid rgba(99,102,241,0.12)', boxShadow: '0 4px 24px rgba(99,102,241,0.08)' }}
       >
         {/* Chat header */}
         <div
           className="flex items-center gap-3 px-4 py-3"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
+          style={{ borderBottom: '1px solid rgba(99,102,241,0.08)', background: 'rgba(99,102,241,0.04)' }}
         >
           <MascotOwl expression="waving" size="sm" animated />
           <div>
-            <div className="text-sm font-semibold text-white">Edu</div>
+            <div className="text-sm font-semibold text-[#1E1B4B]">Edu</div>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-xs" style={{ color: 'rgba(240,244,248,0.45)' }}>
+              <span className="text-xs text-gray-400">
                 {interacted ? 'respondendo ao vivo' : 'online'}
               </span>
             </div>
@@ -192,7 +192,7 @@ function ChatPreview() {
                 style={
                   msg.role === 'kid'
                     ? { background: '#8B5CF6', color: 'white', borderBottomRightRadius: 4 }
-                    : { background: 'rgba(255,255,255,0.07)', color: 'rgba(240,244,248,0.9)', borderBottomLeftRadius: 4 }
+                    : { background: 'rgba(99,102,241,0.06)', color: '#1E1B4B', borderBottomLeftRadius: 4 }
                 }
               >
                 {msg.text}
@@ -204,9 +204,9 @@ function ChatPreview() {
               <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
                 <MascotOwl expression="thinking" size="sm" animated={false} className="w-5 h-5" />
               </div>
-              <div className="flex gap-1 px-3 py-2 rounded-2xl" style={{ background: 'rgba(255,255,255,0.07)' }}>
+              <div className="flex gap-1 px-3 py-2 rounded-2xl" style={{ background: 'rgba(99,102,241,0.06)' }}>
                 {[0, 0.2, 0.4].map((d, j) => (
-                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(240,244,248,0.4)' }}
+                  <motion.span key={j} className="w-1.5 h-1.5 rounded-full" style={{ background: '#9CA3AF' }}
                     animate={{ y: [0, -3, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: d }} />
                 ))}
               </div>
@@ -216,7 +216,7 @@ function ChatPreview() {
         </div>
 
         {/* Input */}
-        <div className="px-3 pb-4 pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="px-3 pb-4 pt-2" style={{ borderTop: '1px solid rgba(99,102,241,0.08)' }}>
           <div className="flex gap-2">
             <input
               type="text"
@@ -224,7 +224,7 @@ function ChatPreview() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Pergunte algo ao Edu..."
-              className="flex-1 bg-white/5 text-white placeholder-white/40 rounded-xl px-3 py-2 text-xs border border-white/10 focus:outline-none focus:border-purple-500/50"
+              className="flex-1 bg-gray-50 text-[#1E1B4B] placeholder-gray-400 rounded-xl px-3 py-2 text-xs border border-gray-200 focus:outline-none focus:border-purple-500/50"
             />
             <motion.button
               onClick={handleSend}
@@ -237,7 +237,7 @@ function ChatPreview() {
             </motion.button>
           </div>
           {!interacted && (
-            <p className="text-[10px] text-center mt-2" style={{ color: 'rgba(240,244,248,0.5)' }}>
+            <p className="text-[10px] text-center mt-2 text-gray-500">
               Experimente — digite uma pergunta real
             </p>
           )}
@@ -275,15 +275,15 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #0F2942 50%, #0D1B2A 100%)' }} />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,180,216,0.1),transparent_55%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(245,166,35,0.06),transparent_55%)]" />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #FAFAFA 0%, #F5F3FF 50%, #FAFAFA 100%)' }} />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(99,102,241,0.06),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(139,92,246,0.04),transparent_55%)]" />
 
       {/* Subtle grid */}
       <div
-        className="absolute inset-0 opacity-[0.025]"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(99,102,241,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.15) 1px, transparent 1px)',
           backgroundSize: '72px 72px',
         }}
       />
@@ -300,8 +300,8 @@ export function HeroSection() {
             {/* Badge */}
             <motion.div variants={fadeInUp('high')} className="mb-6">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium"
-                style={{ background: 'rgba(0,180,216,0.1)', border: '1px solid rgba(0,180,216,0.25)', color: '#38BDF8' }}>
-                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+                style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', color: '#6366F1' }}>
+                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
                 Tutor IA com Método Socrático
               </span>
             </motion.div>
@@ -309,7 +309,7 @@ export function HeroSection() {
             {/* Headline */}
             <motion.h1
               variants={fadeInUp('high')}
-              className="text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-[1.05] tracking-tight"
+              className="text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-extrabold text-[#1E1B4B] leading-[1.05] tracking-tight"
             >
               Seu filho vai parar de dizer{' '}
               <span style={{ color: '#F5A623' }}>"não entendi"</span>
@@ -319,16 +319,16 @@ export function HeroSection() {
             <motion.p
               variants={fadeInUp('high')}
               className="mt-6 text-xl leading-relaxed"
-              style={{ color: 'rgba(240,244,248,0.65)' }}
+              style={{ color: '#6B7280' }}
             >
               O Studdo usa IA para fazer perguntas — não dar respostas. Seu filho{' '}
-              <strong className="text-white">pensa, descobre e aprende de verdade</strong>. Você acompanha tudo em tempo real.
+              <strong className="text-[#1E1B4B]">pensa, descobre e aprende de verdade</strong>. Você acompanha tudo em tempo real.
             </motion.p>
 
             {/* Trust checklist */}
             <motion.ul variants={fadeInUp('high')} className="mt-6 space-y-2">
               {trustItems.map((item) => (
-                <li key={item} className="flex items-center gap-2 text-sm" style={{ color: 'rgba(240,244,248,0.55)' }}>
+                <li key={item} className="flex items-center gap-2 text-sm" style={{ color: '#6B7280' }}>
                   <CheckCircle size={15} style={{ color: '#F5A623', flexShrink: 0 }} />
                   {item}
                 </li>
@@ -358,12 +358,12 @@ export function HeroSection() {
             <motion.div
               variants={fadeInUp('high')}
               className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ borderTop: '1px solid rgba(99,102,241,0.1)' }}
             >
               {stats.map((s) => (
                 <div key={s.label}>
-                  <div className="text-3xl sm:text-4xl font-extrabold" style={{ color: '#F5A623' }}>{s.value}</div>
-                  <div className="text-xs mt-1 leading-snug" style={{ color: 'rgba(240,244,248,0.45)' }}>{s.label}</div>
+                  <div className="text-3xl sm:text-4xl font-extrabold" style={{ color: '#6366F1' }}>{s.value}</div>
+                  <div className="text-xs mt-1 leading-snug" style={{ color: '#9CA3AF' }}>{s.label}</div>
                 </div>
               ))}
             </motion.div>
