@@ -68,6 +68,11 @@ export const metadata: Metadata = {
     icon: "/icons/icon-192.png",
     apple: "/icons/apple-touch-icon.png",
   },
+  appleWebApp: {
+    capable: true,
+    title: "Studdo",
+    statusBarStyle: "black-translucent",
+  },
   robots: {
     index: true,
     follow: true,
